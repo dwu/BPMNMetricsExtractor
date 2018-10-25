@@ -6,9 +6,14 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ComplexGateway;
 import org.camunda.bpm.model.bpmn.instance.DataInputAssociation;
 import org.camunda.bpm.model.bpmn.instance.DataOutputAssociation;
+import org.camunda.bpm.model.bpmn.instance.EventBasedGateway;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.Lane;
+import org.camunda.bpm.model.bpmn.instance.MessageFlow;
+import org.camunda.bpm.model.bpmn.instance.Participant;
 import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
@@ -37,6 +42,10 @@ public class BpmnMetadataExtractor {
 		System.out.println("Numero di data objects in output dalle attività: " + getDataObjectsOutput());
 		System.out.println("Numero di decisioni inclusive: " + getInclusiveDecisions());
 		System.out.println("Numero di decisioni esclusive basate sui dati (exclusive gateways): " + getExclusiveDataBasedDecisions());
+		System.out.println("Nuemero di decisioni esclusive basate su eventi (event based gateways): " + getExclusiveEventBasedDecisions());
+		System.out.println("Numero di lanes: " + getLanes());
+		System.out.println("Numero di flussi di messaggi: " + getMessageFlows());
+		System.out.println("Numero di pools: " + getPools());
 	}
 	
 	/**
@@ -90,6 +99,41 @@ public class BpmnMetadataExtractor {
 		return getNumberOfTypeElement(ExclusiveGateway.class)/2;
 	}
 	
+	/**
+	 * Metrica: NEDEB
+	 * (numero degli event based gateways)
+	 * @return numero delle decisioni esclusive basate sugli eventi
+	 */
+	private int getExclusiveEventBasedDecisions(){
+		return getNumberOfTypeElement(EventBasedGateway.class);
+	}
+	
+	/**
+	 * Metrica: NL
+	 * (numero di lanes)
+	 * @return numero di lanes
+	 */
+	private int getLanes(){
+		return getNumberOfTypeElement(Lane.class);
+	}
+	
+	/**
+	 * Metrica: NMF
+	 * (numero di message flows)
+	 * @return numero di flussi di messaggi
+	 */
+	private int getMessageFlows(){
+		return getNumberOfTypeElement(MessageFlow.class);
+	}
+	
+	/**
+	 * Metrica: NP
+	 * (numero di pools)
+	 * @return numero di pools
+	 */
+	private int getPools(){
+		return getNumberOfTypeElement(Process.class);
+	}
 	/**
 	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per ottenerne il numero complessivo
 	 * @param type: la classe del tipo degli elementi di cui si vuole conoscere il numero

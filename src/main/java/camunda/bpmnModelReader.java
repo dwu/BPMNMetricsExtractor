@@ -52,7 +52,8 @@ public class BpmnModelReader {
 	public static void main(String[] args){
 		//BpmnModelReader modelReader = new BpmnModelReader("airline.bpmn");
 		//BpmnModelReader modelReader = new BpmnModelReader("dataAssociationsTest.bpmn");
-		BpmnModelReader modelReader = new BpmnModelReader("bpmnTest01.bpmn");
+		//BpmnModelReader modelReader = new BpmnModelReader("bpmnTest01.bpmn");
+		BpmnModelReader modelReader = new BpmnModelReader("lanesPools.bpmn");
 		modelReader.test();
 	}
 }
