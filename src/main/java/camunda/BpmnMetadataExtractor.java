@@ -1,19 +1,24 @@
 package camunda;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.ComplexGateway;
 import org.camunda.bpm.model.bpmn.instance.DataInputAssociation;
 import org.camunda.bpm.model.bpmn.instance.DataOutputAssociation;
+import org.camunda.bpm.model.bpmn.instance.Event;
 import org.camunda.bpm.model.bpmn.instance.EventBasedGateway;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.Lane;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.Participant;
 import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
@@ -46,6 +51,9 @@ public class BpmnMetadataExtractor {
 		System.out.println("Numero di lanes: " + getLanes());
 		System.out.println("Numero di flussi di messaggi: " + getMessageFlows());
 		System.out.println("Numero di pools: " + getPools());
+		System.out.println("Numero di archi uscenti dagli eventi: " + this.getSequenceFlowsFromEvents());
+		System.out.println("Numero di archi uscenti dai gateways: " + this.getSequenceFlowsFromGateways());
+		System.out.println("Numero di archi tra attività: " + this.getSequenceFlowsBetweenActivities());
 	}
 	
 	/**
@@ -135,13 +143,73 @@ public class BpmnMetadataExtractor {
 		return getNumberOfTypeElement(Process.class);
 	}
 	/**
+	 * Metrica: NSFE
+	 * (numero di archi uscenti dagli eventi)
+	 * @return numero di archi uscenti dagli eventi
+	 */
+	private int getSequenceFlowsFromEvents(){
+		Collection<Event> events = this.modelInstance.getModelElementsByType(Event.class);
+		int numberOfOutgoingSequenceFlows = 0;
+		for (Event e: events) {
+			numberOfOutgoingSequenceFlows += e.getOutgoing().size();	
+		}
+		return numberOfOutgoingSequenceFlows;
+	}
+	
+	/**
+	 * Metrica:NSFG
+	 * (numero di archi uscenti dai gateways)
+	 * @return numero di archi uscenti dai gateways
+	 */
+	private int getSequenceFlowsFromGateways(){
+		Collection<Gateway> gateways = this.modelInstance.getModelElementsByType(Gateway.class);
+		int numberOfOutgoingSequenceFlows = 0;
+		for (Gateway g: gateways) {
+			numberOfOutgoingSequenceFlows += g.getOutgoing().size();
+		}
+		return numberOfOutgoingSequenceFlows; 
+	}
+	/**
+	 * Metrica: NSFA
+	 * (Numero di archi colleganti attività)
+	 * 
+	 * @return numero di archi colleganti due attività
+	 */
+	private int getSequenceFlowsBetweenActivities() {
+		Collection<Activity> activities = this.modelInstance.getModelElementsByType(Activity.class);
+		Collection<SequenceFlow> outgoingFlows;
+		int numberOfSequenceFlows = 0;
+		System.out.println(activities.size());
+		for (Activity a: activities) {
+			outgoingFlows = a.getOutgoing();
+			for (SequenceFlow s: outgoingFlows) {
+				if (s.getTarget() instanceof Activity) {
+					numberOfSequenceFlows++;
+				}
+			}
+		}
+		return numberOfSequenceFlows;
+	}
+	
+	
+	/**
 	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per ottenerne il numero complessivo
 	 * @param type: la classe del tipo degli elementi di cui si vuole conoscere il numero
 	 * @return il numero degli elementi del tipo "type"
 	 */
 	private int getNumberOfTypeElement(Class type) {
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = modelInstance.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = this.modelInstance.getModelElementsByType(modelElementType);
 		return modelElementInstances.size();
 	}
+	/**
+	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" passato come parametro.
+	 * @param type: la classe degli elementi da ritornare
+	 * @return una collection contenente gli elementi del tipo passato come parametro
+	 */
+	/*private Collection<Event> getElementsOfType(Class type) {
+		ModelElementType modelElementType = modelInstance.getModel().getType(type);
+		Collection<Event> modelElementInstances = this.modelInstance.getModelElementsByType();
+		return modelElementInstances;	
+	}*/
 }
