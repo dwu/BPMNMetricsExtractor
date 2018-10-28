@@ -71,7 +71,7 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni complesse
 	 */
 	private int getComplexDecisions() {
-		return getNumberOfTypeElement(ComplexGateway.class)/2;
+		return getNumberOfTypeElement(ComplexGateway.class);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni inclusive
 	 */
 	private int getInclusiveDecisions() {
-		return getNumberOfTypeElement(InclusiveGateway.class)/2;
+		return getNumberOfTypeElement(InclusiveGateway.class);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni esclusive basate sui dati 
 	 */
 	private int getExclusiveDataBasedDecisions() {
-		return getNumberOfTypeElement(ExclusiveGateway.class)/2;
+		return getNumberOfTypeElement(ExclusiveGateway.class);
 	}
 	
 	/**

@@ -50,11 +50,13 @@ public class BpmnModelReader {
 	}
 
 	public static void main(String[] args){
-		BpmnModelReader modelReader = new BpmnModelReader("airline.bpmn");
+		//BpmnModelReader modelReader = new BpmnModelReader("airline.bpmn");
 		//BpmnModelReader modelReader = new BpmnModelReader("dataAssociationsTest.bpmn");
 		//BpmnModelReader modelReader = new BpmnModelReader("bpmnTest01.bpmn");
 		//BpmnModelReader modelReader = new BpmnModelReader("sequenceFlowsBetweenActivities.bpmn");
 		//BpmnModelReader modelReader = new BpmnModelReader("lanesPools.bpmn");
+		BpmnFileOpener fileOpener = new BpmnFileOpener();
+		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
 		modelReader.test();
 	}
 }
