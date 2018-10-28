@@ -14,6 +14,7 @@ import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.Lane;
+import org.camunda.bpm.model.bpmn.instance.LaneSet;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.Participant;
 import org.camunda.bpm.model.bpmn.instance.Task;
@@ -122,7 +123,18 @@ public class BpmnMetadataExtractor {
 	 * @return numero di lanes
 	 */
 	private int getLanes(){
-		return getNumberOfTypeElement(Lane.class);
+		Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
+		int numberOfLanes = 0;
+		for (Participant p: participants) {
+			Collection<LaneSet> laneSets = p.getProcess().getLaneSets();
+			for (LaneSet l: laneSets){
+				Collection<Lane> lanes = l.getLanes();
+				if(lanes.size() > 1){
+					numberOfLanes += lanes.size();
+				}
+			}
+		}
+		return numberOfLanes;
 	}
 	
 	/**
@@ -140,8 +152,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero di pools
 	 */
 	private int getPools(){
-		return getNumberOfTypeElement(Process.class);
+		return getNumberOfTypeElement(Participant.class);
 	}
+	
 	/**
 	 * Metrica: NSFE
 	 * (numero di archi uscenti dagli eventi)
@@ -169,6 +182,7 @@ public class BpmnMetadataExtractor {
 		}
 		return numberOfOutgoingSequenceFlows; 
 	}
+	
 	/**
 	 * Metrica: NSFA
 	 * (Numero di archi colleganti attività)
@@ -202,6 +216,7 @@ public class BpmnMetadataExtractor {
 		Collection<ModelElementInstance> modelElementInstances = this.modelInstance.getModelElementsByType(modelElementType);
 		return modelElementInstances.size();
 	}
+	
 	/**
 	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" passato come parametro.
 	 * @param type: la classe degli elementi da ritornare
