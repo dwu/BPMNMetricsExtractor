@@ -33,6 +33,7 @@ public class BpmnMetadataExtractor {
 	
 	//modello da cui estrarre le metriche
 	private BpmnModelInstance modelInstance;
+	private JsonEncoder json = new JsonEncoder();
 	
 	public BpmnMetadataExtractor(BpmnModelInstance modelInstance) {
 		this.modelInstance = modelInstance;
@@ -48,13 +49,15 @@ public class BpmnMetadataExtractor {
 		System.out.println("Numero di data objects in output dalle attività: " + getDataObjectsOutput());
 		System.out.println("Numero di decisioni inclusive: " + getInclusiveDecisions());
 		System.out.println("Numero di decisioni esclusive basate sui dati (exclusive gateways): " + getExclusiveDataBasedDecisions());
-		System.out.println("Nuemero di decisioni esclusive basate su eventi (event based gateways): " + getExclusiveEventBasedDecisions());
+		System.out.println("Numero di decisioni esclusive basate su eventi (event based gateways): " + getExclusiveEventBasedDecisions());
 		System.out.println("Numero di lanes: " + getLanes());
 		System.out.println("Numero di flussi di messaggi: " + getMessageFlows());
 		System.out.println("Numero di pools: " + getPools());
 		System.out.println("Numero di archi uscenti dagli eventi: " + this.getSequenceFlowsFromEvents());
 		System.out.println("Numero di archi uscenti dai gateways: " + this.getSequenceFlowsFromGateways());
 		System.out.println("Numero di archi tra attività: " + this.getSequenceFlowsBetweenActivities());
+		System.out.println("JSON:" + this.json.print());
+		this.json.exportJson();
 	}
 	
 	/**
@@ -62,7 +65,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero dei tasks
 	 */
 	private int getTasks() {
-		return getNumberOfTypeElement(Task.class);
+		int n = getNumberOfTypeElement(Task.class);
+		this.json.addBasicMetric("NT", n);
+		return n;
 	}
 	
 	/**
@@ -71,7 +76,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni complesse
 	 */
 	private int getComplexDecisions() {
-		return getNumberOfTypeElement(ComplexGateway.class);
+		int n = getNumberOfTypeElement(ComplexGateway.class);
+		this.json.addBasicMetric("NCD", n);
+		return n;
 	}
 	
 	/**
@@ -79,7 +86,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero dei data objects che sono in input delle attività
 	 */
 	private int getDataObjectsInput() {
-		return getNumberOfTypeElement(DataInputAssociation.class);
+		int n = getNumberOfTypeElement(DataInputAssociation.class); 
+		this.json.addBasicMetric("NDOin", n);
+		return n;
 	}
 	
 	/**
@@ -87,7 +96,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero dei data objects che sono in output delle attività
 	 */
 	private int getDataObjectsOutput() {
-		return getNumberOfTypeElement(DataOutputAssociation.class);
+		int n = getNumberOfTypeElement(DataOutputAssociation.class);
+		this.json.addBasicMetric("NDOout" , n);
+		return n;
 	}
 	
 	/**
@@ -96,7 +107,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni inclusive
 	 */
 	private int getInclusiveDecisions() {
-		return getNumberOfTypeElement(InclusiveGateway.class);
+		int n = getNumberOfTypeElement(InclusiveGateway.class); 
+		this.json.addBasicMetric("NID", n);
+		return n;
 	}
 	
 	/**
@@ -105,7 +118,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni esclusive basate sui dati 
 	 */
 	private int getExclusiveDataBasedDecisions() {
-		return getNumberOfTypeElement(ExclusiveGateway.class);
+		int n = getNumberOfTypeElement(ExclusiveGateway.class);
+		this.json.addBasicMetric("NEDDB", n);
+		return n;
 	}
 	
 	/**
@@ -114,7 +129,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero delle decisioni esclusive basate sugli eventi
 	 */
 	private int getExclusiveEventBasedDecisions(){
-		return getNumberOfTypeElement(EventBasedGateway.class);
+		int n = getNumberOfTypeElement(EventBasedGateway.class); 
+		this.json.addBasicMetric("NEDEB", n);
+		return n;
 	}
 	
 	/**
@@ -124,6 +141,8 @@ public class BpmnMetadataExtractor {
 	 */
 	private int getLanes(){
 		Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
+		Collection<Process> processes = this.modelInstance.getModelElementsByType(Process.class);
+		System.out.println("Processi: " + processes.size());
 		int numberOfLanes = 0;
 		for (Participant p: participants) {
 			Collection<LaneSet> laneSets = p.getProcess().getLaneSets();
@@ -134,6 +153,7 @@ public class BpmnMetadataExtractor {
 				}
 			}
 		}
+		this.json.addBasicMetric("NL", numberOfLanes);
 		return numberOfLanes;
 	}
 	
@@ -143,7 +163,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero di flussi di messaggi
 	 */
 	private int getMessageFlows(){
-		return getNumberOfTypeElement(MessageFlow.class);
+		int n = getNumberOfTypeElement(MessageFlow.class);
+		this.json.addBasicMetric("NMF", n);
+		return n;
 	}
 	
 	/**
@@ -152,7 +174,9 @@ public class BpmnMetadataExtractor {
 	 * @return numero di pools
 	 */
 	private int getPools(){
-		return getNumberOfTypeElement(Participant.class);
+		int n = getNumberOfTypeElement(Participant.class);
+		this.json.addBasicMetric("NP", n);
+		return n;
 	}
 	
 	/**
@@ -166,6 +190,7 @@ public class BpmnMetadataExtractor {
 		for (Event e: events) {
 			numberOfOutgoingSequenceFlows += e.getOutgoing().size();	
 		}
+		this.json.addBasicMetric("NSFE", numberOfOutgoingSequenceFlows);
 		return numberOfOutgoingSequenceFlows;
 	}
 	
@@ -180,6 +205,7 @@ public class BpmnMetadataExtractor {
 		for (Gateway g: gateways) {
 			numberOfOutgoingSequenceFlows += g.getOutgoing().size();
 		}
+		this.json.addBasicMetric("NSFG", numberOfOutgoingSequenceFlows);
 		return numberOfOutgoingSequenceFlows; 
 	}
 	
@@ -193,7 +219,6 @@ public class BpmnMetadataExtractor {
 		Collection<Activity> activities = this.modelInstance.getModelElementsByType(Activity.class);
 		Collection<SequenceFlow> outgoingFlows;
 		int numberOfSequenceFlows = 0;
-		System.out.println(activities.size());
 		for (Activity a: activities) {
 			outgoingFlows = a.getOutgoing();
 			for (SequenceFlow s: outgoingFlows) {
@@ -202,6 +227,7 @@ public class BpmnMetadataExtractor {
 				}
 			}
 		}
+		this.json.addBasicMetric("NSFA", numberOfSequenceFlows);
 		return numberOfSequenceFlows;
 	}
 	
