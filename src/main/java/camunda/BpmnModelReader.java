@@ -45,8 +45,11 @@ public class BpmnModelReader {
 	 */
 	private void test() {
 		BpmnModelInstance modelInstance = Bpmn.readModelFromFile(loadedFile);
-		BpmnMetadataExtractor extractor = new BpmnMetadataExtractor(modelInstance);
-		extractor.runMetrics();
+		JsonEncoder jsonEncoder = new JsonEncoder();
+		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
+		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(modelInstance, basicExtractor, jsonEncoder);
+		basicExtractor.runMetrics();
+		advExtractor.runMetrics();
 	}
 
 	public static void main(String[] args){

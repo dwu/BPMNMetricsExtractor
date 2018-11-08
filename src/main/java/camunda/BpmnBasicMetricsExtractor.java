@@ -25,20 +25,23 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 
 /**
  * 
- * TODO Classe in cui andare a inserire i metodi per l'estrazione delle statistiche/metadati
+ * Classe in cui andare a inserire i metodi per l'estrazione delle
+ * statistiche/metadati
+ * 
  * @author PROSLabTeam
  *
  */
-public class BpmnMetadataExtractor {
-	
-	//modello da cui estrarre le metriche
+public class BpmnBasicMetricsExtractor {
+
+	// modello da cui estrarre le metriche
 	private BpmnModelInstance modelInstance;
-	private JsonEncoder json = new JsonEncoder();
-	
-	public BpmnMetadataExtractor(BpmnModelInstance modelInstance) {
+	private JsonEncoder json;
+
+	public BpmnBasicMetricsExtractor(BpmnModelInstance modelInstance, JsonEncoder jsonEncoder) {
 		this.modelInstance = modelInstance;
+		this.json = jsonEncoder;
 	}
-	
+
 	/**
 	 * Metodo principale per runnare tutti i metodi che ottengono le metriche
 	 */
@@ -53,9 +56,11 @@ public class BpmnMetadataExtractor {
 		this.json.addBasicMetric("NDOout", this.getDataObjectsOutput());
 		System.out.println("Numero di decisioni inclusive: " + this.getInclusiveDecisions());
 		this.json.addBasicMetric("NID", this.getInclusiveDecisions());
-		System.out.println("Numero di decisioni esclusive basate sui dati (exclusive gateways): " + this.getExclusiveDataBasedDecisions());
+		System.out.println("Numero di decisioni esclusive basate sui dati (exclusive gateways): "
+				+ this.getExclusiveDataBasedDecisions());
 		this.json.addBasicMetric("NEDDB", this.getExclusiveDataBasedDecisions());
-		System.out.println("Numero di decisioni esclusive basate su eventi (event based gateways): " + this.getExclusiveEventBasedDecisions());
+		System.out.println("Numero di decisioni esclusive basate su eventi (event based gateways): "
+				+ this.getExclusiveEventBasedDecisions());
 		this.json.addBasicMetric("NEDEB", this.getExclusiveEventBasedDecisions());
 		System.out.println("Numero di lanes: " + this.getLanes());
 		this.json.addBasicMetric("NL", this.getLanes());
@@ -70,150 +75,151 @@ public class BpmnMetadataExtractor {
 		System.out.println("Numero di archi tra attività: " + this.getSequenceFlowsBetweenActivities());
 		this.json.addBasicMetric("NSFA", this.getSequenceFlowsBetweenActivities());
 		System.out.println("JSON:" + this.json.print());
-		this.json.exportJson();
 	}
-	
+
 	/**
 	 * Metrica: NT
+	 * 
 	 * @return numero dei tasks
 	 */
-	private int getTasks() {
+	public int getTasks() {
 		return getNumberOfTypeElement(Task.class);
 	}
-	
+
 	/**
-	 * Metrica: NCD
-	 * (numero di complex gateways)
+	 * Metrica: NCD (numero di complex gateways)
+	 * 
 	 * @return numero delle decisioni complesse
 	 */
-	private int getComplexDecisions() {
+	public int getComplexDecisions() {
 		return getNumberOfTypeElement(ComplexGateway.class);
 	}
-	
+
 	/**
 	 * Metrica: NDOin
+	 * 
 	 * @return numero dei data objects che sono in input delle attività
 	 */
-	private int getDataObjectsInput() {
-		return getNumberOfTypeElement(DataInputAssociation.class); 
+	public int getDataObjectsInput() {
+		return getNumberOfTypeElement(DataInputAssociation.class);
 	}
-	
+
 	/**
 	 * Metrica: NDOout
+	 * 
 	 * @return numero dei data objects che sono in output delle attività
 	 */
-	private int getDataObjectsOutput() {
+	public int getDataObjectsOutput() {
 		return getNumberOfTypeElement(DataOutputAssociation.class);
 	}
-	
+
 	/**
-	 * Metrica: NID
-	 * (numero di inclusive gateways)
+	 * Metrica: NID (numero di inclusive gateways)
+	 * 
 	 * @return numero delle decisioni inclusive
 	 */
-	private int getInclusiveDecisions() {
-		return getNumberOfTypeElement(InclusiveGateway.class); 
+	public int getInclusiveDecisions() {
+		return getNumberOfTypeElement(InclusiveGateway.class);
 	}
-	
+
 	/**
-	 * Metrica: NEDDB
-	 * (numero degli exclusive gateways)
-	 * @return numero delle decisioni esclusive basate sui dati 
+	 * Metrica: NEDDB (numero degli exclusive gateways)
+	 * 
+	 * @return numero delle decisioni esclusive basate sui dati
 	 */
-	private int getExclusiveDataBasedDecisions() {
+	public int getExclusiveDataBasedDecisions() {
 		return getNumberOfTypeElement(ExclusiveGateway.class);
 	}
-	
+
 	/**
-	 * Metrica: NEDEB
-	 * (numero degli event based gateways)
+	 * Metrica: NEDEB (numero degli event based gateways)
+	 * 
 	 * @return numero delle decisioni esclusive basate sugli eventi
 	 */
-	private int getExclusiveEventBasedDecisions(){
-		return getNumberOfTypeElement(EventBasedGateway.class); 
+	public int getExclusiveEventBasedDecisions() {
+		return getNumberOfTypeElement(EventBasedGateway.class);
 	}
-	
+
 	/**
-	 * Metrica: NL
-	 * (numero di lanes)
+	 * Metrica: NL (numero di lanes)
+	 * 
 	 * @return numero di lanes
 	 */
-	private int getLanes(){
+	public int getLanes() {
 		Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
 		Collection<Process> processes = this.modelInstance.getModelElementsByType(Process.class);
 		System.out.println("Processi: " + processes.size());
 		int numberOfLanes = 0;
-		for (Participant p: participants) {
+		for (Participant p : participants) {
 			Collection<LaneSet> laneSets = p.getProcess().getLaneSets();
-			for (LaneSet l: laneSets){
+			for (LaneSet l : laneSets) {
 				Collection<Lane> lanes = l.getLanes();
-				if(lanes.size() > 1){
+				if (lanes.size() > 1) {
 					numberOfLanes += lanes.size();
 				}
 			}
 		}
 		return numberOfLanes;
 	}
-	
+
 	/**
-	 * Metrica: NMF
-	 * (numero di message flows)
+	 * Metrica: NMF (numero di message flows)
+	 * 
 	 * @return numero di flussi di messaggi
 	 */
-	private int getMessageFlows(){
+	public int getMessageFlows() {
 		return getNumberOfTypeElement(MessageFlow.class);
 	}
-	
+
 	/**
-	 * Metrica: NP
-	 * (numero di pools)
+	 * Metrica: NP (numero di pools)
+	 * 
 	 * @return numero di pools
 	 */
-	private int getPools(){
+	public int getPools() {
 		return getNumberOfTypeElement(Participant.class);
 	}
-	
+
 	/**
-	 * Metrica: NSFE
-	 * (numero di archi uscenti dagli eventi)
+	 * Metrica: NSFE (numero di archi uscenti dagli eventi)
+	 * 
 	 * @return numero di archi uscenti dagli eventi
 	 */
-	private int getSequenceFlowsFromEvents(){
+	public int getSequenceFlowsFromEvents() {
 		Collection<Event> events = this.modelInstance.getModelElementsByType(Event.class);
 		int numberOfOutgoingSequenceFlows = 0;
-		for (Event e: events) {
-			numberOfOutgoingSequenceFlows += e.getOutgoing().size();	
+		for (Event e : events) {
+			numberOfOutgoingSequenceFlows += e.getOutgoing().size();
 		}
 		return numberOfOutgoingSequenceFlows;
 	}
-	
+
 	/**
-	 * Metrica:NSFG
-	 * (numero di archi uscenti dai gateways)
+	 * Metrica:NSFG (numero di archi uscenti dai gateways)
+	 * 
 	 * @return numero di archi uscenti dai gateways
 	 */
-	private int getSequenceFlowsFromGateways(){
+	public int getSequenceFlowsFromGateways() {
 		Collection<Gateway> gateways = this.modelInstance.getModelElementsByType(Gateway.class);
 		int numberOfOutgoingSequenceFlows = 0;
-		for (Gateway g: gateways) {
+		for (Gateway g : gateways) {
 			numberOfOutgoingSequenceFlows += g.getOutgoing().size();
 		}
-		return numberOfOutgoingSequenceFlows; 
+		return numberOfOutgoingSequenceFlows;
 	}
-	
+
 	/**
-	 * Metrica: NSFA
-	 * (Numero di archi colleganti attività)
+	 * Metrica: NSFA (Numero di archi colleganti attività)
 	 * 
 	 * @return numero di archi colleganti due attività
 	 */
-	private int getSequenceFlowsBetweenActivities() {
+	public int getSequenceFlowsBetweenActivities() {
 		Collection<Activity> activities = this.modelInstance.getModelElementsByType(Activity.class);
 		Collection<SequenceFlow> outgoingFlows;
 		int numberOfSequenceFlows = 0;
-		for (Activity a: activities) {
+		for (Activity a : activities) {
 			outgoingFlows = a.getOutgoing();
-			for (SequenceFlow s: outgoingFlows) {
+			for (SequenceFlow s : outgoingFlows) {
 				if (s.getTarget() instanceof Activity) {
 					numberOfSequenceFlows++;
 				}
@@ -221,27 +227,20 @@ public class BpmnMetadataExtractor {
 		}
 		return numberOfSequenceFlows;
 	}
-	
-	
+
 	/**
-	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per ottenerne il numero complessivo
-	 * @param type: la classe del tipo degli elementi di cui si vuole conoscere il numero
+	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per
+	 * ottenerne il numero complessivo
+	 * 
+	 * @param type:
+	 *            la classe del tipo degli elementi di cui si vuole conoscere il
+	 *            numero
 	 * @return il numero degli elementi del tipo "type"
 	 */
 	private int getNumberOfTypeElement(Class type) {
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
+				.getModelElementsByType(modelElementType);
 		return modelElementInstances.size();
 	}
-	
-	/**
-	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" passato come parametro.
-	 * @param type: la classe degli elementi da ritornare
-	 * @return una collection contenente gli elementi del tipo passato come parametro
-	 */
-	/*private Collection<Event> getElementsOfType(Class type) {
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<Event> modelElementInstances = this.modelInstance.getModelElementsByType();
-		return modelElementInstances;	
-	}*/
 }
