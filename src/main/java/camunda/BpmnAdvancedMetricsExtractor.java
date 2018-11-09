@@ -119,7 +119,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getNumberOfCollapsedSubProcesses() {
-		return 0;
+		return basicMetricsExtractor.getSubprocesses();
 	}
 	
 	/**TODO
