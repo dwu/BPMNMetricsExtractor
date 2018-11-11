@@ -16,14 +16,21 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	public void runMetrics() {
-		System.out.println("Livello di connettività tra i Partecipants: " + getConnectivityLevelBetweenPartecipants());
+		json.addAdvancedMetric("CLA", getConnectivityLevelBetweenActivities());
 		json.addAdvancedMetric("CLP", getConnectivityLevelBetweenPartecipants());
-		System.out.println("Proporzione tra Data Object in Input e Data Object totali: " + getProportionOfIncomingDataObjectsAndTotalDataObjects());
-		json.addAdvancedMetric("PDOPin", getConnectivityLevelBetweenPartecipants());
-		System.out.println("Proporzione tra Data Object in Output e Data Object totali: " + getProportionOfOutgoingDataObjectsAndTotalDataObjects());
+		json.addAdvancedMetric("PDOPin", getProportionOfIncomingDataObjectsAndTotalDataObjects());
 		json.addAdvancedMetric("PDOPout", getProportionOfOutgoingDataObjectsAndTotalDataObjects());
-		System.out.println("Numero totale di Data Object: " + getTotalNumberOfDataObjects());
+		json.addAdvancedMetric("TNT", getTotalNumberOfTasks());
+		json.addAdvancedMetric("PDOTout", getProportionOfDataObjectsAsOutgoingProducts());
+		json.addAdvancedMetric("PLT", getProportionOfPoolsOrLanesAndActivities());
+		json.addAdvancedMetric("TNCS", getNumberOfCollapsedSubProcesses());
+		json.addAdvancedMetric("TNA", getTotalNumberOfActivities());
 		json.addAdvancedMetric("TNDO", getTotalNumberOfDataObjects());
+		json.addAdvancedMetric("TNG", getTotalNumberOfGateways());
+		json.addAdvancedMetric("TNEE", getTotalNumberOfEndEvents());
+		json.addAdvancedMetric("TNIE", getTotalNumberOfIntermediateEvents());
+		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
+		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -35,7 +42,11 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return 
 	 */
 	public float getConnectivityLevelBetweenActivities() {
-		return getTotalNumberOfActivities() /  basicMetricsExtractor.getSequenceFlowsBetweenActivities();
+		try {
+			return getTotalNumberOfActivities() /  basicMetricsExtractor.getSequenceFlowsBetweenActivities();
+		} catch (ArithmeticException e) {
+			return 0;
+		}
 	}
 	
 	/**
@@ -97,7 +108,11 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getProportionOfDataObjectsAsOutgoingProducts() {
-		return basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfTasks();
+		try {
+			return basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfTasks();
+		} catch (ArithmeticException e) {
+			return 0;
+		}
 	}
 	
 	/**
@@ -107,7 +122,11 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getProportionOfPoolsOrLanesAndActivities() {
-		return basicMetricsExtractor.getLanes() / getTotalNumberOfTasks();
+		try {
+			return basicMetricsExtractor.getLanes() / getTotalNumberOfTasks();
+		} catch (ArithmeticException e) {
+			return 0;
+		}
 	}
 	
 	/**

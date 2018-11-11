@@ -2,7 +2,7 @@ package camunda;
 
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.time.LocalDateTime;
 import org.camunda.bpm.engine.impl.util.json.*;
 /**
  * 
@@ -12,12 +12,15 @@ import org.camunda.bpm.engine.impl.util.json.*;
 public class JsonEncoder {
 	
 	
-	private JSONObject json = new JSONObject();
+	private JSONObject json;
+	private String outputFileName;
 	
 	/**
 	 * Costruttore per l'encoder Json
 	 */
-	public JsonEncoder(){
+	public JsonEncoder(String outputFileName){
+		json = new JSONObject();
+		this.outputFileName = outputFileName;
 		this.initializeJSON();
 	}
 	
@@ -67,10 +70,12 @@ public class JsonEncoder {
 	}
 	
 	/**
-	 * Metodo per esportare il json su un file
+	 * Metodo per esportare il json in un file il cui nome contiene il nome del modello bpmn e un timestamp
 	 */
 	public void exportJson(){
-		try(FileWriter file = new FileWriter("metriche.json"))
+		LocalDateTime now = LocalDateTime.now();
+		outputFileName += " - " + now.getDayOfMonth() + "-" + now.getMonthValue() + "-" + now.getYear() + "--" + now.getHour() + "-" + now.getMinute();
+		try(FileWriter file = new FileWriter(outputFileName + ".json"))
 		{
 			file.write(json.toString());
 			file.flush();		

@@ -31,33 +31,18 @@ public class BpmnBasicMetricsExtractor {
 	 * Metodo principale per runnare tutti i metodi che ottengono le metriche
 	 */
 	public void runMetrics() {
-		System.out.println("Numero di task: " + this.getTasks());
 		this.json.addBasicMetric("NT", this.getTasks());
-		System.out.println("Numero di decisioni complesse: " + this.getComplexDecisions());
 		this.json.addBasicMetric("NCD", this.getComplexDecisions());
-		System.out.println("Numero di data objects in input alle attività: " + this.getDataObjectsInput());
 		this.json.addBasicMetric("NDOin", this.getDataObjectsInput());
-		System.out.println("Numero di data objects in output dalle attività: " + this.getDataObjectsOutput());
 		this.json.addBasicMetric("NDOout", this.getDataObjectsOutput());
-		System.out.println("Numero di decisioni inclusive: " + this.getInclusiveDecisions());
 		this.json.addBasicMetric("NID", this.getInclusiveDecisions());
-		System.out.println("Numero di decisioni esclusive basate sui dati (exclusive gateways): "
-				+ this.getExclusiveDataBasedDecisions());
 		this.json.addBasicMetric("NEDDB", this.getExclusiveDataBasedDecisions());
-		System.out.println("Numero di decisioni esclusive basate su eventi (event based gateways): "
-				+ this.getExclusiveEventBasedDecisions());
 		this.json.addBasicMetric("NEDEB", this.getExclusiveEventBasedDecisions());
-		System.out.println("Numero di lanes: " + this.getLanes());
 		this.json.addBasicMetric("NL", this.getLanes());
-		System.out.println("Numero di flussi di messaggi: " + this.getMessageFlows());
 		this.json.addBasicMetric("NMF", this.getMessageFlows());
-		System.out.println("Numero di pools: " + this.getPools());
 		this.json.addBasicMetric("NP", this.getPools());
-		System.out.println("Numero di archi uscenti dagli eventi: " + this.getSequenceFlowsFromEvents());
 		this.json.addBasicMetric("NSFE", this.getSequenceFlowsFromEvents());
-		System.out.println("Numero di archi uscenti dai gateways: " + this.getSequenceFlowsFromGateways());
 		this.json.addBasicMetric("NSFG", this.getSequenceFlowsFromGateways());
-		System.out.println("Numero di archi tra attività: " + this.getSequenceFlowsBetweenActivities());
 		this.json.addBasicMetric("NSFA", this.getSequenceFlowsBetweenActivities());
 		this.json.addBasicMetric("NAC", this.getActivationConditions());
 		this.json.addBasicMetric("NACT", this.getActivities());
@@ -174,29 +159,24 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NTR", this.getTransactions());
 		this.json.addBasicMetric("NUT", this.getUserTasks());
 		this.json.addBasicMetric("NSUB", this.getSubprocesses());
-		System.out.println("Complex che dividono: " + this.getFluxDividingComplexGateways());
 		this.json.addBasicMetric("NFDCG", this.getFluxDividingComplexGateways());
-		System.out.println("Event based che dividono: " + this.getFluxDividingEventBasedGateways());
 		this.json.addBasicMetric("NFDEBG", this.getFluxDividingEventBasedGateways());
 		this.json.addBasicMetric("NFDEXG", this.getFluxDividingExclusiveGateways());
 		this.json.addBasicMetric("NFDIG", this.getFluxDividingInclusiveGateways());
 		this.json.addBasicMetric("NFDPG", this.getFluxDividingParallelGateways());
 		this.json.addBasicMetric("NFDT", this.getFluxDividingTasks());
-		System.out.println("Complex che uniscono: " + this.getFluxJoiningComplexGateways());
 		this.json.addBasicMetric("NFJCG", this.getFluxJoiningComplexGateways());
 		this.json.addBasicMetric("NFJEBG", this.getFluxJoiningEventBasedGateways());
 		this.json.addBasicMetric("NFJEXG", this.getFluxJoiningExclusiveGateways());
 		this.json.addBasicMetric("NFJIG", this.getFluxJoiningInclusiveGateways());
 		this.json.addBasicMetric("NFJPG", this.getFluxJoiningParallelGateways());
 		this.json.addBasicMetric("NFJT", this.getFluxJoiningTasks());
-		System.out.println("Complex che uniscono e dividono: " + this.getFluxJoiningAndDividingComplexGateways());
 		this.json.addBasicMetric("NFJCG", this.getFluxJoiningAndDividingComplexGateways());
 		this.json.addBasicMetric("NFJDEBG", this.getFluxJoiningAndDividingEventBasedGateways());
 		this.json.addBasicMetric("NFJDEXG", this.getFluxJoiningAndDividingExclusiveGateways());
 		this.json.addBasicMetric("NFJDIG", this.getFluxJoiningAndDividingInclusiveGateways());
 		this.json.addBasicMetric("NFJDPG", this.getFluxJoiningAndDividingParallelGateways());
 		this.json.addBasicMetric("NFJDT", this.getFluxJoiningAndDividingTasks());
-		System.out.println("JSON base:" + this.json.print());
 	}
 
 	/**
