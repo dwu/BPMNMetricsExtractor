@@ -1,0 +1,1 @@
+NOA: Number of activities in a process. Cardoso et al [2006] 2006    (già calcolato in TNA)

@@ -179,6 +179,8 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFJDT", this.getFluxJoiningAndDividingTasks());
 	}
 
+	//TODO aggiungere exclusive gateways
+	
 	/**
 	 * Metrica: NT
 	 * 
@@ -1408,9 +1410,7 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	private int getFluxDividingElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getOutgoing().size() > 1) {
 				toReturn += 1;
@@ -1426,9 +1426,7 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	private int getFluxJoiningElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getIncoming().size() > 1) {
 				toReturn += 1;
@@ -1444,9 +1442,7 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	private int getFluxJoiningAndDividingElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getIncoming().size() > 1 && ((FlowNode) instance).getOutgoing().size() > 1) {
 				toReturn += 1;
@@ -1465,10 +1461,12 @@ public class BpmnBasicMetricsExtractor {
 	 *            numero
 	 * @return il numero degli elementi del tipo "type"
 	 */
-	private int getNumberOfTypeElement(Class type) {
+	public int getNumberOfTypeElement(Class type) {
+		return getCollectionOfElementType(type).size();
+	}
+	
+	public Collection<ModelElementInstance> getCollectionOfElementType(Class type) {
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
-		return modelElementInstances.size();
+		return this.modelInstance.getModelElementsByType(modelElementType);
 	}
 }

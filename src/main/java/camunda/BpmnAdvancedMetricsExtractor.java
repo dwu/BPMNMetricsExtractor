@@ -1,6 +1,13 @@
 package camunda;
 
+import java.util.Collection;
+
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
 	
@@ -221,5 +228,127 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getTotalNumberOfEvents() {
 		return getTotalNumberOfStartEvents() + getTotalNumberOfIntermediateEvents() + getTotalNumberOfEndEvents();
+	}
+	
+	/**
+	 * Metrica: CFC
+	 * Control-flow Complexity metric. It captures a weighted sum of all connectors that are used in a process model.
+	 * @return
+	 */
+	public double getControlFlowComplexity() {
+		double toReturn = 0;
+		int tempSize = 0;
+		Collection<ModelElementInstance> exclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(ExclusiveGateway.class);
+		Collection<ModelElementInstance> inclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(InclusiveGateway.class);
+		Collection<ModelElementInstance> parallelGateways = basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class);
+		//La CFC di uno xor-split presente in un processo è data dal numero di flussi uscenti dallo split in questione
+		for (ModelElementInstance exGateway : exclusiveGateways) {
+			toReturn += ((FlowNode) exGateway).getOutgoing().size();
+		}
+		//La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione
+		for (ModelElementInstance inGateway : inclusiveGateways) {
+			tempSize = ((FlowNode) inGateway).getOutgoing().size();
+			toReturn = Math.pow(2, tempSize) - 1;
+		}
+		//La CFC di and-split è semplicemente 1
+		toReturn += parallelGateways.size();
+		return toReturn;
+	}
+	
+	/**
+	 * Metrica: NOAC
+	 * Number of activities and control-flow elements in a process. 
+	 * @return
+	 */
+	public int getNumberOfActivitiesAndControlFlowElements() {
+		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getFlowElements();
+	}
+	
+	/**
+	 * Metrica: NOAJS
+	 * Number of activities, joins, and splits in a process
+	 */
+	public int getNumberOfActivitiesJoinsAndsplits() {
+		return basicMetricsExtractor.getActivities();
+	}
+	
+	/**
+	 * Metrica: HPC_D
+	 * Hasted-based Process Complexity (process difficulty)
+	 * @return
+	 */
+	public int getHastedBasedProcessDifficultyComplexity() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: HPC_N
+	 * Hasted-based Process Complexity (process length)
+	 * @return
+	 */
+	public int getHastedBasedProcessLengthComplexity() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: HPC_V
+	 * Halsted-based Process Complexity (process volume)
+	 * @return
+	 */
+	public int getHastedBasedProcessVolumeComplexity() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: NoI or Fanin
+	 * Number of activity inputs. The fan-in of a procedure A is the number of local flows
+	 *  into procedure A plus the number of data structures from which procedure A retrieves information.
+	 * @return
+	 */
+	public int getNumberOfActivityInputs() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: NoO or Fanout
+     * Number of activity outputs. The fan-out of a procedure A is the number of local flows
+     *  from procedure A plus the number of data structures which procedure A updates.
+	 * @return
+	 */
+	public int getNumberOfActivityOutputs() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: Length
+	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
+	 *  the length can be calculated using traditional software engineering metrics
+	 *  that have been previously presented, namely the LOC (line of code) and
+	 *  MCC (McCabe’s cyclomatic complexity).
+	 *  @return
+	 */
+	public int getActivityLenght() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: IC
+	 * Interface complexity of an activity metric. IC = Length ? (NoI ? NoO)2, where 
+	 *  the length of the activity can be calculated using traditional Software Engineering metrics
+	 *  such as LOC (1 if the activity source code is unknown) and NoI and NoO are 
+	 *  the number of inputs and outputs.
+	 * @return
+	 */
+	public int getInterfaceComplexityOfActivityMetric() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: NOF
+	 * Number of control flow connections (number of arcs)
+	 * @return
+	 */
+	public int getNumberOfControlFlow() {
+		return 0;
 	}
 }

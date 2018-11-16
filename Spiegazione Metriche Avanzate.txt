@@ -1,0 +1,6 @@
+CFC: da Cardoso, J. (2006). Process control-flow complexity metric: An empirical validation
+Dato un processo P, sia CFC(P) la control-flow complexity del modello. 
+Essa è data dalla somma delle sommatorie delle CFC degli xor-splits, degli or-splits e degli and-splits.
+La CFC di uno xor-split presente in un processo è data dal numero di flussi uscenti dallo split in questione.
+La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione.
+La CFC di and-split è semplicemente 1.
