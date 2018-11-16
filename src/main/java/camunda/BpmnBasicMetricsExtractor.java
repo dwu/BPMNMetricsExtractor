@@ -119,7 +119,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NMESEV", this.getMessageEvents());
 		this.json.addBasicMetric("NMESFA", this.getMessageFlowAssociations());
 		this.json.addBasicMetric("NMON", this.getMonitorings());
-		this.json.addBasicMetric("NMILCH", this.getMultiInstanceLoopCharacteristicss());
+		this.json.addBasicMetric("NMILCH", this.getMultiInstanceLoopCharacteristics());
 		this.json.addBasicMetric("NOP", this.getOperations());
 		this.json.addBasicMetric("NOutDI", this.getOutputDataItems());
 		this.json.addBasicMetric("NOutS", this.getOutputSets());
@@ -159,24 +159,24 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NTR", this.getTransactions());
 		this.json.addBasicMetric("NUT", this.getUserTasks());
 		this.json.addBasicMetric("NSUB", this.getSubprocesses());
-		this.json.addBasicMetric("NFDCG", this.getFluxDividingComplexGateways());
-		this.json.addBasicMetric("NFDEBG", this.getFluxDividingEventBasedGateways());
-		this.json.addBasicMetric("NFDEXG", this.getFluxDividingExclusiveGateways());
-		this.json.addBasicMetric("NFDIG", this.getFluxDividingInclusiveGateways());
-		this.json.addBasicMetric("NFDPG", this.getFluxDividingParallelGateways());
-		this.json.addBasicMetric("NFDT", this.getFluxDividingTasks());
-		this.json.addBasicMetric("NFJCG", this.getFluxJoiningComplexGateways());
-		this.json.addBasicMetric("NFJEBG", this.getFluxJoiningEventBasedGateways());
-		this.json.addBasicMetric("NFJEXG", this.getFluxJoiningExclusiveGateways());
-		this.json.addBasicMetric("NFJIG", this.getFluxJoiningInclusiveGateways());
-		this.json.addBasicMetric("NFJPG", this.getFluxJoiningParallelGateways());
-		this.json.addBasicMetric("NFJT", this.getFluxJoiningTasks());
-		this.json.addBasicMetric("NFJCG", this.getFluxJoiningAndDividingComplexGateways());
-		this.json.addBasicMetric("NFJDEBG", this.getFluxJoiningAndDividingEventBasedGateways());
-		this.json.addBasicMetric("NFJDEXG", this.getFluxJoiningAndDividingExclusiveGateways());
-		this.json.addBasicMetric("NFJDIG", this.getFluxJoiningAndDividingInclusiveGateways());
-		this.json.addBasicMetric("NFJDPG", this.getFluxJoiningAndDividingParallelGateways());
-		this.json.addBasicMetric("NFJDT", this.getFluxJoiningAndDividingTasks());
+		this.json.addBasicMetric("NFDCG", this.getFlowDividingComplexGateways());
+		this.json.addBasicMetric("NFDEBG", this.getFlowDividingEventBasedGateways());
+		this.json.addBasicMetric("NFDEXG", this.getFlowDividingExclusiveGateways());
+		this.json.addBasicMetric("NFDIG", this.getFlowDividingInclusiveGateways());
+		this.json.addBasicMetric("NFDPG", this.getFlowDividingParallelGateways());
+		this.json.addBasicMetric("NFDT", this.getFlowDividingTasks());
+		this.json.addBasicMetric("NFJCG", this.getFlowJoiningComplexGateways());
+		this.json.addBasicMetric("NFJEBG", this.getFlowJoiningEventBasedGateways());
+		this.json.addBasicMetric("NFJEXG", this.getFlowJoiningExclusiveGateways());
+		this.json.addBasicMetric("NFJIG", this.getFlowJoiningInclusiveGateways());
+		this.json.addBasicMetric("NFJPG", this.getFlowJoiningParallelGateways());
+		this.json.addBasicMetric("NFJT", this.getFlowJoiningTasks());
+		this.json.addBasicMetric("NFJCG", this.getFlowJoiningAndDividingComplexGateways());
+		this.json.addBasicMetric("NFJDEBG", this.getFlowJoiningAndDividingEventBasedGateways());
+		this.json.addBasicMetric("NFJDEXG", this.getFlowJoiningAndDividingExclusiveGateways());
+		this.json.addBasicMetric("NFJDIG", this.getFlowJoiningAndDividingInclusiveGateways());
+		this.json.addBasicMetric("NFJDPG", this.getFlowJoiningAndDividingParallelGateways());
+		this.json.addBasicMetric("NFJDT", this.getFlowJoiningAndDividingTasks());
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 
 	/**
-	 * Metrica: NMF (numero di message flows)
+	 * Metrica: NMF (numero di message Flows)
 	 * 
 	 * @return numero di flussi di messaggi
 	 */
@@ -941,7 +941,7 @@ public class BpmnBasicMetricsExtractor {
 	 * 
 	 * @return il numero dei tasks con Multi Instance Loop Characteristics
 	 */
-	public int getMultiInstanceLoopCharacteristicss() {
+	public int getMultiInstanceLoopCharacteristics() {
 		return getNumberOfTypeElement(MultiInstanceLoopCharacteristics.class);
 	}
 	
@@ -1261,144 +1261,144 @@ public class BpmnBasicMetricsExtractor {
 	 * 
 	 * @return il numero di complex gateways che dividono il flusso
 	 */
-	public int getFluxDividingComplexGateways() {
-		return getFluxDividingElementsOfType(ComplexGateway.class);
+	public int getFlowDividingComplexGateways() {
+		return getFlowDividingElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di event based gateways che dividono il flusso
 	 */
-	public int getFluxDividingEventBasedGateways() {
-		return getFluxDividingElementsOfType(EventBasedGateway.class);
+	public int getFlowDividingEventBasedGateways() {
+		return getFlowDividingElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di exclusive gateways che dividono il flusso
 	 */
-	public int getFluxDividingExclusiveGateways() {
-		return getFluxDividingElementsOfType(ExclusiveGateway.class);
+	public int getFlowDividingExclusiveGateways() {
+		return getFlowDividingElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di inclusive gateways che dividono il flusso
 	 */
-	public int getFluxDividingInclusiveGateways() {
-		return getFluxDividingElementsOfType(InclusiveGateway.class);
+	public int getFlowDividingInclusiveGateways() {
+		return getFlowDividingElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di parallel gateways che dividono il flusso
 	 */
-	public int getFluxDividingParallelGateways() {
-		return getFluxDividingElementsOfType(ParallelGateway.class);
+	public int getFlowDividingParallelGateways() {
+		return getFlowDividingElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di tasks che dividono il flusso
 	 */
-	public int getFluxDividingTasks() {
-		return getFluxDividingElementsOfType(Task.class);
+	public int getFlowDividingTasks() {
+		return getFlowDividingElementsOfType(Task.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di complex gateways che uniscono il flusso
 	 */
-	public int getFluxJoiningComplexGateways() {
-		return getFluxJoiningElementsOfType(ComplexGateway.class);
+	public int getFlowJoiningComplexGateways() {
+		return getFlowJoiningElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di event based gateways che uniscono il flusso
 	 */
-	public int getFluxJoiningEventBasedGateways() {
-		return getFluxJoiningElementsOfType(EventBasedGateway.class);
+	public int getFlowJoiningEventBasedGateways() {
+		return getFlowJoiningElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di exclusive gateways che uniscono il flusso
 	 */
-	public int getFluxJoiningExclusiveGateways() {
-		return getFluxJoiningElementsOfType(ExclusiveGateway.class);
+	public int getFlowJoiningExclusiveGateways() {
+		return getFlowJoiningElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di inclusive gateways che uniscono il flusso
 	 */
-	public int getFluxJoiningInclusiveGateways() {
-		return getFluxJoiningElementsOfType(InclusiveGateway.class);
+	public int getFlowJoiningInclusiveGateways() {
+		return getFlowJoiningElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di parallel gateways che uniscono il flusso
 	 */
-	public int getFluxJoiningParallelGateways() {
-		return getFluxJoiningElementsOfType(ParallelGateway.class);
+	public int getFlowJoiningParallelGateways() {
+		return getFlowJoiningElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di tasks che uniscono il flusso
 	 */
-	public int getFluxJoiningTasks() {
-		return getFluxJoiningElementsOfType(Task.class);
+	public int getFlowJoiningTasks() {
+		return getFlowJoiningElementsOfType(Task.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di complex gateways che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingComplexGateways() {
-		return getFluxJoiningAndDividingElementsOfType(ComplexGateway.class);
+	public int getFlowJoiningAndDividingComplexGateways() {
+		return getFlowJoiningAndDividingElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di event based gateways che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingEventBasedGateways() {
-		return getFluxJoiningAndDividingElementsOfType(EventBasedGateway.class);
+	public int getFlowJoiningAndDividingEventBasedGateways() {
+		return getFlowJoiningAndDividingElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di exclusive gateways che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingExclusiveGateways() {
-		return getFluxJoiningAndDividingElementsOfType(ExclusiveGateway.class);
+	public int getFlowJoiningAndDividingExclusiveGateways() {
+		return getFlowJoiningAndDividingElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di inclusive gateways che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingInclusiveGateways() {
-		return getFluxJoiningAndDividingElementsOfType(InclusiveGateway.class);
+	public int getFlowJoiningAndDividingInclusiveGateways() {
+		return getFlowJoiningAndDividingElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di parallel gateways che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingParallelGateways() {
-		return getFluxJoiningAndDividingElementsOfType(ParallelGateway.class);
+	public int getFlowJoiningAndDividingParallelGateways() {
+		return getFlowJoiningAndDividingElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
 	 * 
 	 * @return il numero di tasks che uniscono e dividono il flusso
 	 */
-	public int getFluxJoiningAndDividingTasks() {
-		return getFluxJoiningAndDividingElementsOfType(Task.class);
+	public int getFlowJoiningAndDividingTasks() {
+		return getFlowJoiningAndDividingElementsOfType(Task.class);
 	}
 	
 	/**
@@ -1406,7 +1406,7 @@ public class BpmnBasicMetricsExtractor {
 	 * @param type: classe del tipo di elemento che si vuole analizzare
 	 * @return il numero di elementi della classe type che dividono il flusso
 	 */
-	private int getFluxDividingElementsOfType(Class type) {
+	private int getFlowDividingElementsOfType(Class type) {
 		int toReturn = 0;
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
 		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
@@ -1424,7 +1424,7 @@ public class BpmnBasicMetricsExtractor {
 	 * @param type: classe del tipo di elemento che si vuole analizzare
 	 * @return il numero di elementi della classe type che uniscono il flusso
 	 */
-	private int getFluxJoiningElementsOfType(Class type) {
+	private int getFlowJoiningElementsOfType(Class type) {
 		int toReturn = 0;
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
 		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
@@ -1442,7 +1442,7 @@ public class BpmnBasicMetricsExtractor {
 	 * @param type: classe del tipo di elemento che si vuole analizzare
 	 * @return il numero di elementi della classe type che uniscono e dividono il flusso
 	 */
-	private int getFluxJoiningAndDividingElementsOfType(Class type) {
+	private int getFlowJoiningAndDividingElementsOfType(Class type) {
 		int toReturn = 0;
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
 		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
