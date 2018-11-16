@@ -1,8 +1,10 @@
 package camunda;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
@@ -261,42 +263,65 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getNumberOfActivitiesAndControlFlowElements() {
-		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getFlowElements();
+		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getGateways();
 	}
 	
 	/**
 	 * Metrica: NOAJS
 	 * Number of activities, joins, and splits in a process
 	 */
-	public int getNumberOfActivitiesJoinsAndsplits() {
-		return basicMetricsExtractor.getActivities();
+	public int getNumberOfActivitiesJoinsAndSplits() {
+		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getFlowDividingGateways() + 
+				basicMetricsExtractor.getFlowJoiningGateways() + basicMetricsExtractor.getFlowDividingTasks() + 
+				basicMetricsExtractor.getFlowJoiningTasks();
 	}
 	
 	/**
 	 * Metrica: HPC_D
-	 * Hasted-based Process Complexity (process difficulty)
+	 * Halstead-based Process Complexity (process difficulty)
+	 * Process Difficulty: D = (n1/2)*(N2/n2)
 	 * @return
 	 */
-	public int getHastedBasedProcessDifficultyComplexity() {
-		return 0;
+	public double getHalsteadBasedProcessComplexityDifficulty() {
+		float toReturn = 0;
+		try {
+			toReturn = (getNumberOfUniqueElements() / 2) * (basicMetricsExtractor.getDataObjects() / getNumberOfUniqueDataObjects());
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
 	}
 	
 	/**
 	 * Metrica: HPC_N
-	 * Hasted-based Process Complexity (process length)
+	 * Halstead-based Process Complexity (process length)
+	 * Process Length: N = n1*log2(n1) + n2*log2(n2)
 	 * @return
 	 */
-	public int getHastedBasedProcessLengthComplexity() {
-		return 0;
+	public double getHalsteadBasedProcessComplexityLength() {
+		double toReturn = 0;
+		try {
+			toReturn = getNumberOfUniqueElements() * logBase2(getNumberOfUniqueElements()) + 
+					getNumberOfUniqueDataObjects() * logBase2(getNumberOfUniqueDataObjects());
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
+		
 	}
 	
 	/**
 	 * Metrica: HPC_V
-	 * Halsted-based Process Complexity (process volume)
+	 * Halstead-based Process Complexity (process volume)
+	 * Process Volume: V = (N1+N2)*log2(n1+n2)
 	 * @return
 	 */
-	public int getHastedBasedProcessVolumeComplexity() {
-		return 0;
+	public double getHalsteadBasedProcessComplexityVolume() {
+		double toReturn = 0;
+		try {
+			toReturn = (getNumberOfElements() + basicMetricsExtractor.getDataObjects() 
+			* (logBase2(getNumberOfUniqueElements() + getNumberOfUniqueDataObjects())));
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
 	}
 	
 	/**
@@ -327,7 +352,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 *  MCC (McCabe’s cyclomatic complexity).
 	 *  @return
 	 */
-	public int getActivityLenght() {
+	public int getActivityLength() {
 		return 0;
 	}
 	
@@ -350,5 +375,107 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getNumberOfControlFlow() {
 		return 0;
+	}
+	
+	/**
+	 * The number of unique activities, splits and joins, and control-flow elements 
+	 * Per le metriche di Halstead corrisponde a n1
+	 * @return
+	 */
+	private int getNumberOfUniqueElements() {
+		int toReturn = 0;
+		//attività
+		if (basicMetricsExtractor.getReceiveTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getScriptTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getManualTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getServiceTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getUserTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getSendTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getBusinessRuleTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getCallActivities() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getMultiInstanceLoopCharacteristics() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getLoopCharacteristics() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getCompensateEvents() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getSubprocesses() > 0)
+			toReturn +=1;
+		//splits, joins e control flow => gateways?
+		if (basicMetricsExtractor.getParallelGateways() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getComplexDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getExclusiveDataBasedDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getExclusiveEventBasedDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getInclusiveDecisions() > 0)
+			toReturn +=1;
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Per le metriche di Halstead corrisponde a N1
+	 * @return
+	 */
+	private int getNumberOfElements() {
+		return basicMetricsExtractor.getReceiveTasks()  + 
+			basicMetricsExtractor.getScriptTasks()  + 
+			basicMetricsExtractor.getManualTasks()  + 
+			basicMetricsExtractor.getServiceTasks()  + 
+			basicMetricsExtractor.getUserTasks()  + 
+			basicMetricsExtractor.getSendTasks()  + 
+			basicMetricsExtractor.getBusinessRuleTasks()  + 
+			basicMetricsExtractor.getCallActivities()  + 
+			basicMetricsExtractor.getMultiInstanceLoopCharacteristics()  + 
+			basicMetricsExtractor.getLoopCharacteristics()  + 
+			basicMetricsExtractor.getCompensateEvents()  + 
+			basicMetricsExtractor.getSubprocesses()  + 
+			basicMetricsExtractor.getParallelGateways()  + 
+			basicMetricsExtractor.getComplexDecisions()  + 
+			basicMetricsExtractor.getExclusiveDataBasedDecisions()  + 
+			basicMetricsExtractor.getExclusiveEventBasedDecisions()  + 
+			basicMetricsExtractor.getInclusiveDecisions();
+	}
+	
+	/**
+	 * Per le metriche di Halstead corrisponde a n2
+	 * @return
+	 */
+	private int getNumberOfUniqueDataObjects() {
+		String name = "";
+		Collection<String> objectNames = new ArrayList<String>();
+		Collection<ModelElementInstance> dataObjects = basicMetricsExtractor.getCollectionOfElementType(DataObject.class);
+		for (ModelElementInstance obj : dataObjects) {
+			name = ((DataObject) obj).getName();
+			if (!objectNames.contains(name))
+				objectNames.add(name);
+		}
+		return objectNames.size();
+	}
+	
+	/**
+	 * Implementazione del logaritmo in base 2
+	 * @param number
+	 * @return
+	 */
+	private double logBase2(int number) {
+		double toReturn = 0;
+		try {
+			toReturn = Math.log(number) / Math.log(2);
+		} catch (ArithmeticException e) {
+			System.out.println(e);
+		}
+		return toReturn;
 	}
 }

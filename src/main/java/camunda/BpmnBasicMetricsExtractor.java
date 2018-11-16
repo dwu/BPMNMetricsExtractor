@@ -164,22 +164,23 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFDEXG", this.getFlowDividingExclusiveGateways());
 		this.json.addBasicMetric("NFDIG", this.getFlowDividingInclusiveGateways());
 		this.json.addBasicMetric("NFDPG", this.getFlowDividingParallelGateways());
+		this.json.addBasicMetric("NFDG", this.getFlowDividingGateways());
 		this.json.addBasicMetric("NFDT", this.getFlowDividingTasks());
 		this.json.addBasicMetric("NFJCG", this.getFlowJoiningComplexGateways());
 		this.json.addBasicMetric("NFJEBG", this.getFlowJoiningEventBasedGateways());
 		this.json.addBasicMetric("NFJEXG", this.getFlowJoiningExclusiveGateways());
 		this.json.addBasicMetric("NFJIG", this.getFlowJoiningInclusiveGateways());
 		this.json.addBasicMetric("NFJPG", this.getFlowJoiningParallelGateways());
+		this.json.addBasicMetric("NFJG", this.getFlowJoiningGateways());
 		this.json.addBasicMetric("NFJT", this.getFlowJoiningTasks());
 		this.json.addBasicMetric("NFJCG", this.getFlowJoiningAndDividingComplexGateways());
 		this.json.addBasicMetric("NFJDEBG", this.getFlowJoiningAndDividingEventBasedGateways());
 		this.json.addBasicMetric("NFJDEXG", this.getFlowJoiningAndDividingExclusiveGateways());
 		this.json.addBasicMetric("NFJDIG", this.getFlowJoiningAndDividingInclusiveGateways());
 		this.json.addBasicMetric("NFJDPG", this.getFlowJoiningAndDividingParallelGateways());
+		this.json.addBasicMetric("NFJDG", this.getFlowJoiningAndDividingGateways());
 		this.json.addBasicMetric("NFJDT", this.getFlowJoiningAndDividingTasks());
 	}
-
-	//TODO aggiungere exclusive gateways
 	
 	/**
 	 * Metrica: NT
@@ -225,7 +226,7 @@ public class BpmnBasicMetricsExtractor {
 	public int getInclusiveDecisions() {
 		return getNumberOfTypeElement(InclusiveGateway.class);
 	}
-
+	
 	/**
 	 * Metrica: NEDDB (numero degli exclusive gateways)
 	 * 
@@ -1401,6 +1402,30 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	public int getFlowJoiningAndDividingTasks() {
 		return getFlowJoiningAndDividingElementsOfType(Task.class);
+	}
+	
+	/**
+	 * 
+	 * @return il numero di gateways che dividono il flusso
+	 */
+	public int getFlowDividingGateways() {
+		return getFlowDividingElementsOfType(Gateway.class);
+	}
+	
+	/**
+	 *  
+	 * @return il numero di gateways che uniscono il flusso
+	 */
+	public int getFlowJoiningGateways() {
+		return getFlowJoiningElementsOfType(Gateway.class);
+	}
+	
+	/**
+	 * 
+	 * @return il numero di gateways che uniscono e dividono il flusso
+	 */
+	public int getFlowJoiningAndDividingGateways() {
+		return getFlowJoiningAndDividingElementsOfType(Gateway.class);
 	}
 	
 	/**
