@@ -3,10 +3,12 @@ package camunda;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -40,6 +42,9 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("TNIE", getTotalNumberOfIntermediateEvents());
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
+		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
+		json.addAdvancedMetric("CC", getCrossConnectivityMetric());
+		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -374,9 +379,55 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getNumberOfControlFlow() {
+		int toReturn = 0;
+		try {
+			toReturn = basicMetricsExtractor.getSequenceFlows()*2;
+		} catch(ArithmeticException e){
+		}
 		return 0;
 	}
 	
+	/**
+	 * Metrica: TNSF
+	 * Total Number of Sequence Flows
+	 * @return
+	 */
+	public int getTotalNumberOfSequenceFlow(){
+		int toReturn = 0;
+		try {
+			toReturn = basicMetricsExtractor.getSequenceFlowsBetweenActivities() + basicMetricsExtractor.getSequenceFlowsFromEvents() +
+					basicMetricsExtractor.getSequenceFlowsFromGateways(); //TODO: add NSFL (number of sequence flows looping)
+		}catch(ArithmeticException e){			
+		}
+		return toReturn;
+	}
+	/**
+	 * Metrica: CC
+	 * It is the ratio of the total number of arcs in a process model to the total number of its nodes.
+	 * @return
+	 */
+	public float getCrossConnectivityMetric(){
+		float toReturn = 0;
+		try {
+			//Calcolare peso archi? https://www.researchgate.net/profile/Jan_Mendling/publication/220921084_On_a_Quest_for_Good_Process_Models_The_Cross-Connectivity_Metric/links/09e4150a26bfbc2fc6000000.pdf
+			toReturn = this.getNumberOfControlFlow()/this.getNumberOfNodes();
+		} catch (ArithmeticException e){
+		}
+		return toReturn;
+	}
+	/**
+	 * Metrica Sn
+	 * Number of nodes (activities + routing elements)
+	 * @return
+	 */
+	public int getNumberOfNodes(){
+		int toReturn = 0;
+		try {
+			toReturn = basicMetricsExtractor.getTasks() + basicMetricsExtractor.getGateways(); 
+		}catch (ArithmeticException e){
+		}
+		return toReturn;
+	}
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
 	 * Per le metriche di Halstead corrisponde a n1

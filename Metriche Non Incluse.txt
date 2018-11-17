@@ -5,3 +5,5 @@ Processi Ad Hoc: non supportati dalla libreria di Camunda
 Metriche di Halstead: possibilmente non corrette per l'assenza dei processi ad hoc, in quanto sono necessarie il numero di attività uniche. Cosa includere per il calcolo di queste metriche?
     Quali sono gli splits, i joins e i flow-control elements da considerare?
 	Quali sono le data variables? I data object in generale?
+	
+Metrica TNSF: problemi per calcolare la variabile NSFL (number of sequence flows looping)
