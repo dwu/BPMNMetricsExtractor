@@ -15,6 +15,8 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
  * 
  * @author PROSLabTeam
  *
+ *TODO: aggiungere task con più flussi entranti o uscenti ai parallel gateways
+ *		distinzione event boundary, intermediate e start e end
  */
 public class BpmnBasicMetricsExtractor {
 

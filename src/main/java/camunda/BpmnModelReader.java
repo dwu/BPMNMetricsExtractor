@@ -41,12 +41,21 @@ public class BpmnModelReader {
 	 * Metodo di test che viene richiamato dal main
 	 */
 	private void test() {
+		long startTime = System.currentTimeMillis();
 		BpmnModelInstance modelInstance = Bpmn.readModelFromFile(loadedFile);
 		JsonEncoder jsonEncoder = new JsonEncoder(loadedFile.getName());
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
 		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(modelInstance, basicExtractor, jsonEncoder);
+		long loadTime = System.currentTimeMillis() - startTime;
+		System.out.println("Tempo load del file: " + loadTime);
 		basicExtractor.runMetrics();
+		long basicTime = System.currentTimeMillis() - loadTime - startTime;
+		System.out.println("Tempo calcolo metriche di base: " + basicTime);
 		advExtractor.runMetrics();
+		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
+		System.out.println("Tempo calcolo metriche avanzate: " + advTime);
+		
+		
 	}
 
 	public static void main(String[] args){
