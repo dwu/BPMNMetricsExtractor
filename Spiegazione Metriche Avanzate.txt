@@ -1,0 +1,18 @@
+﻿CFC: da Cardoso, J. (2006). Process control-flow complexity metric: An empirical validation
+Dato un processo P, sia CFC(P) la control-flow complexity del modello. 
+Essa è data dalla somma delle sommatorie delle CFC degli xor-splits, degli or-splits e degli and-splits.
+La CFC di uno xor-split presente in un processo è data dal numero di flussi uscenti dallo split in questione.
+La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione.
+La CFC di and-split è semplicemente 1.
+
+
+HPC: da Cardoso J, Mendling J, Neumann G, Reijers HA (2006) A discourse on complexity of process models. In: Business process management workshops, Springer, LNCS, vol 4103, pp 117–128
+Gli elementi principali delle metriche di Halsted sono 4: 
+– n1 = number of unique operators (if, while, =, ECHO, etc) => the number of unique activities, splits and joins, and control-flow elements (such as sequence, switch, while, etc. in BPEL);
+– n2 = number of unique operands (variables or constants) => the number of unique data variables that are manipulated by the process and its activities; 
+– N1 = total number of operator occurrences => total number of n1 elements;
+– N2 = total number of operand occurrences => total number of n2 elements.
+Con questi 4 elementi, le 3 metriche di Complessità dei Processi di Halstead (Halstead-based Process Complexity) sono formulate come segue:
+– Process Length: N = n1*log2(n1) + n2*log2(n2)
+– Process Volume: V = (N1+N2)*log2(n1+n2)
+– Process Difficulty: D = (n1/2)*(N2/n2)

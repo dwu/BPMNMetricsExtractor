@@ -1,12 +1,3 @@
-	   "Model Name"+","+
-	   "Pool"+","+
-	   "Sequence Flow"+","+
-	   "Message Flow"+","+
-	   "Data Object"+","+
-	   "Data Input"+","+
-	   "Data Output"+","+
-	   "Data Store"+","+
-	   "Message"+","+
 	   "Start None"+","+
 	   "Start Message"+","+
 	   "Start Timer"+","+
@@ -14,8 +5,8 @@
 	   "Start Signal"+","+
 	   "Start Multiple"+","+
 	   "Start Parallel Multiple"+","+
-	   "End"+","+
-	   "End Message Event"+","+
+
+	   "End Message Event" + "," +
        "End Escalation Event"+","+
 	   "End Signale Event"+","+
        "End Error Event"+","+
@@ -23,8 +14,7 @@
        "End Compensation Event"+","+
 	   "End Multiple Event"+","+
        "End Terminate Event"+","+
-	   "Simple Task"+","+
-       "Manual Task "+","+
+
 	   "Service Task"+","+
        "Business Rule Task"+","+
 	   "Script Task"+","+
@@ -34,6 +24,7 @@
 	   "Sub Process"+","+
        "Ad Hoc Sub Process"+","+
 	   "Transaction"+","+
+	   
        "Intermediate Throw Event"+","+
 	   "Intermediate Throw Multiple Event"+","+
        "Intermediate Throw Message Event"+","+
@@ -41,6 +32,7 @@
        "Intermediate Throw Esclation Event"+","+
 	   "Intermediate Throw Link Event"+","+
        "Intermediate Throw Compensation Event"+","+
+       
 	   "Intermediate Catch Event"+","+
        "Intermediate Catch Multiple Event"+","+
 	   "Intermediate Catch Parallel Multiple Event"+","+
@@ -49,6 +41,7 @@
        "Intermediate Catch Conditional Event"+","+
        "Intermediate Catch Link Event"+","+
        "Intermediate Catch Compensation Event"+","+
+       
        "Boundary Interrupting Event"+","+
        "Boundary Interrupting Message Event"+","+
        "Boundary Interrupting Time Event"+","+
@@ -72,38 +65,21 @@
        "Boundary Non Interrupting Parallel Multiple Event"+","+ 
        
 
-       "Exclusive Split Gateway"+","+
-       "Exclusive Join Gateway"+","+
        "Exclusive Unspecified Gateway"+","+
-       "Exclusive Mixed Gateway"+","+
-       "Parallel Split Gateway"+","+
-       "Parallel Join Gateway"+","+
+
        "Parallel Unspecified Gateway"+","+
-       "Parallel Mixed Gateway"+","+
-       "Inclusive Split Gateway"+","+
-       "Inclusive Join Gateway"+","+
+
        "Inclusive Unspecified Gateway"+","+
-       "Inclusive Mixed Gateway"+","+
-       "Event Based Split Gateway"+","+
-       "Event Based Join Gateway"+","+
-       "Event Based Unspecified Gateway"+","+
-       "Event Based Mixed Gateway"+","+
        
-       "Exclusive Event Based Split Gateway"+","+
-       "Exclusive Event Based Join Gateway"+","+
-       "Exclusive Event Based Mixed Gateway"+","+
+       
+       "Event Based Unspecified Gateway"+","+
+
+       
        "Exclusive Event Based Unspecified Gateway"+","+
        
-       "Parallel Event Based Split Gateway"+","+
-       "Parallel Event Based Join Gateway"+","+
-       "Parallel Event Based Mixed Gateway"+","+
        "Parallel Event Based Unspecified Gateway"+","+
             
-       "Complex Split Gateway"+","+
-       "Complex Join Gateway"+","+
        "Complex Unspecified Gateway"+","+
-       "Complex Mixed Gateway"+","+
        
 	   "Multi Instance Parallel Task/Subprocess"+","+
 	   "Multi Instance Sequential Task/Subprocess"+","+
-	   "Loop Task/Subprocess"+

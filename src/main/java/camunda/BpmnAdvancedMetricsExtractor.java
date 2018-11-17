@@ -1,6 +1,15 @@
 package camunda;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.DataObject;
+import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
 	
@@ -221,5 +230,252 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getTotalNumberOfEvents() {
 		return getTotalNumberOfStartEvents() + getTotalNumberOfIntermediateEvents() + getTotalNumberOfEndEvents();
+	}
+	
+	/**
+	 * Metrica: CFC
+	 * Control-flow Complexity metric. It captures a weighted sum of all connectors that are used in a process model.
+	 * @return
+	 */
+	public double getControlFlowComplexity() {
+		double toReturn = 0;
+		int tempSize = 0;
+		Collection<ModelElementInstance> exclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(ExclusiveGateway.class);
+		Collection<ModelElementInstance> inclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(InclusiveGateway.class);
+		Collection<ModelElementInstance> parallelGateways = basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class);
+		//La CFC di uno xor-split presente in un processo è data dal numero di flussi uscenti dallo split in questione
+		for (ModelElementInstance exGateway : exclusiveGateways) {
+			toReturn += ((FlowNode) exGateway).getOutgoing().size();
+		}
+		//La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione
+		for (ModelElementInstance inGateway : inclusiveGateways) {
+			tempSize = ((FlowNode) inGateway).getOutgoing().size();
+			toReturn = Math.pow(2, tempSize) - 1;
+		}
+		//La CFC di and-split è semplicemente 1
+		toReturn += parallelGateways.size();
+		return toReturn;
+	}
+	
+	/**
+	 * Metrica: NOAC
+	 * Number of activities and control-flow elements in a process. 
+	 * @return
+	 */
+	public int getNumberOfActivitiesAndControlFlowElements() {
+		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getGateways();
+	}
+	
+	/**
+	 * Metrica: NOAJS
+	 * Number of activities, joins, and splits in a process
+	 */
+	public int getNumberOfActivitiesJoinsAndSplits() {
+		return basicMetricsExtractor.getActivities() + basicMetricsExtractor.getFlowDividingGateways() + 
+				basicMetricsExtractor.getFlowJoiningGateways() + basicMetricsExtractor.getFlowDividingTasks() + 
+				basicMetricsExtractor.getFlowJoiningTasks();
+	}
+	
+	/**
+	 * Metrica: HPC_D
+	 * Halstead-based Process Complexity (process difficulty)
+	 * Process Difficulty: D = (n1/2)*(N2/n2)
+	 * @return
+	 */
+	public double getHalsteadBasedProcessComplexityDifficulty() {
+		float toReturn = 0;
+		try {
+			toReturn = (getNumberOfUniqueElements() / 2) * (basicMetricsExtractor.getDataObjects() / getNumberOfUniqueDataObjects());
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Metrica: HPC_N
+	 * Halstead-based Process Complexity (process length)
+	 * Process Length: N = n1*log2(n1) + n2*log2(n2)
+	 * @return
+	 */
+	public double getHalsteadBasedProcessComplexityLength() {
+		double toReturn = 0;
+		try {
+			toReturn = getNumberOfUniqueElements() * logBase2(getNumberOfUniqueElements()) + 
+					getNumberOfUniqueDataObjects() * logBase2(getNumberOfUniqueDataObjects());
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
+		
+	}
+	
+	/**
+	 * Metrica: HPC_V
+	 * Halstead-based Process Complexity (process volume)
+	 * Process Volume: V = (N1+N2)*log2(n1+n2)
+	 * @return
+	 */
+	public double getHalsteadBasedProcessComplexityVolume() {
+		double toReturn = 0;
+		try {
+			toReturn = (getNumberOfElements() + basicMetricsExtractor.getDataObjects() 
+			* (logBase2(getNumberOfUniqueElements() + getNumberOfUniqueDataObjects())));
+		} catch (ArithmeticException e) {
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Metrica: NoI or Fanin
+	 * Number of activity inputs. The fan-in of a procedure A is the number of local flows
+	 *  into procedure A plus the number of data structures from which procedure A retrieves information.
+	 * @return
+	 */
+	public int getNumberOfActivityInputs() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: NoO or Fanout
+     * Number of activity outputs. The fan-out of a procedure A is the number of local flows
+     *  from procedure A plus the number of data structures which procedure A updates.
+	 * @return
+	 */
+	public int getNumberOfActivityOutputs() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: Length
+	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
+	 *  the length can be calculated using traditional software engineering metrics
+	 *  that have been previously presented, namely the LOC (line of code) and
+	 *  MCC (McCabe’s cyclomatic complexity).
+	 *  @return
+	 */
+	public int getActivityLength() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: IC
+	 * Interface complexity of an activity metric. IC = Length ? (NoI ? NoO)2, where 
+	 *  the length of the activity can be calculated using traditional Software Engineering metrics
+	 *  such as LOC (1 if the activity source code is unknown) and NoI and NoO are 
+	 *  the number of inputs and outputs.
+	 * @return
+	 */
+	public int getInterfaceComplexityOfActivityMetric() {
+		return 0;
+	}
+	
+	/**
+	 * Metrica: NOF
+	 * Number of control flow connections (number of arcs)
+	 * @return
+	 */
+	public int getNumberOfControlFlow() {
+		return 0;
+	}
+	
+	/**
+	 * The number of unique activities, splits and joins, and control-flow elements 
+	 * Per le metriche di Halstead corrisponde a n1
+	 * @return
+	 */
+	private int getNumberOfUniqueElements() {
+		int toReturn = 0;
+		//attività
+		if (basicMetricsExtractor.getReceiveTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getScriptTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getManualTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getServiceTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getUserTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getSendTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getBusinessRuleTasks() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getCallActivities() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getMultiInstanceLoopCharacteristics() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getLoopCharacteristics() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getCompensateEvents() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getSubprocesses() > 0)
+			toReturn +=1;
+		//splits, joins e control flow => gateways?
+		if (basicMetricsExtractor.getParallelGateways() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getComplexDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getExclusiveDataBasedDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getExclusiveEventBasedDecisions() > 0)
+			toReturn +=1;
+		if (basicMetricsExtractor.getInclusiveDecisions() > 0)
+			toReturn +=1;
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Per le metriche di Halstead corrisponde a N1
+	 * @return
+	 */
+	private int getNumberOfElements() {
+		return basicMetricsExtractor.getReceiveTasks()  + 
+			basicMetricsExtractor.getScriptTasks()  + 
+			basicMetricsExtractor.getManualTasks()  + 
+			basicMetricsExtractor.getServiceTasks()  + 
+			basicMetricsExtractor.getUserTasks()  + 
+			basicMetricsExtractor.getSendTasks()  + 
+			basicMetricsExtractor.getBusinessRuleTasks()  + 
+			basicMetricsExtractor.getCallActivities()  + 
+			basicMetricsExtractor.getMultiInstanceLoopCharacteristics()  + 
+			basicMetricsExtractor.getLoopCharacteristics()  + 
+			basicMetricsExtractor.getCompensateEvents()  + 
+			basicMetricsExtractor.getSubprocesses()  + 
+			basicMetricsExtractor.getParallelGateways()  + 
+			basicMetricsExtractor.getComplexDecisions()  + 
+			basicMetricsExtractor.getExclusiveDataBasedDecisions()  + 
+			basicMetricsExtractor.getExclusiveEventBasedDecisions()  + 
+			basicMetricsExtractor.getInclusiveDecisions();
+	}
+	
+	/**
+	 * Per le metriche di Halstead corrisponde a n2
+	 * @return
+	 */
+	private int getNumberOfUniqueDataObjects() {
+		String name = "";
+		Collection<String> objectNames = new ArrayList<String>();
+		Collection<ModelElementInstance> dataObjects = basicMetricsExtractor.getCollectionOfElementType(DataObject.class);
+		for (ModelElementInstance obj : dataObjects) {
+			name = ((DataObject) obj).getName();
+			if (!objectNames.contains(name))
+				objectNames.add(name);
+		}
+		return objectNames.size();
+	}
+	
+	/**
+	 * Implementazione del logaritmo in base 2
+	 * @param number
+	 * @return
+	 */
+	private double logBase2(int number) {
+		double toReturn = 0;
+		try {
+			toReturn = Math.log(number) / Math.log(2);
+		} catch (ArithmeticException e) {
+			System.out.println(e);
+		}
+		return toReturn;
 	}
 }
