@@ -1477,7 +1477,6 @@ public class BpmnBasicMetricsExtractor {
 		}
 		return toReturn;
 	}
-
 	
 	/**
 	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per

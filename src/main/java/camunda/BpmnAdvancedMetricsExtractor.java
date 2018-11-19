@@ -5,12 +5,15 @@ import java.util.Collection;
 
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.bpmn.instance.SubProcess;
+import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
@@ -45,6 +48,8 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
 		json.addAdvancedMetric("CC", getCrossConnectivityMetric());
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
+		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
+		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -415,6 +420,55 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
+	/**
+	 * Metrica ICP
+	 * It counts, for each (sub-)process, the number of message/sequence flows sent by either the
+	 * tasks of the (sub-) process or the (sub-) process itself.
+	 * @return
+	 */
+	public int getImportedCouplingOfProcess(){
+		int toReturn = 0;
+		try {
+		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
+		for (ModelElementInstance sP : subProcesses){
+			toReturn += ((FlowNode) sP).getOutgoing().size();
+		}
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		for (ModelElementInstance t : tasks){
+			if(((FlowNode) t).getParentElement() instanceof SubProcess){
+				toReturn += ((FlowNode) t).getOutgoing().size();
+			}
+		}
+		}catch (ArithmeticException e){
+		}
+		return toReturn;
+	}
+	/**
+	 * metrica ECP
+	 * It counts, for each (sub-)process, the number of message/sequence flows received by either
+	 * the tasks of the (sub-) process or the (sub-) process itself.
+	 * @return
+	 */
+	public int getExportedCouplingOfProcess(){
+		int toReturn = 0;
+		try {
+		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
+		for (ModelElementInstance sP : subProcesses){
+			toReturn += ((FlowNode) sP).getIncoming().size();
+		}
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		for (ModelElementInstance t : tasks){
+			if(((FlowNode) t).getParentElement() instanceof SubProcess){
+				toReturn += ((FlowNode) t).getIncoming().size();
+			}
+		}
+		
+		}catch (ArithmeticException e){
+		}
+		System.out.println(toReturn);
+		return toReturn;
+	}
+	
 	/**
 	 * Metrica Sn
 	 * Number of nodes (activities + routing elements)
