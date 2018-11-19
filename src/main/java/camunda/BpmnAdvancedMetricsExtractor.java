@@ -3,12 +3,10 @@ package camunda;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -19,11 +17,13 @@ public class BpmnAdvancedMetricsExtractor {
 	private BpmnModelInstance modelInstance;
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private JsonEncoder json;
+	private CrossConnectivityMetricExtractor ccExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnModelInstance modelInstance, BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.modelInstance = modelInstance;
 		this.basicMetricsExtractor = basicMetricsExtractor;
 		this.json = jsonEncoder;
+		this.ccExtractor = new CrossConnectivityMetricExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -43,7 +43,8 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
-		json.addAdvancedMetric("CC", getCrossConnectivityMetric());
+		//Diminuire il numero di cifre?
+		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
@@ -384,7 +385,7 @@ public class BpmnAdvancedMetricsExtractor {
 			toReturn = basicMetricsExtractor.getSequenceFlows()*2;
 		} catch(ArithmeticException e){
 		}
-		return 0;
+		return toReturn;
 	}
 	
 	/**
@@ -401,22 +402,9 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
-	/**
-	 * Metrica: CC
-	 * It is the ratio of the total number of arcs in a process model to the total number of its nodes.
-	 * @return
-	 */
-	public float getCrossConnectivityMetric(){
-		float toReturn = 0;
-		try {
-			//Calcolare peso archi? https://www.researchgate.net/profile/Jan_Mendling/publication/220921084_On_a_Quest_for_Good_Process_Models_The_Cross-Connectivity_Metric/links/09e4150a26bfbc2fc6000000.pdf
-			toReturn = this.getNumberOfControlFlow()/this.getNumberOfNodes();
-		} catch (ArithmeticException e){
-		}
-		return toReturn;
-	}
-	/**
-	 * Metrica Sn
+	
+	/**TODO: Potrebbe essere semplificato ottenendo direttamente i flowNodes dal modello?
+	 * Metrica: Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
 	 */
@@ -428,6 +416,11 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
+	
+	
+	
+	
+	
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
 	 * Per le metriche di Halstead corrisponde a n1

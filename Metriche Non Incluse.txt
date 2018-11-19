@@ -1,4 +1,4 @@
-﻿NOA: Number of activities in a process. Cardoso et al [2006] 2006    (già calcolato in TNA)
+﻿NOA: Number of activities in a process. Cardoso et al [2006] 2006    Già calcolato in TNA
 
 Processi Ad Hoc: non supportati dalla libreria di Camunda
 
@@ -7,3 +7,6 @@ Metriche di Halstead: possibilmente non corrette per l'assenza dei processi ad h
 	Quali sono le data variables? I data object in generale?
 	
 Metrica TNSF: problemi per calcolare la variabile NSFL (number of sequence flows looping)
+
+
+NoI or Fanin, NoO or Fanout, Length, IC: Cardoso et al [2006]    Si riferiscono a singole attività, e non al processo per intero

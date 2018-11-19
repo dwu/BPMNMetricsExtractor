@@ -16,3 +16,4 @@ Con questi 4 elementi, le 3 metriche di Complessità dei Processi di Halstead (H
 – Process Length: N = n1*log2(n1) + n2*log2(n2)
 – Process Volume: V = (N1+N2)*log2(n1+n2)
 – Process Difficulty: D = (n1/2)*(N2/n2)
+

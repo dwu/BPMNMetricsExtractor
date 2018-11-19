@@ -46,6 +46,7 @@ public class BpmnModelReader {
 		JsonEncoder jsonEncoder = new JsonEncoder(loadedFile.getName());
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
 		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(modelInstance, basicExtractor, jsonEncoder);
+		CrossConnectivityMetricExtractor ccExtractor = new CrossConnectivityMetricExtractor(basicExtractor);
 		long loadTime = System.currentTimeMillis() - startTime;
 		System.out.println("Tempo load del file: " + loadTime);
 		basicExtractor.runMetrics();
@@ -54,16 +55,9 @@ public class BpmnModelReader {
 		advExtractor.runMetrics();
 		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
 		System.out.println("Tempo calcolo metriche avanzate: " + advTime);
-		
-		
 	}
 
 	public static void main(String[] args){
-		//BpmnModelReader modelReader = new BpmnModelReader("airline.bpmn");
-		//BpmnModelReader modelReader = new BpmnModelReader("dataAssociationsTest.bpmn");
-		//BpmnModelReader modelReader = new BpmnModelReader("bpmnTest01.bpmn");
-		//BpmnModelReader modelReader = new BpmnModelReader("sequenceFlowsBetweenActivities.bpmn");
-		//BpmnModelReader modelReader = new BpmnModelReader("lanesPools.bpmn");
 		BpmnFileOpener fileOpener = new BpmnFileOpener();
 		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
 		modelReader.test();
