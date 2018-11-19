@@ -177,6 +177,8 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFJDIG", this.getFlowJoiningAndDividingInclusiveGateways());
 		this.json.addBasicMetric("NFJDPG", this.getFlowJoiningAndDividingParallelGateways());
 		this.json.addBasicMetric("NFJDT", this.getFlowJoiningAndDividingTasks());
+		this.getBoundaryMessageEvents();
+		this.getBoundaryTimerEvents();
 	}
 
 	/**
@@ -392,6 +394,93 @@ public class BpmnBasicMetricsExtractor {
 	public int getBoundaryEvents() {
 		return getNumberOfTypeElement(BoundaryEvent.class);
 	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Message Events
+	 */
+	
+	public int getBoundaryMessageEvents() {
+		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Timer Events
+	 */
+	
+	public int getBoundaryTimerEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Conditional Events
+	 */
+	
+	public int getBoundaryConditionalEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Signal Events
+	 */
+	
+	public int getBoundarySignalEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Escalation Events
+	 */
+	
+	public int getBoundaryEscalationEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
+	}
+	/**
+	 * 
+	 * @return il numero di Boundary Cancel Events
+	 */
+	
+	public int getBoundaryCancelEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Error Events
+	 */
+	
+	public int getBoundaryErrorEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl"));
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero di Boundary Compensation Events
+	 */
+	
+	public int getBoundaryCompensationEvents() {
+		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+	}
+	
 	
 	/**
 	 * 
@@ -656,6 +745,70 @@ public class BpmnBasicMetricsExtractor {
 	public int getEndEvents() {
 		return getNumberOfTypeElement(EndEvent.class);
 	}
+	/**
+	 * 
+	 * @return il numero di End Message Events
+	 */
+	public int getEndMessageEvents() {
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Escalation Events
+	 */
+	public int getEndEscalationEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Signal Events
+	 */
+	public int getEndSignalEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Error Events
+	 */
+	public int getEndErrorEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Cancel Events
+	 */
+	public int getEndCancelEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Compensation Events
+	 */
+	public int getCompensationEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di End Terminate Events
+	 */
+	public int getEndTerminateEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TerminateEventDefinitionImpl");
+
+	}
+	
 	
 	/**
 	 * 
@@ -832,7 +985,50 @@ public class BpmnBasicMetricsExtractor {
 	public int getIntermediateCatchEvents() {
 		return getNumberOfTypeElement(IntermediateCatchEvent.class);
 	}
-	
+	/**
+	 * 
+	 * @return il numero degli Intermediate Message Catch Events
+	 */
+	public int getIntermediateMessageCatchEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero degli Intermediate Link Catch Events
+	 */	
+	public int getIntermediateLinkCatchEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.LinkEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero degli Intermediate Signal Catch Events
+	 */
+	public int getIntermediateSignalCatchEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero degli Intermediate Conditional Catch Events
+	 */
+	public int getIntermediateConditionalCatchEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero degli Intermediate Compensation Catch Events
+	 */	
+	public int getIntermediateCompensationCatchEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+	}
 	/**
 	 * 
 	 * @return il numero degli Intermediate Throw Events
@@ -840,6 +1036,50 @@ public class BpmnBasicMetricsExtractor {
 	public int getIntermediateThrowEvents() {
 		return getNumberOfTypeElement(IntermediateThrowEvent.class);
 	}
+	
+	/**
+	 * 
+	 * @return il numero degli Intermediate Message Throw Events
+	 */
+	
+	public int getIntermediateMessageThrowEvents() {
+		Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+	}
+	
+	/**
+	 * 
+	 * @return il numero degli Intermediate Signal Throw Events
+	 */
+	 public int getIntermediateSignalThrowEvents() {
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+	 }
+	 /**
+	  * 
+	  * @return il numero degli Intermediate Escalation Throw Events
+	  */
+	 public int getIntermediateEscalationThrowEvents() {
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
+	 }
+	 /**
+	  * 
+	  * @return il numero degli Intermediate Link Throw Events
+	  */
+	 public int getIntermediateLinkThrowEvents() {
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.LinkEventDefinitionImpl");
+	 }
+	 /**
+	  * 
+	  * @return il numero degli Intermediate Compensation Throw Events
+	  */
+	 public int getIntermediateCompensationTrhowEvents() {
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+	 }
+	 
 	
 	/**
 	 * 
@@ -1160,6 +1400,41 @@ public class BpmnBasicMetricsExtractor {
 	public int getStartEvents() {
 		return getNumberOfTypeElement(StartEvent.class);
 	}
+	/**
+	 * 
+	 * @return il numero di Start Message Events
+	 */
+	public int getStartMessageEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+	}
+	/**
+	 * 
+	 * @return il numero di Start Timer Events
+	 */
+	public int getStartTimerEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");		
+	}
+	/**
+	 * 
+	 * @return il numero di Start Conditional Events
+	 */
+	public int getStartConditionalEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
+
+	}
+	/**
+	 * 
+	 * @return il numero di Start Signal Events
+	 */
+	public int getStartSignalEvents(){
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+
+	}
+	
 	
 	/**
 	 * 
@@ -1471,4 +1746,82 @@ public class BpmnBasicMetricsExtractor {
 				.getModelElementsByType(modelElementType);
 		return modelElementInstances.size();
 	}
+	
+	
+	//TODO: Sistemare per ciclare su eventi specifici
+	/*private int getNumberOfEventDefinitionsOfType(Collection<EventDefinition> definitions, String classPath) {
+		Class<?> aClass;
+		int toReturn = 0;
+		try {
+			aClass = Class.forName(classPath);
+				for (EventDefinition ed: definitions) {
+					if (ed.getClass().equals(aClass)) {
+						toReturn += 1;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}*/
+	/**
+	 * Metodo che cerca il numero di eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
+	 * @param events - La collezione di CatchEvent di cui si vuole contare il numero di definizioni
+	 * @param eventClassPathName - Il pathName della classe degli eventi di cui si vuole contare le definizioni
+	 * @param definitionClassPathName - Il pathName della classe delle definizioni da contare
+	 * @return il numero di definizioni
+	 */
+	private int getNumberOfEventDefinitionsOfCatchEvents(Collection<CatchEvent> events, String eventClassPathName, String definitionClassPathName) {
+		Class<?> eventClass;
+		Class<?> definitionClass;
+		int toReturn = 0;
+		try {
+			eventClass = Class.forName(eventClassPathName);
+			definitionClass = Class.forName(definitionClassPathName);
+			for (CatchEvent e: events) {
+				if (e.getClass().equals(eventClass)) {
+					for (EventDefinition ed: e.getEventDefinitions()) {
+						if (ed.getClass().equals(definitionClass)) {
+							toReturn += 1;
+						}
+					}
+				}
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+	/**
+	 * Metodo che cerca il numero di eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
+	 * @param events - La collezione di ThrowEvent di cui si vuole contare il numero di definizioni
+	 * @param eventClassPathName - Il pathName della classe degli eventi di cui si vuole contare le definizioni
+	 * @param definitionClassPathName - Il pathName della classe delle definizioni da contare
+	 * @return il numero di definizioni
+	 */
+
+	private int getNumberOfEventDefinitionsOfThrowEvents(Collection<ThrowEvent> events, String eventClassPathName, String definitionClassPathName) {
+		Class<?> eventClass;
+		Class<?> definitionClass;
+		int toReturn = 0;
+		try {
+			eventClass = Class.forName(eventClassPathName);
+			definitionClass = Class.forName(definitionClassPathName);
+			for (ThrowEvent e: events) {
+				if (e.getClass().equals(eventClass)) {
+					for (EventDefinition ed: e.getEventDefinitions()) {
+						if (ed.getClass().equals(definitionClass)) {
+							toReturn += 1;
+						}
+					}
+				}
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+
 }
