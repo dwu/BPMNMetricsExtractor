@@ -19,6 +19,7 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
  * Classe che effettua l'estrazione della metrica Cross-Connectivity.
  * Ad ora, il peso degli eventi e dei gateway diversi dall'exclusive e dall'inclusive sono settati a 1, in quanto nel paper 
  * di riferimento non sono menzionati.
+ * TODO Errore con i loop
  * @author PROSLabTeam
  *
  */
@@ -28,12 +29,14 @@ public class CrossConnectivityMetricExtractor {
 	private Map<String, Double> nodeValues;
 	private Map<String, Double> archValues;
 	private Collection<Double> totalConnections;
+	private ArrayList<String> visitedNodes;
 	
 	public CrossConnectivityMetricExtractor(BpmnBasicMetricsExtractor basicExtractor) {
 		this.basicExtractor = basicExtractor;
 		nodeValues = new HashMap<String, Double>();
 		archValues = new HashMap<String, Double>();
 		totalConnections = new ArrayList<Double>();
+		visitedNodes = new ArrayList<String>();
 	}
 	
 	public double calculateCrossConnectivity() {
@@ -108,6 +111,7 @@ public class CrossConnectivityMetricExtractor {
 				FlowNode node2 = (FlowNode) modelNode2;
 				if (!node1.getId().equals(node2.getId())) {
 					//I nodi da confrontare non sono lo stesso nodo TODO: considerare i loop
+					visitedNodes.clear();
 					toCalc.add(findPathValueBetween(node1, node2, 0.0));
 				}
 			}
@@ -154,6 +158,11 @@ public class CrossConnectivityMetricExtractor {
 		double tempPathValue = 0.0;
 		double archValue = 0.0;
 		double toReturn = 0.0;
+		if (visitedNodes.contains(sourceNode.getId())) {
+			return 0.0;
+		} else {
+			visitedNodes.add(sourceNode.getId());
+		}
 		for (int i = 0; i < archs.size(); i++) {;
 			archValue = archValues.get(archs.get(i).getId());
 			tempPathValue = pathValue == 0.0 ? archValue : pathValue * archValue;
@@ -175,6 +184,7 @@ public class CrossConnectivityMetricExtractor {
 				maxPathValue = newPathValue > maxPathValue ? newPathValue : maxPathValue;
 			}
 		}
+		visitedNodes.remove(visitedNodes.indexOf(sourceNode.getId()));
 		return maxPathValue;
 	}
 }

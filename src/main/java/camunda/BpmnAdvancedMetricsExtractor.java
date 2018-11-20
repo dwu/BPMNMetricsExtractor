@@ -453,7 +453,6 @@ public class BpmnAdvancedMetricsExtractor {
 		
 		}catch (ArithmeticException e){
 		}
-		System.out.println(toReturn);
 		return toReturn;
 	}
 	
