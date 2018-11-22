@@ -182,8 +182,33 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFJDPG", this.getFlowJoiningAndDividingParallelGateways());
 		this.json.addBasicMetric("NFJDG", this.getFlowJoiningAndDividingGateways());
 		this.json.addBasicMetric("NFJDT", this.getFlowJoiningAndDividingTasks());
-		this.getBoundaryMessageEvents();
-		this.getBoundaryTimerEvents();
+		this.json.addBasicMetric("NSTMEV", this.getStartMessageEvents());
+		this.json.addBasicMetric("NSTCOEV", this.getStartConditionalEvents());
+		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
+		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
+		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
+		this.json.addBasicMetric("NENDERREV", this.getEndErrorEvents());
+		this.json.addBasicMetric("NENDESCEV", this.getEndEscalationEvents());
+		this.json.addBasicMetric("NENDMEV", this.getEndMessageEvents());
+		this.json.addBasicMetric("NENDSIGEV", this.getEndSignalEvents());
+		this.json.addBasicMetric("NENDTEREV", this.getEndTerminateEvents());
+		this.json.addBasicMetric("NBCANCEV", this.getBoundaryCancelEvents());
+		this.json.addBasicMetric("NBCOMPEV", this.getBoundaryCompensationEvents());
+		this.json.addBasicMetric("NBCOEV", this.getBoundaryConditionalEvents());
+		this.json.addBasicMetric("NBERREV", this.getBoundaryErrorEvents());
+		this.json.addBasicMetric("NBESCEV", this.getBoundaryEscalationEvents());
+		this.json.addBasicMetric("NBMEV", this.getBoundaryMessageEvents());
+		this.json.addBasicMetric("NBSIGEV", this.getBoundarySignalEvents());
+		this.json.addBasicMetric("NBTEV", this.getBoundaryTimerEvents());
+		this.json.addBasicMetric("NIESCTEV", this.getIntermediateEscalationThrowEvents());
+		this.json.addBasicMetric("NILTEV", this.getIntermediateLinkThrowEvents());
+		this.json.addBasicMetric("NIMTEV", this.getIntermediateMessageThrowEvents());
+		this.json.addBasicMetric("NISIGTEV", this.getIntermediateSignalThrowEvents());
+		this.json.addBasicMetric("NICOMCEV", this.getIntermediateCompensationCatchEvents());
+		this.json.addBasicMetric("NICONCEV", this.getIntermediateConditionalCatchEvents());
+		this.json.addBasicMetric("NILCEV", this.getIntermediateLinkCatchEvents());
+		this.json.addBasicMetric("NIMCEV", this.getIntermediateMessageCatchEvents());
+		this.json.addBasicMetric("NISIGCEV", this.getIntermediateSignalCatchEvents());
 	}
 	
 	/**
