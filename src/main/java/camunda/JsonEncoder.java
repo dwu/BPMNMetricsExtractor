@@ -57,7 +57,7 @@ public class JsonEncoder {
 	 * @param metricName nome della metrica da aggiungere
 	 * @param n numero delle metriche
 	 */
-	public void addAdvancedMetric(String metricName, float n){
+	public void addAdvancedMetric(String metricName, double n){
 		this.json.getJSONObject("Advanced Metrics").put(metricName, n);
 	}
 	

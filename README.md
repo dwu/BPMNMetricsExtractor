@@ -63,18 +63,21 @@ Basic Metric Index:
 	"NFDEXG": Number of Flux Dividing Exclusive Gateways  
 	"NFDIG": Number of Flux Dividing Inclusive Gateways  
 	"NFDPG": Number of Flux Dividing Parallel Gateways  
+	"NFDG": Number of Flow Dividing Gateways 
 	"NFDT": Number of Flux Dividing Tasks  
 	"NFJCG": Number of Flux Joining Complex Gateways  
 	"NFJEBG": Number of Flux Joining Event Based Gateways  
 	"NFJEXG": Number of Flux Joining Exclusive Gateways  
 	"NFJIG": Number of Flux Joining Inclusive Gateways  
 	"NFJPG": Number of Flux Joining Parallel Gateways  
+	"NFJG": Number of Flow Joining Gateways 
 	"NFJT": Number of Flux Joining Tasks  
 	"NFJCG": Number of Flux Joining And Dividing Complex Gateways  
 	"NFJDEBG": Number of Flux Joining And Dividing EventBased Gateways  
 	"NFJDEXG": Number of Flux Joining And Dividing Exclusive Gateways  
 	"NFJDIG": Number of Flux Joining And Dividing Inclusive Gateways  
 	"NFJDPG": Number of Flux Joining And Dividing Parallel Gateways  
+	"NFJDG": Number of Flow Joining And Dividing Gateways 
 	"NFJDT": Number of Flux Joining And Dividing Tasks  
 	"NFLEL": Number of Flow Elements  
 	"NFLNO": Number of Flow Nodes  

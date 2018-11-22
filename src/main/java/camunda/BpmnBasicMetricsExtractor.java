@@ -15,6 +15,8 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
  * 
  * @author PROSLabTeam
  *
+ *TODO: aggiungere task con più flussi entranti o uscenti ai parallel gateways
+ *		distinzione event boundary, intermediate e start e end
  */
 public class BpmnBasicMetricsExtractor {
 
@@ -164,23 +166,26 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFDEXG", this.getFlowDividingExclusiveGateways());
 		this.json.addBasicMetric("NFDIG", this.getFlowDividingInclusiveGateways());
 		this.json.addBasicMetric("NFDPG", this.getFlowDividingParallelGateways());
+		this.json.addBasicMetric("NFDG", this.getFlowDividingGateways());
 		this.json.addBasicMetric("NFDT", this.getFlowDividingTasks());
 		this.json.addBasicMetric("NFJCG", this.getFlowJoiningComplexGateways());
 		this.json.addBasicMetric("NFJEBG", this.getFlowJoiningEventBasedGateways());
 		this.json.addBasicMetric("NFJEXG", this.getFlowJoiningExclusiveGateways());
 		this.json.addBasicMetric("NFJIG", this.getFlowJoiningInclusiveGateways());
 		this.json.addBasicMetric("NFJPG", this.getFlowJoiningParallelGateways());
+		this.json.addBasicMetric("NFJG", this.getFlowJoiningGateways());
 		this.json.addBasicMetric("NFJT", this.getFlowJoiningTasks());
 		this.json.addBasicMetric("NFJCG", this.getFlowJoiningAndDividingComplexGateways());
 		this.json.addBasicMetric("NFJDEBG", this.getFlowJoiningAndDividingEventBasedGateways());
 		this.json.addBasicMetric("NFJDEXG", this.getFlowJoiningAndDividingExclusiveGateways());
 		this.json.addBasicMetric("NFJDIG", this.getFlowJoiningAndDividingInclusiveGateways());
 		this.json.addBasicMetric("NFJDPG", this.getFlowJoiningAndDividingParallelGateways());
+		this.json.addBasicMetric("NFJDG", this.getFlowJoiningAndDividingGateways());
 		this.json.addBasicMetric("NFJDT", this.getFlowJoiningAndDividingTasks());
 		this.getBoundaryMessageEvents();
 		this.getBoundaryTimerEvents();
 	}
-
+	
 	/**
 	 * Metrica: NT
 	 * 
@@ -225,7 +230,7 @@ public class BpmnBasicMetricsExtractor {
 	public int getInclusiveDecisions() {
 		return getNumberOfTypeElement(InclusiveGateway.class);
 	}
-
+	
 	/**
 	 * Metrica: NEDDB (numero degli exclusive gateways)
 	 * 
@@ -1677,15 +1682,37 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * 
+	 * @return il numero di gateways che dividono il flusso
+	 */
+	public int getFlowDividingGateways() {
+		return getFlowDividingElementsOfType(Gateway.class);
+	}
+	
+	/**
+	 *  
+	 * @return il numero di gateways che uniscono il flusso
+	 */
+	public int getFlowJoiningGateways() {
+		return getFlowJoiningElementsOfType(Gateway.class);
+	}
+	
+	/**
+	 * 
+	 * @return il numero di gateways che uniscono e dividono il flusso
+	 */
+	public int getFlowJoiningAndDividingGateways() {
+		return getFlowJoiningAndDividingElementsOfType(Gateway.class);
+	}
+	
+	/**
 	 * Metodo che cerca tutti gli elementi della classe type presenti nel modello e conta quanti dividono il flusso
 	 * @param type: classe del tipo di elemento che si vuole analizzare
 	 * @return il numero di elementi della classe type che dividono il flusso
 	 */
 	private int getFlowDividingElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getOutgoing().size() > 1) {
 				toReturn += 1;
@@ -1701,9 +1728,7 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	private int getFlowJoiningElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getIncoming().size() > 1) {
 				toReturn += 1;
@@ -1719,9 +1744,7 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	private int getFlowJoiningAndDividingElementsOfType(Class type) {
 		int toReturn = 0;
-		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
+		Collection<ModelElementInstance> modelElementInstances = getCollectionOfElementType(type);
 		for (ModelElementInstance instance : modelElementInstances) {
 			if (((FlowNode) instance).getIncoming().size() > 1 && ((FlowNode) instance).getOutgoing().size() > 1) {
 				toReturn += 1;
@@ -1729,7 +1752,6 @@ public class BpmnBasicMetricsExtractor {
 		}
 		return toReturn;
 	}
-
 	
 	/**
 	 * Metodo che cerca nel modello tutti gli elementi del tipo "type" per
@@ -1740,11 +1762,13 @@ public class BpmnBasicMetricsExtractor {
 	 *            numero
 	 * @return il numero degli elementi del tipo "type"
 	 */
-	private int getNumberOfTypeElement(Class type) {
+	public int getNumberOfTypeElement(Class type) {
+		return getCollectionOfElementType(type).size();
+	}
+	
+	public Collection<ModelElementInstance> getCollectionOfElementType(Class type) {
 		ModelElementType modelElementType = modelInstance.getModel().getType(type);
-		Collection<ModelElementInstance> modelElementInstances = this.modelInstance
-				.getModelElementsByType(modelElementType);
-		return modelElementInstances.size();
+		return this.modelInstance.getModelElementsByType(modelElementType);
 	}
 	
 	
