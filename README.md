@@ -9,7 +9,15 @@ Basic Metric Index:
 	"NASO": Number of Associations  
 	"NAUD": Number of Auditing	  
 	"NBEL": Number of Base Elements  
-	"NBEV": Number of Boundary Events  
+	"NBEV": Number of Boundary Events
+	"NBCANCEV": Number of Boundary Cancel Events  
+	"NBCOMPEV": Number of Boundary Compensation Events
+	"NBCOEV": Number of Boundary Conditional Events
+	"NBERREV": Number of Boundary Error Events
+	"NBESCEV": Number of Boundary Escalation Events
+	"NBMEV": Number of Boundary Message Events
+	"NBSIGEV": Number of Boundary Signal Events
+	"NBTEV": Number of Boundary Timer Events
 	"NBRT": Number of Business Rule Tasks  
 	"NCAC": Number of Call Activities  
 	"NCANEV": Number of Cancel Events  
@@ -47,7 +55,12 @@ Basic Metric Index:
 	"NDSTO": Number of Data Stores  
 	"NEDDB": Number of Exclusive Data Based Decisions  
 	"NEDEB": Number of Exclusive Event Based Decisions  
-	"NENDEV": Number of End Events  
+	"NENDEV": Number of End Events
+	"NENDCEV": Number of End Cancel Events
+	"NENDESCEV": Number of End Escalation Events
+	"NENDMEV": Number of End Message Events
+	"NENDSIGEV": Number of End Signal Events  
+	"NENDTEREV": Number of End Terminate Events
 	"NENDP": Number of End Points  
 	"NERR": Number of Errors  
 	"NERREV": Number of Error Events  
@@ -58,27 +71,27 @@ Basic Metric Index:
 	"NEXP": Number of Expressions  
 	"NEXT": Number of Extensions  
 	"NEXTEL": Number of Extension Elements  
-	"NFDCG": Number of Flux Dividing Complex Gateways  
-	"NFDEBG": Number of Flux Dividing Event Based Gateways  
-	"NFDEXG": Number of Flux Dividing Exclusive Gateways  
-	"NFDIG": Number of Flux Dividing Inclusive Gateways  
-	"NFDPG": Number of Flux Dividing Parallel Gateways  
+	"NFDCG": Number of Flow Dividing Complex Gateways  
+	"NFDEBG": Number of Flow Dividing Event Based Gateways  
+	"NFDEXG": Number of Flow Dividing Exclusive Gateways  
+	"NFDIG": Number of Flow Dividing Inclusive Gateways  
+	"NFDPG": Number of Flow Dividing Parallel Gateways  
 	"NFDG": Number of Flow Dividing Gateways 
-	"NFDT": Number of Flux Dividing Tasks  
-	"NFJCG": Number of Flux Joining Complex Gateways  
-	"NFJEBG": Number of Flux Joining Event Based Gateways  
-	"NFJEXG": Number of Flux Joining Exclusive Gateways  
-	"NFJIG": Number of Flux Joining Inclusive Gateways  
-	"NFJPG": Number of Flux Joining Parallel Gateways  
+	"NFDT": Number of Flow Dividing Tasks  
+	"NFJCG": Number of Flow Joining Complex Gateways  
+	"NFJEBG": Number of Flow Joining Event Based Gateways  
+	"NFJEXG": Number of Flow Joining Exclusive Gateways  
+	"NFJIG": Number of Flow Joining Inclusive Gateways  
+	"NFJPG": Number of Flow Joining Parallel Gateways  
 	"NFJG": Number of Flow Joining Gateways 
-	"NFJT": Number of Flux Joining Tasks  
-	"NFJCG": Number of Flux Joining And Dividing Complex Gateways  
-	"NFJDEBG": Number of Flux Joining And Dividing EventBased Gateways  
-	"NFJDEXG": Number of Flux Joining And Dividing Exclusive Gateways  
-	"NFJDIG": Number of Flux Joining And Dividing Inclusive Gateways  
-	"NFJDPG": Number of Flux Joining And Dividing Parallel Gateways  
+	"NFJT": Number of Flow Joining Tasks  
+	"NFJCG": Number of Flow Joining And Dividing Complex Gateways  
+	"NFJDEBG": Number of Flow Joining And Dividing EventBased Gateways  
+	"NFJDEXG": Number of Flow Joining And Dividing Exclusive Gateways  
+	"NFJDIG": Number of Flow Joining And Dividing Inclusive Gateways  
+	"NFJDPG": Number of Flow Joining And Dividing Parallel Gateways  
 	"NFJDG": Number of Flow Joining And Dividing Gateways 
-	"NFJDT": Number of Flux Joining And Dividing Tasks  
+	"NFJDT": Number of Flow Joining And Dividing Tasks  
 	"NFLEL": Number of Flow Elements  
 	"NFLNO": Number of Flow Nodes  
 	"NFOREXP": Number of Formal Expressions  
@@ -86,7 +99,12 @@ Basic Metric Index:
 	"NGC": Number of Global Conversations  
 	"NHP": Number of Human Performers  
 	"NIAEL": Number of Item Aware Elements  
-	"NICEV": Number of Intermediate Catch Events  
+	"NICEV": Number of Intermediate Catch Events
+	"NICOMCEV": Number of Intermediate Compensation Events
+	"NICONCEV": Number of Intermediate Conditional Events
+	"NILCEV": Number of Intermediate Link Catch Events
+	"NIMCEV": Number of Intermediate Message Catch Events
+	"NISIGCEV": Number of Intermediate Signal Catch Events   
 	"NID": Number of Inclusive Decisions  
 	"NIMP": Number of Imports  
 	"NInDI": Number of Input Data Items  
@@ -95,7 +113,11 @@ Basic Metric Index:
 	"NINTE": Number of Interfaces  
 	"NIOB": Number of Io Bindings  
 	"NIOS": Number of Io Specifications  
-	"NITEV": Number of Intermediate Throw Events  
+	"NITEV": Number of Intermediate Throw Events
+	"NIESCTEV": Number of Intermediate Escalation Throw Events
+	"NILTEV": Number of Intermediate Link Throw Events
+	"NIMTEV": Number of Intermediate Message Throw Events
+	"NISIGTEV": Number of Intermediate Signal Throw Events  
 	"NL": Number of Lanes  
 	"NLEV": Number of Link Events  
 	"NLOOPCA": Number of Loop Cardinalities  
@@ -137,7 +159,11 @@ Basic Metric Index:
 	"NSFA": Number of Sequence Flows between Activities  
 	"NSI": Number of Signals  
 	"NSIEV": Number of Signal Event  
-	"NSTEV": Number of Start Events  
+	"NSTEV": Number of Start Events
+	"NSTMEV": Number of Start Message Events
+	"NSTCOEV": Number of Start Conditional Events
+	"NSTSIGEV": Number of Start Signal Events
+	"NSTTEV": Number of Start Timer Events   
 	"NSC": Number of Sub Conversations  
 	"NT": Number of tasks  
 	"NTEV": Number of Terminate Events  
