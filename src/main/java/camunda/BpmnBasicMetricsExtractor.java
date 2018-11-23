@@ -435,10 +435,7 @@ public class BpmnBasicMetricsExtractor {
 	/**
 	 * Metric: NBRT
 	 * 
-<<<<<<< HEAD
-	 * @return number of Business Rule Tasks
-=======
-	 * @return il numero di Boundary Message Events
+	 * @return number of Boundary Message Events
 	 */
 	
 	public int getBoundaryMessageEvents() {
@@ -448,8 +445,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBTEV
 	 * 
-	 * @return il numero di Boundary Timer Events
+	 * @return number of Boundary Timer Events
 	 */
 	
 	public int getBoundaryTimerEvents() {
@@ -459,8 +457,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBCOEV
 	 * 
-	 * @return il numero di Boundary Conditional Events
+	 * @return number of Boundary Conditional Events
 	 */
 	
 	public int getBoundaryConditionalEvents() {
@@ -470,8 +469,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBSIGEV
 	 * 
-	 * @return il numero di Boundary Signal Events
+	 * @return number of Boundary Signal Events
 	 */
 	
 	public int getBoundarySignalEvents() {
@@ -481,8 +481,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBESCEV
 	 * 
-	 * @return il numero di Boundary Escalation Events
+	 * @return number of Boundary Escalation Events
 	 */
 	
 	public int getBoundaryEscalationEvents() {
@@ -490,9 +491,11 @@ public class BpmnBasicMetricsExtractor {
 		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 	}
+	
 	/**
+	 * Metric: NBCANCEV
 	 * 
-	 * @return il numero di Boundary Cancel Events
+	 * @return number of Boundary Cancel Events
 	 */
 	
 	public int getBoundaryCancelEvents() {
@@ -502,8 +505,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBERREV
 	 * 
-	 * @return il numero di Boundary Error Events
+	 * @return number of Boundary Error Events
 	 */
 	
 	public int getBoundaryErrorEvents() {
@@ -513,8 +517,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NBCOMPEV 
 	 * 
-	 * @return il numero di Boundary Compensation Events
+	 * @return number of Boundary Compensation Events
 	 */
 	
 	public int getBoundaryCompensationEvents() {
@@ -524,9 +529,9 @@ public class BpmnBasicMetricsExtractor {
 	
 	
 	/**
+	 * Metric: NBRT
 	 * 
-	 * @return il numero dei Business Rule Task
->>>>>>> 9d28830ee5ce628d551fb4182036b5d128dc626d
+	 * @return number dei Business Rule Task
 	 */
 	public int getBusinessRuleTasks() {
 		return getNumberOfTypeElement(BusinessRuleTask.class);
@@ -819,70 +824,83 @@ public class BpmnBasicMetricsExtractor {
 	public int getEndEvents() {
 		return getNumberOfTypeElement(EndEvent.class);
 	}
+	
 	/**
+	 * Metric: NENDMEV
 	 * 
-	 * @return il numero di End Message Events
+	 * @return number of End Message Events
 	 */
 	public int getEndMessageEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDESCEV
 	 * 
-	 * @return il numero di End Escalation Events
+	 * @return number of End Escalation Events
 	 */
 	public int getEndEscalationEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDSIGEV
 	 * 
-	 * @return il numero di End Signal Events
+	 * @return number of End Signal Events
 	 */
 	public int getEndSignalEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDERREV
 	 * 
-	 * @return il numero di End Error Events
+	 * @return number of End Error Events
 	 */
 	public int getEndErrorEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDCEV
 	 * 
-	 * @return il numero di End Cancel Events
+	 * @return number of End Cancel Events
 	 */
 	public int getEndCancelEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDCOMEV
 	 * 
-	 * @return il numero di End Compensation Events
+	 * @return number of End Compensation Events
 	 */
-	public int getCompensationEvents(){
+	public int getEndCompensationEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NENDTEREV
 	 * 
-	 * @return il numero di End Terminate Events
+	 * @return number of End Terminate Events
 	 */
 	public int getEndTerminateEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TerminateEventDefinitionImpl");
 
 	}
-	
 	
 	/**
 	 * Metric: NENDP
@@ -1056,6 +1074,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NINTNO
 	 * 
 	 * @return number of Interaction Nodes
 	 */
@@ -1064,6 +1083,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NINTE
 	 * 
 	 * @return number of Interfaces
 	 */
@@ -1072,57 +1092,70 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NICEV
 	 * 
 	 * @return number of Intermediate Catch Events
 	 */
 	public int getIntermediateCatchEvents() {
 		return getNumberOfTypeElement(IntermediateCatchEvent.class);
 	}
+	
 	/**
+	 * Metric: NIMCEV
 	 * 
-	 * @return il numero degli Intermediate Message Catch Events
+	 * @return number degli Intermediate Message Catch Events
 	 */
 	public int getIntermediateMessageCatchEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NILCEV
 	 * 
-	 * @return il numero degli Intermediate Link Catch Events
+	 * @return number degli Intermediate Link Catch Events
 	 */	
 	public int getIntermediateLinkCatchEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.LinkEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NISIGCEV
 	 * 
-	 * @return il numero degli Intermediate Signal Catch Events
+	 * @return number degli Intermediate Signal Catch Events
 	 */
 	public int getIntermediateSignalCatchEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NICONCEV
 	 * 
-	 * @return il numero degli Intermediate Conditional Catch Events
+	 * @return number degli Intermediate Conditional Catch Events
 	 */
 	public int getIntermediateConditionalCatchEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NICOMCEV
 	 * 
-	 * @return il numero degli Intermediate Compensation Catch Events
+	 * @return number degli Intermediate Compensation Catch Events
 	 */	
 	public int getIntermediateCompensationCatchEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
 	}
+	
 	/**
+	 * Metric: NITEV
 	 * 
 	 * @return number of Intermediate Throw Events
 	 */
@@ -1131,11 +1164,9 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NIMTEV
 	 * 
-<<<<<<< HEAD
-	 * @return number of Io Bindings
-=======
-	 * @return il numero degli Intermediate Message Throw Events
+	 * @return number degli Intermediate Message Throw Events
 	 */
 	
 	public int getIntermediateMessageThrowEvents() {
@@ -1144,49 +1175,57 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NISIGTEV
 	 * 
-	 * @return il numero degli Intermediate Signal Throw Events
+	 * @return number degli Intermediate Signal Throw Events
 	 */
 	 public int getIntermediateSignalThrowEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 	 }
+	 
 	 /**
+	  * Metric: NIESCTEV
 	  * 
-	  * @return il numero degli Intermediate Escalation Throw Events
+	  * @return number degli Intermediate Escalation Throw Events
 	  */
 	 public int getIntermediateEscalationThrowEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 	 }
+	 
 	 /**
+	  * Metric: NILTEV
 	  * 
-	  * @return il numero degli Intermediate Link Throw Events
+	  * @return number degli Intermediate Link Throw Events
 	  */
 	 public int getIntermediateLinkThrowEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.LinkEventDefinitionImpl");
 	 }
+	 
 	 /**
+	  * Metric: NICOMTEV
 	  * 
-	  * @return il numero degli Intermediate Compensation Throw Events
+	  * @return number degli Intermediate Compensation Throw Events
 	  */
-	 public int getIntermediateCompensationTrhowEvents() {
+	 public int getIntermediateCompensationThrowEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
 	 }
 	 
 	
 	/**
+	 * Metric: NIOB
 	 * 
-	 * @return il numero degli Io Bindings
->>>>>>> 9d28830ee5ce628d551fb4182036b5d128dc626d
+	 * @return number degli Io Bindings
 	 */
 	public int getIoBindings() {
 		return getNumberOfTypeElement(IoBinding.class);
 	}
 	
 	/**
+	 * Metric: NIOS
 	 * 
 	 * @return number of Io Specifications
 	 */
@@ -1195,6 +1234,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NIAEL
 	 * 
 	 * @return number of Item Aware Elements
 	 */
@@ -1203,6 +1243,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NIDEF
 	 * 
 	 * @return number of Item Definitions
 	 */
@@ -1211,6 +1252,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NLEV
 	 * 
 	 * @return number of Link Event Definitions
 	 */
@@ -1219,6 +1261,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NLOOPCA
 	 * 
 	 * @return number of Loop Cardinalities
 	 */
@@ -1227,14 +1270,16 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NLOOPCH
 	 * 
-	 * @return number of Task con Loop Characteristics
+	 * @return number of Task with Loop Characteristics
 	 */
 	public int getLoopCharacteristics() {
 		return getNumberOfTypeElement(LoopCharacteristics.class);
 	}
 	
 	/**
+	 * Metric: NMT
 	 * 
 	 * @return number of Manual Tasks
 	 */
@@ -1243,14 +1288,16 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NMES
 	 * 
-	 * @return number of messaggi
+	 * @return number of Messages
 	 */
 	public int getMessages() {
 		return getNumberOfTypeElement(Message.class);
 	}
 	
 	/**
+	 * Metric: NMESEV
 	 * 
 	 * @return number of Message Event 
 	 */
@@ -1259,6 +1306,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NMESFA
 	 * 
 	 * @return number of Message Flow Associations
 	 */
@@ -1267,6 +1315,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NMON
 	 * 
 	 * @return number of Monitorings 
 	 */
@@ -1275,14 +1324,16 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NMILCH
 	 * 
-	 * @return number of tasks con Multi Instance Loop Characteristics
+	 * @return number of tasks whit Multi Instance Loop Characteristics
 	 */
 	public int getMultiInstanceLoopCharacteristics() {
 		return getNumberOfTypeElement(MultiInstanceLoopCharacteristics.class);
 	}
 	
 	/**
+	 * Metric: NOP
 	 * 
 	 * @return number of Operazioni
 	 */
@@ -1291,6 +1342,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NOutDI
 	 * 
 	 * @return number of Output Data Items
 	 */
@@ -1299,6 +1351,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NOutS
 	 * 
 	 * @return number of Output Sets
 	 */
@@ -1307,14 +1360,16 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NPG
 	 * 
-	 * @return number of gateways paralleli
+	 * @return number of Parallel Gateways
 	 */
 	public int getParallelGateways() {
 		return getNumberOfTypeElement(ParallelGateway.class);
 	}
 	
 	/**
+	 * Metric: NPAS
 	 * 
 	 * @return number of Participant Associations
 	 */
@@ -1323,6 +1378,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NPM
 	 * 
 	 * @return number of Participant Multiplicities
 	 */
@@ -1331,6 +1387,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NPER
 	 * 
 	 * @return number of Performers 
 	 */
@@ -1339,6 +1396,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NPO
 	 * 
 	 * @return number of Potential Owners
 	 */
@@ -1347,22 +1405,25 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NPROC
 	 * 
-	 * @return number of Processi 
+	 * @return number of Processes
 	 */
 	public int getProcesses() {
 		return getNumberOfTypeElement(Process.class);
 	}
 	
 	/**
+	 * Metric: NPROP
 	 * 
-	 * @return number of Proprietà
+	 * @return number of Proprerties
 	 */
 	public int getProperties() {
 		return getNumberOfTypeElement(Property.class);
 	}
 	
 	/**
+	 * Metric: NRT
 	 * 
 	 * @return number of Receive Tasks
 	 */
@@ -1371,14 +1432,16 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NREL
 	 * 
-	 * @return number of Relazioni
+	 * @return number of Relationships
 	 */
 	public int getRelationships() {
 		return getNumberOfTypeElement(Relationship.class);
 	}
 	
 	/**
+	 * Metric: NREN
 	 * 
 	 * @return number of Renderings
 	 */
@@ -1387,6 +1450,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRES
 	 * 
 	 * @return number of Resources
 	 */
@@ -1395,6 +1459,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRESAEX
 	 * 
 	 * @return number of Resource Assignment Expressions
 	 */
@@ -1403,6 +1468,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRESP
 	 * 
 	 * @return number of Resource Parameters
 	 */
@@ -1411,6 +1477,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRESPB
 	 * 
 	 * @return number of Resource Parameter Bindings
 	 */
@@ -1419,6 +1486,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRESR
 	 * 
 	 * @return number of Resource Roles
 	 */
@@ -1427,6 +1495,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NRE
 	 * 
 	 * @return number of Root Elements
 	 */
@@ -1435,6 +1504,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSC
 	 * 
 	 * @return number of Scripts
 	 */
@@ -1443,6 +1513,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSCT
 	 * 
 	 * @return number of Script Tasks
 	 */
@@ -1451,6 +1522,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSENT
 	 * 
 	 * @return number of Send Tasks 
 	 */
@@ -1459,6 +1531,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSEQF
 	 * 
 	 * @return number of Sequence Flows
 	 */
@@ -1467,6 +1540,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSERT
 	 * 
 	 * @return number of Service Tasks
 	 */
@@ -1475,6 +1549,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSI
 	 * 
 	 * @return number of Signals
 	 */
@@ -1483,6 +1558,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSIEV
 	 * 
 	 * @return number of Signal Events
 	 */
@@ -1491,40 +1567,49 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NSTEV
 	 * 
 	 * @return number of Start Events
 	 */
 	public int getStartEvents() {
 		return getNumberOfTypeElement(StartEvent.class);
 	}
+	
 	/**
+	 * Metric: NSTMEV
 	 * 
-	 * @return il numero di Start Message Events
+	 * @return number of Start Message Events
 	 */
 	public int getStartMessageEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 	}
+	
 	/**
+	 * Metric: NSTTEV
 	 * 
-	 * @return il numero di Start Timer Events
+	 * @return number of Start Timer Events
 	 */
 	public int getStartTimerEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");		
 	}
+	
 	/**
+	 * Metric: NSTCOEV
 	 * 
-	 * @return il numero di Start Conditional Events
+	 * @return number of Start Conditional Events
 	 */
 	public int getStartConditionalEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
 
 	}
+	
 	/**
+	 * Metric: NSTSIGEV
 	 * 
-	 * @return il numero di Start Signal Events
+	 * @return number of Start Signal Events
 	 */
 	public int getStartSignalEvents(){
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
@@ -1534,14 +1619,16 @@ public class BpmnBasicMetricsExtractor {
 	
 	
 	/**
+	 * Metric: NSUB
 	 * 
-	 * @return number of Sotto-Processi
+	 * @return number of Sub-Processes
 	 */
 	public int getSubprocesses() {
 		return getNumberOfTypeElement(SubProcess.class);
 	}
 	
 	/**
+	 * Metric: NSC
 	 * 
 	 * @return number of Sub Conversations
 	 */
@@ -1550,6 +1637,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTEEV
 	 * 
 	 * @return number of Terminate Events
 	 */
@@ -1558,6 +1646,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTEX
 	 * 
 	 * @return number of Texts 
 	 */
@@ -1566,6 +1655,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTEXA
 	 * 
 	 * @return number of Text Annotations
 	 */
@@ -1574,6 +1664,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTHEV
 	 * 
 	 * @return number of Throw Events
 	 */
@@ -1582,6 +1673,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTC
 	 * 
 	 * @return number of Time Cycles
 	 */
@@ -1590,6 +1682,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTDA
 	 * 
 	 * @return number of Time Dates
 	 */
@@ -1598,6 +1691,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTDU
 	 * 
 	 * @return number of Time Durations
 	 */
@@ -1606,6 +1700,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTEVD
 	 * 
 	 * @return number of Timer Events
 	 */
@@ -1614,6 +1709,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NTR
 	 * 
 	 * @return number of Transactions
 	 */
@@ -1622,6 +1718,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NUT
 	 * 
 	 * @return number of User Tasks
 	 */
@@ -1630,168 +1727,189 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: NFDCG
 	 * 
-	 * @return number of complex gateways che dividono flusso
+	 * @return number of flow dividing complex gateways 
 	 */
 	public int getFlowDividingComplexGateways() {
 		return getFlowDividingElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
+	 * Metric: NFDEBG
 	 * 
-	 * @return number of event based gateways che dividono flusso
+	 * @return number of flow dividing event based gateways 
 	 */
 	public int getFlowDividingEventBasedGateways() {
 		return getFlowDividingElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
+	 * Metric: NFDEXG
 	 * 
-	 * @return number of exclusive gateways che dividono flusso
+	 * @return number of flow dividing exclusive gateways
 	 */
 	public int getFlowDividingExclusiveGateways() {
 		return getFlowDividingElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFDIG
 	 * 
-	 * @return number of inclusive gateways che dividono flusso
+	 * @return number of flow dividing inclusive gateways 
 	 */
 	public int getFlowDividingInclusiveGateways() {
 		return getFlowDividingElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFDPG
 	 * 
-	 * @return number of parallel gateways che dividono flusso
+	 * @return number of flow dividing parallel gateways 
 	 */
 	public int getFlowDividingParallelGateways() {
 		return getFlowDividingElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
+	 * Metric: NFDT
 	 * 
-	 * @return number of tasks che dividono flusso
+	 * @return number of flow dividing tasks 
 	 */
 	public int getFlowDividingTasks() {
 		return getFlowDividingElementsOfType(Task.class);
 	}
 	
 	/**
+	 * Metric: NFJCG
 	 * 
-	 * @return number of complex gateways che uniscono flusso
+	 * @return number of flow joining complex gateways
 	 */
 	public int getFlowJoiningComplexGateways() {
 		return getFlowJoiningElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJEBG
 	 * 
-	 * @return number of event based gateways che uniscono flusso
+	 * @return number of flow joining event based gateways 
 	 */
 	public int getFlowJoiningEventBasedGateways() {
 		return getFlowJoiningElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJEXG
 	 * 
-	 * @return number of exclusive gateways che uniscono flusso
+	 * @return number of flow joining exclusive gateways 
 	 */
 	public int getFlowJoiningExclusiveGateways() {
 		return getFlowJoiningElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJIG
 	 * 
-	 * @return number of inclusive gateways che uniscono flusso
+	 * @return number of flow joining inclusive gateways 
 	 */
 	public int getFlowJoiningInclusiveGateways() {
 		return getFlowJoiningElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJPG
 	 * 
-	 * @return number of parallel gateways che uniscono flusso
+	 * @return number of flow joining parallel gateways 
 	 */
 	public int getFlowJoiningParallelGateways() {
 		return getFlowJoiningElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJT
 	 * 
-	 * @return number of tasks che uniscono flusso
+	 * @return number of flow joining tasks 
 	 */
 	public int getFlowJoiningTasks() {
 		return getFlowJoiningElementsOfType(Task.class);
 	}
 	
 	/**
+	 * Metric: NFJDCG
 	 * 
-	 * @return number of complex gateways che uniscono e dividono flusso
+	 * @return number of joining and dividing complex gateways  
 	 */
 	public int getFlowJoiningAndDividingComplexGateways() {
 		return getFlowJoiningAndDividingElementsOfType(ComplexGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDEBG
 	 * 
-	 * @return number of event based gateways che uniscono e dividono flusso
+	 * @return number of joining and dividing event based gateways  
 	 */
 	public int getFlowJoiningAndDividingEventBasedGateways() {
 		return getFlowJoiningAndDividingElementsOfType(EventBasedGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDEXG
 	 * 
-	 * @return number of exclusive gateways che uniscono e dividono flusso
+	 * @return number of joining and dividing exclusive gateways  
 	 */
 	public int getFlowJoiningAndDividingExclusiveGateways() {
 		return getFlowJoiningAndDividingElementsOfType(ExclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDIG
 	 * 
-	 * @return number of inclusive gateways che uniscono e dividono flusso
+	 * @return number of joining and dividing inclusive gateways  
 	 */
 	public int getFlowJoiningAndDividingInclusiveGateways() {
 		return getFlowJoiningAndDividingElementsOfType(InclusiveGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDPG
 	 * 
-	 * @return number of parallel gateways che uniscono e dividono flusso
+	 * @return number of joining and dividing parallel gateways  
 	 */
 	public int getFlowJoiningAndDividingParallelGateways() {
 		return getFlowJoiningAndDividingElementsOfType(ParallelGateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDT
 	 * 
-	 * @return number of tasks che uniscono e dividono flusso
+	 * @return number of joining and dividing tasks  
 	 */
 	public int getFlowJoiningAndDividingTasks() {
 		return getFlowJoiningAndDividingElementsOfType(Task.class);
 	}
 	
 	/**
+	 * Metric: NFDG
 	 * 
-	 * @return number of gateways che dividono flusso
+	 * @return number of dividing gateways
 	 */
 	public int getFlowDividingGateways() {
 		return getFlowDividingElementsOfType(Gateway.class);
 	}
 	
 	/**
+	 * Metric: NFJT
 	 *  
-	 * @return number of gateways che uniscono flusso
+	 * @return number of joining gateways
 	 */
 	public int getFlowJoiningGateways() {
 		return getFlowJoiningElementsOfType(Gateway.class);
 	}
 	
 	/**
+	 * Metric: NFJDG
 	 * 
-	 * @return number of gateways che uniscono e dividono flusso
+	 * @return number of gateways  
 	 */
 	public int getFlowJoiningAndDividingGateways() {
 		return getFlowJoiningAndDividingElementsOfType(Gateway.class);
@@ -1832,7 +1950,7 @@ public class BpmnBasicMetricsExtractor {
 	/**
 	 * Metodo che cerca tutti gli elementi della classe type presenti nel modello e conta quanti uniscono e dividono flusso
 	 * @param type: classe del tipo of elemento che si vuole analizzare
-	 * @return number of elementi della classe type che uniscono e dividono flusso
+	 * @return number of elementi della classe type  
 	 */
 	private int getFlowJoiningAndDividingElementsOfType(Class type) {
 		int toReturn = 0;
@@ -1881,11 +1999,11 @@ public class BpmnBasicMetricsExtractor {
 		return toReturn;
 	}*/
 	/**
-	 * Metodo che cerca il numero di eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
-	 * @param events - La collezione di CatchEvent di cui si vuole contare il numero di definizioni
-	 * @param eventClassPathName - Il pathName della classe degli eventi di cui si vuole contare le definizioni
-	 * @param definitionClassPathName - Il pathName della classe delle definizioni da contare
-	 * @return il numero di definizioni
+	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
+	 * @param events - La collezione of CatchEvent of cui si vuole contare number of definizioni
+	 * @param eventClassPathName - pathName della classe degli eventi of cui si vuole contare le definizioni
+	 * @param definitionClassPathName - pathName della classe delle definizioni da contare
+	 * @return number of definizioni
 	 */
 	private int getNumberOfEventDefinitionsOfCatchEvents(Collection<CatchEvent> events, String eventClassPathName, String definitionClassPathName) {
 		Class<?> eventClass;
@@ -1910,11 +2028,11 @@ public class BpmnBasicMetricsExtractor {
 		return toReturn;
 	}
 	/**
-	 * Metodo che cerca il numero di eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
-	 * @param events - La collezione di ThrowEvent di cui si vuole contare il numero di definizioni
-	 * @param eventClassPathName - Il pathName della classe degli eventi di cui si vuole contare le definizioni
-	 * @param definitionClassPathName - Il pathName della classe delle definizioni da contare
-	 * @return il numero di definizioni
+	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
+	 * @param events - La collezione of ThrowEvent of cui si vuole contare number of definizioni
+	 * @param eventClassPathName - pathName della classe degli eventi of cui si vuole contare le definizioni
+	 * @param definitionClassPathName - pathName della classe delle definizioni da contare
+	 * @return number of definizioni
 	 */
 
 	private int getNumberOfEventDefinitionsOfThrowEvents(Collection<ThrowEvent> events, String eventClassPathName, String definitionClassPathName) {

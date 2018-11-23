@@ -56,7 +56,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: CLA
+	 * Metric: CLA
 	 * Total Number of Activities / Number of Sequence Flows between these Activities 
 	 * (CLA = TNA / NSFA)
 	 * @return 
@@ -70,7 +70,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: CLP
+	 * Metric: CLP
 	 * Number of message flows / Number of Pools 
 	 * (CLP = NMF/NP)
 	 * @return
@@ -84,7 +84,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 
 	/**
-	 * Metrica: PDOPin
+	 * Metric: PDOPin
 	 * PDOPin Proportion of data objects as incoming products and total data objects
 	 * Number of Data Objects which are input of activities / Total number of Data Objects in the model (PDOPIn = NDOIn/TNDO)
 	 * @return 
@@ -98,7 +98,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: PDOPout
+	 * Metric: PDOPout
 	 * PDOPout Proportion of data objects as outgoing products and total data objects
 	 * Number of Data Objects which are output of activities / Total number of Data Objects in the model (PDOPOut = NDOOut/TNDO)
 	 * @return 
@@ -112,7 +112,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO già presente in quelle base
-	 * Metrica: TNT
+	 * Metric: TNT
 	 * Total number of task 
 	 * Number of Tasks + Number of Task Looping + Number of Task Multiple Instances + Number of Task Compensation (TNT = NT + NTL + NTMI + NTC)
 	 * @return
@@ -122,7 +122,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: PDOTout
+	 * Metric: PDOTout
 	 * Proportion of data objects as outgoing product of activities of the model
 	 * Number of data objects which are outputs of activities / Total number of Tasks (PDOTOut = NDOOut/TNT)
 	 * @return
@@ -136,7 +136,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: PLT
+	 * Metric: PLT
 	 * Proportion of pools/lanes and activities
 	 * Number of Lanes / Total number of Tasks (PLT = NL/TNT)
 	 * @return
@@ -150,7 +150,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: TNCS
+	 * Metric: TNCS
 	 * Total number of collapsed sub-processes
 	 * Number of Collapsed Sub-Processes + Number of Collapsed Sub-Processes Looping + Number of Collapsed Sub-Processes Multiple Instance
 	 *    + Number of Collapsed Sub-Processes Compensation + Number of Collapsed Sub-Processes Ad-Hoc
@@ -162,7 +162,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: TNA
+	 * Metric: TNA
 	 * Total number of activities
 	 * Total number of Tasks + Total number of Collapsed Sub-Processes(TNA = TNT + TNCS)
 	 * @return
@@ -172,7 +172,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: TNDO
+	 * Metric: TNDO
 	 * Total number of Data Objects in the model
 	 * Number of data objects which are input of activities + Number of data objects which are outputs of activities (TNDO = NDOIn + NDOOut)
 	 * @return
@@ -182,7 +182,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO
-	 * Metrica: TNG
+	 * Metric: TNG
 	 * Total number of gateways
 	 * Number of exclusive data-based decision + Number of exclusive event-based decision + Number of inclusive decision + Number of complex decision + Number of parallel forking
 	 * (TNG = NEDDB + NEDEB + NID + NCD + NPF)
@@ -195,7 +195,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO i vari tipi di End Events non sono presenti 
-	 * Metrica: TNEE
+	 * Metric: TNEE
 	 * Total number of End Events
 	 * Number of End None Events + Number of End Message Events + Number of End Error Events + Number of End Cancel Events +
 	 *      + Number of End Compensation Events + Number of End Link Events + Number of End Multiple Events + Number of End Terminate Events  
@@ -207,7 +207,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO non sono presenti None, Rule e Multiple // non sono veramente intermediate events
-	 * Metrica: TNIE
+	 * Metric: TNIE
 	 * Total number of Intermediate Events
 	 * Number of Intermediate None Events  + Number of Intermediate Timer Events + Number of Intermediate Message Events + Number of Intermediate Error Events + 
 	 *     + Number of Intermediate Cancel Events + Number of Intermediate Compensation Event + Number of Intermediate Rule Events +
@@ -221,7 +221,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO i vari tipi di Start Events non sono presenti 
-	 * Metrica: TNSE
+	 * Metric: TNSE
 	 * Total number of Start Events
 	 * Number of Start None Events + Number of Start Timer Events + Number of Start Message Events + Number of Start Rule Events + Number of Start Link Events + 
 	 *     + Number of Start Multiple Events 
@@ -233,7 +233,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**TODO 
-	 * Metrica: TNE
+	 * Metric: TNE
 	 * Total number of Events
 	 * Total number of Start Events + Total number of Intermediate Events + Total number of End Events
 	 * (TNE = TNSE + TNIE + TNEE)
@@ -244,7 +244,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: CFC
+	 * Metric: CFC
 	 * Control-flow Complexity metric. It captures a weighted sum of all connectors that are used in a process model.
 	 * @return
 	 */
@@ -269,7 +269,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: NOAC
+	 * Metric: NOAC
 	 * Number of activities and control-flow elements in a process. 
 	 * @return
 	 */
@@ -278,7 +278,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: NOAJS
+	 * Metric: NOAJS
 	 * Number of activities, joins, and splits in a process
 	 */
 	public int getNumberOfActivitiesJoinsAndSplits() {
@@ -288,7 +288,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: HPC_D
+	 * Metric: HPC_D
 	 * Halstead-based Process Complexity (process difficulty)
 	 * Process Difficulty: D = (n1/2)*(N2/n2)
 	 * @return
@@ -303,7 +303,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: HPC_N
+	 * Metric: HPC_N
 	 * Halstead-based Process Complexity (process length)
 	 * Process Length: N = n1*log2(n1) + n2*log2(n2)
 	 * @return
@@ -320,7 +320,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: HPC_V
+	 * Metric: HPC_V
 	 * Halstead-based Process Complexity (process volume)
 	 * Process Volume: V = (N1+N2)*log2(n1+n2)
 	 * @return
@@ -336,7 +336,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: NoI or Fanin
+	 * Metric: NoI or Fanin
 	 * Number of activity inputs. The fan-in of a procedure A is the number of local flows
 	 *  into procedure A plus the number of data structures from which procedure A retrieves information.
 	 * @return
@@ -346,7 +346,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: NoO or Fanout
+	 * Metric: NoO or Fanout
      * Number of activity outputs. The fan-out of a procedure A is the number of local flows
      *  from procedure A plus the number of data structures which procedure A updates.
 	 * @return
@@ -356,7 +356,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: Length
+	 * Metric: Length
 	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
 	 *  the length can be calculated using traditional software engineering metrics
 	 *  that have been previously presented, namely the LOC (line of code) and
@@ -368,7 +368,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: IC
+	 * Metric: IC
 	 * Interface complexity of an activity metric. IC = Length ? (NoI ? NoO)2, where 
 	 *  the length of the activity can be calculated using traditional Software Engineering metrics
 	 *  such as LOC (1 if the activity source code is unknown) and NoI and NoO are 
@@ -380,7 +380,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: NOF
+	 * Metric: NOF
 	 * Number of control flow connections (number of arcs)
 	 * @return
 	 */
@@ -391,7 +391,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metrica: TNSF
+	 * Metric: TNSF
 	 * Total Number of Sequence Flows
 	 * @return
 	 */
@@ -403,7 +403,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 
 	/**
-	 * Metrica ICP
+	 * Metric: ICP
 	 * It counts, for each (sub-)process, the number of message/sequence flows sent by either the
 	 * tasks of the (sub-) process or the (sub-) process itself.
 	 * @return
@@ -422,8 +422,9 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
+	
 	/**
-	 * metrica ECP
+	 * Metric: ECP
 	 * It counts, for each (sub-)process, the number of message/sequence flows received by either
 	 * the tasks of the (sub-) process or the (sub-) process itself.
 	 * @return
@@ -443,8 +444,11 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
+	
+	
+	
 	/**
-	 * Metrica Sn
+	 * Metric Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
 	 */

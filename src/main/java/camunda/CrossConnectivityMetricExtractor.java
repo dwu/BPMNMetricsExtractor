@@ -10,7 +10,6 @@ import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.Event;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
-import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
