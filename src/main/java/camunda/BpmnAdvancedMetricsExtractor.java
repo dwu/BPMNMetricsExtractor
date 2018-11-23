@@ -111,7 +111,7 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 	}
 	
-	/**
+	/**TODO già presente in quelle base
 	 * Metrica: TNT
 	 * Total number of task 
 	 * Number of Tasks + Number of Task Looping + Number of Task Multiple Instances + Number of Task Compensation (TNT = NT + NTL + NTMI + NTC)
@@ -232,7 +232,7 @@ public class BpmnAdvancedMetricsExtractor {
 		return basicMetricsExtractor.getStartEvents();
 	}
 	
-	/**
+	/**TODO 
 	 * Metrica: TNE
 	 * Total number of Events
 	 * Total number of Start Events + Total number of Intermediate Events + Total number of End Events
@@ -386,10 +386,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getNumberOfControlFlow() {
 		int toReturn = 0;
-		try {
-			toReturn = basicMetricsExtractor.getSequenceFlows()*2;
-		} catch(ArithmeticException e){
-		}
+		toReturn = basicMetricsExtractor.getSequenceFlows()*2;
 		return toReturn;
 	}
 	
@@ -400,11 +397,8 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getTotalNumberOfSequenceFlow(){
 		int toReturn = 0;
-		try {
-			toReturn = basicMetricsExtractor.getSequenceFlowsBetweenActivities() + basicMetricsExtractor.getSequenceFlowsFromEvents() +
-					basicMetricsExtractor.getSequenceFlowsFromGateways(); //TODO: add NSFL (number of sequence flows looping)
-		}catch(ArithmeticException e){			
-		}
+		toReturn = basicMetricsExtractor.getSequenceFlowsBetweenActivities() + basicMetricsExtractor.getSequenceFlowsFromEvents() +
+				basicMetricsExtractor.getSequenceFlowsFromGateways();
 		return toReturn;
 	}
 
@@ -416,7 +410,6 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getImportedCouplingOfProcess(){
 		int toReturn = 0;
-		try {
 		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
 		for (ModelElementInstance sP : subProcesses){
 			toReturn += ((FlowNode) sP).getOutgoing().size();
@@ -426,8 +419,6 @@ public class BpmnAdvancedMetricsExtractor {
 			if(((FlowNode) t).getParentElement() instanceof SubProcess){
 				toReturn += ((FlowNode) t).getOutgoing().size();
 			}
-		}
-		}catch (ArithmeticException e){
 		}
 		return toReturn;
 	}
@@ -439,7 +430,6 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getExportedCouplingOfProcess(){
 		int toReturn = 0;
-		try {
 		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
 		for (ModelElementInstance sP : subProcesses){
 			toReturn += ((FlowNode) sP).getIncoming().size();
@@ -449,9 +439,6 @@ public class BpmnAdvancedMetricsExtractor {
 			if(((FlowNode) t).getParentElement() instanceof SubProcess){
 				toReturn += ((FlowNode) t).getIncoming().size();
 			}
-		}
-		
-		}catch (ArithmeticException e){
 		}
 		return toReturn;
 	}
@@ -463,10 +450,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getNumberOfNodes(){
 		int toReturn = 0;
-		try {
-			toReturn = basicMetricsExtractor.getTasks() + basicMetricsExtractor.getGateways(); 
-		}catch (ArithmeticException e){
-		}
+		toReturn = basicMetricsExtractor.getTasks() + basicMetricsExtractor.getGateways(); 
 		return toReturn;
 	}
 	
