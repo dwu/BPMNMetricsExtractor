@@ -3,6 +3,7 @@ package camunda;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
@@ -10,6 +11,7 @@ import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -51,6 +53,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
+		json.addAdvancedMetric("CP", getProcessCoupling());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -452,6 +455,29 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		
 		}catch (ArithmeticException e){
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Metrica CP
+	 * The metric calculates the degree of coupling. Coupling is related to the number of interconnections among the
+	 * tasks of a process model.
+	 * @return
+	 */
+	public float getProcessCoupling(){
+		int toReturn = 0;
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+		if (tasks.size() > 1){
+			for (ModelElementInstance t: tasks){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					if (s.getTarget() instanceof Task){
+						toReturn++;
+					}
+				}
+			}
+			toReturn = toReturn/(tasks.size() * tasks.size() - 1);
 		}
 		return toReturn;
 	}
