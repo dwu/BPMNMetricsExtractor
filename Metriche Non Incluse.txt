@@ -7,3 +7,6 @@ Metriche di Halstead: possibilmente non corrette per l'assenza dei processi ad h
 	Quali sono le data variables? I data object in generale?
 
 NoI or Fanin, NoO or Fanout, Length, IC: Cardoso et al [2006]    Si riferiscono a singole attività, e non al processo per intero
+
+Non-Interrupting Boundary Events: Non supportati dalla libreria di Camunda
+Multiple Events, Parallel Multiple: non supportati dalla libreria di Camunda

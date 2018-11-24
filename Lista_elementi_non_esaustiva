@@ -42,7 +42,7 @@
        "Intermediate Catch Link Event"+","+
        "Intermediate Catch Compensation Event"+","+
        
-       "Boundary Interrupting Event"+","+
+       "Boundary Interrupting Event"+","+ 
        "Boundary Interrupting Message Event"+","+
        "Boundary Interrupting Time Event"+","+
        "Boundary Interrupting Conditional Event"+","+
