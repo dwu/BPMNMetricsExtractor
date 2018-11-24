@@ -113,6 +113,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NIOB", this.getIoBindings());
 		this.json.addBasicMetric("NIOS", this.getIoSpecifications());
 		this.json.addBasicMetric("NIAEL", this.getItemAwareElements());
+		this.json.addBasicMetric("NIDEF", this.getItemDefinitions());
 		this.json.addBasicMetric("NLEV", this.getLinkEvents());
 		this.json.addBasicMetric("NLOOPCA", this.getLoopCardinalities());
 		this.json.addBasicMetric("NLOOPCH", this.getLoopCharacteristics());
@@ -150,10 +151,10 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSIEV", this.getSignalEvent());
 		this.json.addBasicMetric("NSTEV", this.getStartEvents());
 		this.json.addBasicMetric("NSC", this.getSubConversations());
-		this.json.addBasicMetric("NTEV", this.getTerminateEvents());
+		this.json.addBasicMetric("NTEEV", this.getTerminateEvents());
 		this.json.addBasicMetric("NTEX", this.getTexts());
 		this.json.addBasicMetric("NTEXA", this.getTextAnnotations());
-		this.json.addBasicMetric("NTEV", this.getThrowEvents());
+		this.json.addBasicMetric("NTHEV", this.getThrowEvents());
 		this.json.addBasicMetric("NTC", this.getTimeCycles());
 		this.json.addBasicMetric("NTDA", this.getTimeDates());
 		this.json.addBasicMetric("NTDU", this.getTimeDurations());
@@ -175,7 +176,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NFJPG", this.getFlowJoiningParallelGateways());
 		this.json.addBasicMetric("NFJG", this.getFlowJoiningGateways());
 		this.json.addBasicMetric("NFJT", this.getFlowJoiningTasks());
-		this.json.addBasicMetric("NFJCG", this.getFlowJoiningAndDividingComplexGateways());
+		this.json.addBasicMetric("NFJDCG", this.getFlowJoiningAndDividingComplexGateways());
 		this.json.addBasicMetric("NFJDEBG", this.getFlowJoiningAndDividingEventBasedGateways());
 		this.json.addBasicMetric("NFJDEXG", this.getFlowJoiningAndDividingExclusiveGateways());
 		this.json.addBasicMetric("NFJDIG", this.getFlowJoiningAndDividingInclusiveGateways());
@@ -187,6 +188,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
+		this.json.addBasicMetric("NENDCOMEV", this.getCompensationEvents());
 		this.json.addBasicMetric("NENDERREV", this.getEndErrorEvents());
 		this.json.addBasicMetric("NENDESCEV", this.getEndEscalationEvents());
 		this.json.addBasicMetric("NENDMEV", this.getEndMessageEvents());
@@ -201,6 +203,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NBSIGEV", this.getBoundarySignalEvents());
 		this.json.addBasicMetric("NBTEV", this.getBoundaryTimerEvents());
 		this.json.addBasicMetric("NIESCTEV", this.getIntermediateEscalationThrowEvents());
+		this.json.addBasicMetric("NICOMTEV", this.getIntermediateCompensationTrhowEvents());
 		this.json.addBasicMetric("NILTEV", this.getIntermediateLinkThrowEvents());
 		this.json.addBasicMetric("NIMTEV", this.getIntermediateMessageThrowEvents());
 		this.json.addBasicMetric("NISIGTEV", this.getIntermediateSignalThrowEvents());
