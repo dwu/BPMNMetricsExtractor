@@ -391,7 +391,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getNumberOfControlFlow() {
 		int toReturn = 0;
-		toReturn = basicMetricsExtractor.getSequenceFlows()*2;
+		toReturn = basicMetricsExtractor.getSequenceFlows();
 		return toReturn;
 	}
 	
