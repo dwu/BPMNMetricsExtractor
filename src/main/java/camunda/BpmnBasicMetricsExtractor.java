@@ -188,7 +188,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
-		this.json.addBasicMetric("NENDCOMEV", this.getCompensationEvents());
+		this.json.addBasicMetric("NENDCOMEV", this.getEndCompensationEvents());
 		this.json.addBasicMetric("NENDERREV", this.getEndErrorEvents());
 		this.json.addBasicMetric("NENDESCEV", this.getEndEscalationEvents());
 		this.json.addBasicMetric("NENDMEV", this.getEndMessageEvents());
@@ -203,7 +203,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NBSIGEV", this.getBoundarySignalEvents());
 		this.json.addBasicMetric("NBTEV", this.getBoundaryTimerEvents());
 		this.json.addBasicMetric("NIESCTEV", this.getIntermediateEscalationThrowEvents());
-		this.json.addBasicMetric("NICOMTEV", this.getIntermediateCompensationTrhowEvents());
+		this.json.addBasicMetric("NICOMTEV", this.getIntermediateCompensationThrowEvents());
 		this.json.addBasicMetric("NILTEV", this.getIntermediateLinkThrowEvents());
 		this.json.addBasicMetric("NIMTEV", this.getIntermediateMessageThrowEvents());
 		this.json.addBasicMetric("NISIGTEV", this.getIntermediateSignalThrowEvents());
@@ -1985,22 +1985,6 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	
-	//TODO: Sistemare per ciclare su eventi specifici
-	/*private int getNumberOfEventDefinitionsOfType(Collection<EventDefinition> definitions, String classPath) {
-		Class<?> aClass;
-		int toReturn = 0;
-		try {
-			aClass = Class.forName(classPath);
-				for (EventDefinition ed: definitions) {
-					if (ed.getClass().equals(aClass)) {
-						toReturn += 1;
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return toReturn;
-	}*/
 	/**
 	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
 	 * @param events - La collezione of CatchEvent of cui si vuole contare number of definizioni

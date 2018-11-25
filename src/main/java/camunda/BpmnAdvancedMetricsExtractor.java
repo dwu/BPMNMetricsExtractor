@@ -46,11 +46,13 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
+		json.addAdvancedMetric("NOAJS", this.getNumberOfActivitiesJoinsAndSplits());
 		//Diminuire il numero di cifre?
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
+		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -456,6 +458,21 @@ public class BpmnAdvancedMetricsExtractor {
 		int toReturn = 0;
 		toReturn = basicMetricsExtractor.getTasks() + basicMetricsExtractor.getGateways(); 
 		return toReturn;
+	}
+	
+	
+	/**
+	 * Metric: CNC
+	 * Coefficient of Network Complexity (total number of sequence flows(NSEQF)/NOAJS)
+	 * @return NSEQF/NOAJS
+	 */
+	public double getCoefficientOfNetworkComplexity() {
+		try {
+			return this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
 	}
 	
 	
