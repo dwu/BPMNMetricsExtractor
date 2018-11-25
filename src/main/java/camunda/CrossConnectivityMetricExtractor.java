@@ -18,12 +18,13 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
  * Classe che effettua l'estrazione della metrica Cross-Connectivity.
  * Ad ora, il peso degli eventi e dei gateway diversi dall'exclusive e dall'inclusive sono settati a 1, in quanto nel paper 
  * di riferimento non sono menzionati.
- * TODO Errore con i loop
+ * 
  * @author PROSLabTeam
  *
  */
 public class CrossConnectivityMetricExtractor {
-
+	
+	//rimuovere il riferimento all'oggetto basicExtractor e al suo posto aggiungere direttamente le liste di oggetti necessarie per eliminare la dipendenza?
 	private BpmnBasicMetricsExtractor basicExtractor;
 	private Map<String, Double> nodeValues;
 	private Map<String, Double> archValues;

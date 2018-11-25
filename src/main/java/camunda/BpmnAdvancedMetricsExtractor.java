@@ -8,6 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
@@ -54,6 +55,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
 		json.addAdvancedMetric("CP", getProcessCoupling());
+		json.addAdvancedMetric("DNS", getDensity());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -447,9 +449,6 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	
-	
-	
 	/**
 	 * Metric CP
 	 * The metric calculates the degree of coupling. Coupling is related to the number of interconnections among the
@@ -473,7 +472,7 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	/**
+	/**TODO Potrebbe essere più semplice ritornare direttamente basicMetricExtractor.getFlowNodes()
 	 * Metric Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
@@ -484,7 +483,35 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
+	/**
+	 * Metric: Lambda
+	 * "The density of the process graph refers to the number of arcs divided by the number of the maximum number
+	 *  of arcs for the same number of nodes"
+	 * @return
+	 */
+	public float getDensity() {
+		int nodes = basicMetricsExtractor.getFlowNodes();
+		return basicMetricsExtractor.getSequenceFlows() / nodes * (nodes - 1);
+	}
 	
+	/**
+	 * Metric: Xi
+	 * "The sequentiality ratio is the number of arcs between non-connector nodes 
+	 *  divided by the number of arcs."
+	 * @return
+	 */
+	public float getSequentiality() {
+		Collection<ModelElementInstance> sequenceFlowsModel = basicMetricsExtractor.getCollectionOfElementType(SequenceFlow.class);
+		int arcBetweenNonConnectorsNode = sequenceFlowsModel.size();
+		for (ModelElementInstance sFModel : sequenceFlowsModel) {
+			SequenceFlow flow = (SequenceFlow) sFModel;
+			if (flow.getSource() instanceof Gateway || flow.getTarget() instanceof Gateway) {
+				arcBetweenNonConnectorsNode--;
+			}
+		}
+		return arcBetweenNonConnectorsNode / sequenceFlowsModel.size();
+		
+	}
 	
 	
 	
