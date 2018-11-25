@@ -457,7 +457,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getProcessCoupling(){
-		int toReturn = 0;
+		float toReturn = 0;
 		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
 		if (tasks.size() > 1){
 			for (ModelElementInstance t: tasks){
