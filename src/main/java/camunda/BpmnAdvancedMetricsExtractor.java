@@ -49,13 +49,13 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
+		json.addAdvancedMetric("NOAJS", this.getNumberOfActivitiesJoinsAndSplits());
 		//Diminuire il numero di cifre?
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
-		json.addAdvancedMetric("CP", getProcessCoupling());
-		json.addAdvancedMetric("DNS", getDensity());
+		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -495,6 +495,20 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: CNC
+	 * Coefficient of Network Complexity (total number of sequence flows(NSEQF)/NOAJS)
+	 * @return NSEQF/NOAJS
+	 */
+	public double getCoefficientOfNetworkComplexity() {
+		try {
+			return this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
 	 * Metric: Xi
 	 * "The sequentiality ratio is the number of arcs between non-connector nodes 
 	 *  divided by the number of arcs."
@@ -512,8 +526,6 @@ public class BpmnAdvancedMetricsExtractor {
 		return arcBetweenNonConnectorsNode / sequenceFlowsModel.size();
 		
 	}
-	
-	
 	
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
