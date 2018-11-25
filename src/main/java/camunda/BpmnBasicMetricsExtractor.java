@@ -189,6 +189,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getEndCompensationEvents());
+		this.json.addBasicMetric("NENDCOMEV", this.getCompensateEvents());
 		this.json.addBasicMetric("NENDERREV", this.getEndErrorEvents());
 		this.json.addBasicMetric("NENDESCEV", this.getEndEscalationEvents());
 		this.json.addBasicMetric("NENDMEV", this.getEndMessageEvents());

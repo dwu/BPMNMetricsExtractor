@@ -8,9 +8,12 @@ import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
+import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
@@ -446,10 +449,30 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	
-	
-	
 	/**
+	 * Metric CP
+	 * The metric calculates the degree of coupling. Coupling is related to the number of interconnections among the
+	 * tasks of a process model.
+	 * @return
+	 */
+	public float getProcessCoupling(){
+		int toReturn = 0;
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+		if (tasks.size() > 1){
+			for (ModelElementInstance t: tasks){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					if (s.getTarget() instanceof Task){
+						toReturn++;
+					}
+				}
+			}
+			toReturn = toReturn/(tasks.size() * tasks.size() - 1);
+		}
+		return toReturn;
+	}
+	
+	/**TODO Potrebbe essere più semplice ritornare direttamente basicMetricExtractor.getFlowNodes()
 	 * Metric Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
@@ -460,6 +483,16 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
+	/**
+	 * Metric: Lambda
+	 * "The density of the process graph refers to the number of arcs divided by the number of the maximum number
+	 *  of arcs for the same number of nodes"
+	 * @return
+	 */
+	public float getDensity() {
+		int nodes = basicMetricsExtractor.getFlowNodes();
+		return basicMetricsExtractor.getSequenceFlows() / nodes * (nodes - 1);
+	}
 	
 	/**
 	 * Metric: CNC
@@ -475,9 +508,24 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 	}
 	
-	
-	
-	
+	/**
+	 * Metric: Xi
+	 * "The sequentiality ratio is the number of arcs between non-connector nodes 
+	 *  divided by the number of arcs."
+	 * @return
+	 */
+	public float getSequentiality() {
+		Collection<ModelElementInstance> sequenceFlowsModel = basicMetricsExtractor.getCollectionOfElementType(SequenceFlow.class);
+		int arcBetweenNonConnectorsNode = sequenceFlowsModel.size();
+		for (ModelElementInstance sFModel : sequenceFlowsModel) {
+			SequenceFlow flow = (SequenceFlow) sFModel;
+			if (flow.getSource() instanceof Gateway || flow.getTarget() instanceof Gateway) {
+				arcBetweenNonConnectorsNode--;
+			}
+		}
+		return arcBetweenNonConnectorsNode / sequenceFlowsModel.size();
+		
+	}
 	
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
