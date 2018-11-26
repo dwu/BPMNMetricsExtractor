@@ -56,6 +56,8 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
+		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
+		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}
@@ -526,7 +528,59 @@ public class BpmnAdvancedMetricsExtractor {
 		return arcBetweenNonConnectorsNode / sequenceFlowsModel.size();
 		
 	}
-	
+	/**
+	 * Metric ACD
+	 * Average connector degree is defined as the average incoming and outgoing sequence flows of all gateways and activities
+	 * with at least two incoming or outgoing sequence flows
+	 * @return
+	 */
+	public float getAverageConnectorDegree(){
+		float toReturn = 0;
+		float sum = 0, n = 0;
+		try {
+		Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+		for (ModelElementInstance g: gateways){
+			if (((FlowNode) g).getOutgoing().size() > 1 || ((FlowNode) g).getIncoming().size() > 1){
+				n++;
+				sum += ((FlowNode) g).getOutgoing().size() + ((FlowNode) g).getIncoming().size();
+			}
+		}
+		for (ModelElementInstance t: tasks){
+			if (((FlowNode) t).getOutgoing().size() > 1 || ((FlowNode) t).getIncoming().size() > 1){
+				n++;
+				sum += ((FlowNode) t).getOutgoing().size() + ((FlowNode)t).getIncoming().size();	
+			}
+		}
+		
+		toReturn = sum/n;
+		
+		}catch (ArithmeticException e){
+		}
+		return toReturn;
+	}
+	/**
+	 * Metric MCD
+	 * Maximum connector degree is defined as the sum of the incoming and outgoing sequence flows of the gateway or activity with
+	 * the most incoming and outgoing sequence flows
+	 * @return
+	 */
+	public float getMaximumConnectorDegree(){
+		float toReturn = 0;
+		Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
+		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+		for (ModelElementInstance g: gateways){
+			if (((FlowNode) g).getOutgoing().size() + ((FlowNode) g).getIncoming().size() > toReturn){
+				toReturn = ((FlowNode) g).getOutgoing().size() + ((FlowNode)g).getIncoming().size();
+			}
+		}
+		for (ModelElementInstance t: tasks){
+			if (((FlowNode) t).getOutgoing().size() + ((FlowNode) t).getIncoming().size() > toReturn){
+				toReturn = ((FlowNode) t).getOutgoing().size() + ((FlowNode)t).getIncoming().size();
+			}
+		}
+		return toReturn;
+	}
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
 	 * Per le metriche di Halstead corrisponde a n1
