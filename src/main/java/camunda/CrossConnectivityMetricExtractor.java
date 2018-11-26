@@ -70,7 +70,7 @@ public class CrossConnectivityMetricExtractor {
 				powOfD = Math.pow(2.0, d);
 				value = (1.0 / (powOfD - 1.0)) + (((powOfD - 2.0) / (powOfD - 1.0)) * 1.0 / d);
 				nodeValues.put(node.getId(), value);
-			} else if (node instanceof Gateway || node instanceof Task || node instanceof Event) {
+			} else if (node instanceof FlowNode) {
 				//ALTRI GATEWAY, TASK E EVENTI
 				nodeValues.put(node.getId(), 1.0);
 			} 

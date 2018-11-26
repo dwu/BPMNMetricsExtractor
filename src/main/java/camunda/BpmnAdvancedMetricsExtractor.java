@@ -20,13 +20,11 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 public class BpmnAdvancedMetricsExtractor {
 	
 	//modello da cui estrarre le metriche
-	private BpmnModelInstance modelInstance;
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private JsonEncoder json;
 	private CrossConnectivityMetricExtractor ccExtractor;
 	
-	public BpmnAdvancedMetricsExtractor(BpmnModelInstance modelInstance, BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
-		this.modelInstance = modelInstance;
+	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
 		this.json = jsonEncoder;
 		this.ccExtractor = new CrossConnectivityMetricExtractor(basicMetricsExtractor);
@@ -450,7 +448,7 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metric CP
+	 * Metric: CP
 	 * The metric calculates the degree of coupling. Coupling is related to the number of interconnections among the
 	 * tasks of a process model.
 	 * @return
@@ -472,15 +470,13 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	/**TODO Potrebbe essere più semplice ritornare direttamente basicMetricExtractor.getFlowNodes()
-	 * Metric Sn
+	/**TODO Metrica uguale a getFlowNodes()
+	 * Metric: Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
 	 */
 	public int getNumberOfNodes(){
-		int toReturn = 0;
-		toReturn = basicMetricsExtractor.getTasks() + basicMetricsExtractor.getGateways(); 
-		return toReturn;
+		return basicMetricsExtractor.getFlowNodes();
 	}
 	
 	/**
