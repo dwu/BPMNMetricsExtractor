@@ -188,6 +188,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
+		this.json.addBasicMetric("NENDCOMEV", this.getEndCompensationEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getCompensateEvents());
 		this.json.addBasicMetric("NENDERREV", this.getEndErrorEvents());
 		this.json.addBasicMetric("NENDESCEV", this.getEndEscalationEvents());
@@ -1985,22 +1986,6 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	
-	//TODO: Sistemare per ciclare su eventi specifici
-	/*private int getNumberOfEventDefinitionsOfType(Collection<EventDefinition> definitions, String classPath) {
-		Class<?> aClass;
-		int toReturn = 0;
-		try {
-			aClass = Class.forName(classPath);
-				for (EventDefinition ed: definitions) {
-					if (ed.getClass().equals(aClass)) {
-						toReturn += 1;
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return toReturn;
-	}*/
 	/**
 	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
 	 * @param events - La collezione of CatchEvent of cui si vuole contare number of definizioni
