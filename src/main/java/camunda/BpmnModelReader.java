@@ -58,8 +58,10 @@ public class BpmnModelReader {
 	}
 
 	public static void main(String[] args){
-		BpmnFileOpener fileOpener = new BpmnFileOpener();
-		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
-		modelReader.test();
+//		BpmnFileOpener fileOpener = new BpmnFileOpener();
+//		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
+//		modelReader.test();
+		MySqlInterface db = new MySqlInterface();
+		db.connect();
 	}
 }
