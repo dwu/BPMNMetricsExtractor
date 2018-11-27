@@ -6,12 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.Gateway;
-import org.camunda.bpm.model.bpmn.instance.Event;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
-import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 /**
@@ -154,10 +151,10 @@ public class CrossConnectivityMetricExtractor {
 	 */
 	private Double findPathValueBetween(FlowNode sourceNode, FlowNode targetNode, double pathValue) {
 		ArrayList<SequenceFlow> archs = new ArrayList<SequenceFlow>(sourceNode.getOutgoing());
-		ArrayList<Double> pathReturnValues = new ArrayList<Double>();
-		double tempPathValue = 0.0;
+		double newPathValue = 0.0;
 		double archValue = 0.0;
-		double toReturn = 0.0;
+		double tempPathValue = 0.0;
+		double maxPathValue = 0.0;
 		if (visitedNodes.contains(sourceNode.getId())) {
 			return 0.0;
 		} else {
@@ -165,26 +162,19 @@ public class CrossConnectivityMetricExtractor {
 		}
 		for (int i = 0; i < archs.size(); i++) {;
 			archValue = archValues.get(archs.get(i).getId());
-			tempPathValue = pathValue == 0.0 ? archValue : pathValue * archValue;
+			newPathValue = pathValue == 0.0 ? archValue : pathValue * archValue;
 			if (archs.get(i).getTarget().getId().equals(targetNode.getId()))
 				//il targetNode è stato trovato, quindi si returna il valore del path
-				return tempPathValue;
+				return newPathValue;
 			else {
 				//il target node non è stato ancora trovato, quindi si continua ad esplorare il modello richiamando il metodo ricorsivamente
-				toReturn = findPathValueBetween(archs.get(i).getTarget(), targetNode, tempPathValue);
-				if (toReturn != 0.0) 
-					//la chiamata ricorsiva ha trovato un percorso possibile, il cui valore viene aggiunto alla relativa lista
-					pathReturnValues.add(toReturn);
+				tempPathValue = findPathValueBetween(archs.get(i).getTarget(), targetNode, newPathValue);
+				if (tempPathValue != 0.0) 
+					//la chiamata ricorsiva ha trovato un percorso possibile, che viene confrontato con il maggiore trovato ad ora
+					maxPathValue = tempPathValue > maxPathValue ? tempPathValue : maxPathValue;
 			} 
 		}
-		double maxPathValue = 0.0;
-		if (!(pathReturnValues.size() == 0)) {
-			//si itera la lista dei valori dei path trovati, e si estrapola il valore maggiore
-			for (Double newPathValue : pathReturnValues) {
-				maxPathValue = newPathValue > maxPathValue ? newPathValue : maxPathValue;
-			}
-		}
-		visitedNodes.remove(visitedNodes.indexOf(sourceNode.getId()));
+		visitedNodes.remove(sourceNode.getId());
 		return maxPathValue;
 	}
 }

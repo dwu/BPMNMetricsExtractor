@@ -444,7 +444,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryMessageEvents() {
 		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 	}
 	
@@ -456,7 +455,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryTimerEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
 	}
 	
@@ -468,7 +466,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryConditionalEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
 	}
 	
@@ -480,7 +477,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundarySignalEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 	}
 	
@@ -492,7 +488,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryEscalationEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 	}
 	
@@ -504,7 +499,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryCancelEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
 	}
 	
@@ -516,7 +510,6 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryErrorEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		System.out.println(this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl"));
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
 	}
 	
@@ -2044,6 +2037,14 @@ public class BpmnBasicMetricsExtractor {
 			e.printStackTrace();
 		}
 		return toReturn;
+	}
+	
+	/**
+	 * Model Instance's getter
+	 * @return
+	 */
+	public BpmnModelInstance getModelInstance() {
+		return modelInstance;
 	}
 
 }

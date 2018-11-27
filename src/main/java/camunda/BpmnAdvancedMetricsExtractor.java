@@ -23,11 +23,15 @@ public class BpmnAdvancedMetricsExtractor {
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private JsonEncoder json;
 	private CrossConnectivityMetricExtractor ccExtractor;
+	private PartitionabilityMetricsExtractor partExtractor;
+	private SizeMetricsExtractor sizeExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
 		this.json = jsonEncoder;
 		this.ccExtractor = new CrossConnectivityMetricExtractor(basicMetricsExtractor);
+		this.partExtractor = new PartitionabilityMetricsExtractor(basicMetricsExtractor);
+		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -46,20 +50,56 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("TNIE", getTotalNumberOfIntermediateEvents());
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
-		json.addAdvancedMetric("NOF", getNumberOfControlFlow());
+		json.addAdvancedMetric("CFC", getControlFlowComplexity());
+		json.addAdvancedMetric("NOAC", getNumberOfActivitiesAndControlFlowElements());
 		json.addAdvancedMetric("NOAJS", this.getNumberOfActivitiesJoinsAndSplits());
+		json.addAdvancedMetric("HPC_D", getHalsteadBasedProcessComplexityDifficulty());
+		json.addAdvancedMetric("HPC_N", getHalsteadBasedProcessComplexityLength());
+		json.addAdvancedMetric("HPC_V", getHalsteadBasedProcessComplexityVolume());
+		json.addAdvancedMetric("NoI", 0.0);
+		json.addAdvancedMetric("NoO", 0.0);
+		json.addAdvancedMetric("Lenght", 0.0);
+		json.addAdvancedMetric("IC", 0.0);
+		json.addAdvancedMetric("NOF", getNumberOfControlFlow());	
+		json.addAdvancedMetric("TNSF", getTotalNumberOfSequenceFlow());	
 		//Diminuire il numero di cifre?
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
-		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
+		json.addAdvancedMetric("W", 0.0);
+		json.addAdvancedMetric("MaxND", 0.0);
+		json.addAdvancedMetric("AntiPatterns_for_BPM", 0.0);
+		json.addAdvancedMetric("CP", getProcessCoupling());
+		json.addAdvancedMetric("Cohesion", 0.0);
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
+		json.addAdvancedMetric("MeanND", 0.0);
+		json.addAdvancedMetric("CI", 0.0);
+		json.addAdvancedMetric("RT", 0.0);
+		json.addAdvancedMetric("Sn", getNumberOfNodes());
+		json.addAdvancedMetric("Sequentiality", getSequentiality());
+		json.addAdvancedMetric("diam", sizeExtractor.getDiam());
+		json.addAdvancedMetric("Depth", 0.0);
+		json.addAdvancedMetric("GM", 0.0);
+		json.addAdvancedMetric("GH", 0.0);
+		json.addAdvancedMetric("Structuredness", 0.0);
+		json.addAdvancedMetric("CYC", 0.0);
+		json.addAdvancedMetric("TS", 0.0);
+		json.addAdvancedMetric("Density", getDensity());
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
+		json.addAdvancedMetric("ECaM", 0.0);
+		json.addAdvancedMetric("ECyM", 0.0);
+		json.addAdvancedMetric("SM", 0.0);
+		json.addAdvancedMetric("DSM", 0.0);
+		json.addAdvancedMetric("PSM", 0.0);
+		json.addAdvancedMetric("Layout_Complexity", 0.0);
+		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
+		json.addAdvancedMetric("Layout_Measure", 0.0);
+		json.addAdvancedMetric("Separability", partExtractor.getSeparability());
 		this.json.exportJson();
-		System.out.println("JSON adv: " + this.json.print());
+		System.out.println("JSON adv: " + this.json.getString());
 	}
-	
+
 	/**
 	 * Metric: CLA
 	 * Total Number of Activities / Number of Sequence Flows between these Activities 
@@ -320,8 +360,10 @@ public class BpmnAdvancedMetricsExtractor {
 					getNumberOfUniqueDataObjects() * logBase2(getNumberOfUniqueDataObjects());
 		} catch (ArithmeticException e) {
 		}
-		return toReturn;
-		
+		if (Double.isFinite(toReturn)) 
+			return toReturn;
+		else 
+			return 0;
 	}
 	
 	/**
@@ -337,7 +379,10 @@ public class BpmnAdvancedMetricsExtractor {
 			* (logBase2(getNumberOfUniqueElements() + getNumberOfUniqueDataObjects())));
 		} catch (ArithmeticException e) {
 		}
-		return toReturn;
+		if (Double.isFinite(toReturn))
+			return toReturn;
+		else 
+			return 0.0;
 	}
 	
 	/**
@@ -395,16 +440,13 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	/**
+	/**TODO Same as basic metric
 	 * Metric: TNSF
 	 * Total Number of Sequence Flows
 	 * @return
 	 */
 	public int getTotalNumberOfSequenceFlow(){
-		int toReturn = 0;
-		toReturn = basicMetricsExtractor.getSequenceFlowsBetweenActivities() + basicMetricsExtractor.getSequenceFlowsFromEvents() +
-				basicMetricsExtractor.getSequenceFlowsFromGateways();
-		return toReturn;
+		return basicMetricsExtractor.getSequenceFlows();
 	}
 
 	/**
@@ -531,29 +573,33 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getAverageConnectorDegree(){
-		float toReturn = 0;
-		float sum = 0, n = 0;
+		float toReturn = 0.0f;
+		float sum = 0.0f, n = 0.0f;
 		try {
-		Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
-		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
-		for (ModelElementInstance g: gateways){
-			if (((FlowNode) g).getOutgoing().size() > 1 || ((FlowNode) g).getIncoming().size() > 1){
-				n++;
-				sum += ((FlowNode) g).getOutgoing().size() + ((FlowNode) g).getIncoming().size();
+			Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
+			Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+			for (ModelElementInstance modelGateway : gateways){
+				FlowNode g = (FlowNode) modelGateway;
+				if (g.getOutgoing().size() > 1 || g.getIncoming().size() > 1){
+					n++;
+					sum += g.getOutgoing().size() + g.getIncoming().size();
+				}
 			}
-		}
-		for (ModelElementInstance t: tasks){
-			if (((FlowNode) t).getOutgoing().size() > 1 || ((FlowNode) t).getIncoming().size() > 1){
-				n++;
-				sum += ((FlowNode) t).getOutgoing().size() + ((FlowNode)t).getIncoming().size();	
+			for (ModelElementInstance taskModel: tasks){
+				FlowNode t = (FlowNode) taskModel;
+				if (t.getOutgoing().size() > 1 || t.getIncoming().size() > 1){
+					n++;
+					sum += t.getOutgoing().size() + t.getIncoming().size();	
+				}
 			}
-		}
-		
-		toReturn = sum/n;
-		
+			toReturn = sum/n;
 		}catch (ArithmeticException e){
+			return 0.0f;
 		}
-		return toReturn;
+		if (Float.isFinite(toReturn))
+			return toReturn;
+		else 
+			return 0.0f;
 	}
 	/**
 	 * Metric MCD
