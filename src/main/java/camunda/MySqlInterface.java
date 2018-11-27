@@ -5,42 +5,80 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class MySqlInterface {
 	
 	private static final String CONN_STRING = "jdbc:mysql://localhost:3306/bpmn_repository?serverTimezone=Europe/Rome";
 	private static final String USERNAME = "bpmn_repo_user";
 	private static final String PASSWORD = "repo.sitory";
-
-	private Statement statement = null;
-	private Connection connection = null;
-	private ResultSet resultSet = null;
+	private static final String DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
 	
-	public void connect() {
+	public void connect(JsonEncoder json) {
+		Connection connection = null;
+		ResultSet resultSet = null;
+		Statement statement = null;
 	    try {
-	        Class.forName("com.mysql.cj.jdbc.Driver");
+	        Class.forName(DRIVER_CLASS);
+	        System.out.println("Connecting to database...");
 	        connection = DriverManager.getConnection(CONN_STRING,USERNAME,PASSWORD);
 	        System.out.println("Connected");
-	        // Statements allow to issue SQL queries to the database
-	        statement = connection.createStatement();
-	        // Result set get the result of the SQL query
-	        resultSet = statement.executeQuery("select * from repository");
-	        writeResultSet(resultSet);
+	        statement = connection.createStatement();   
+	        //CODICE PER LA CREAZIONE DEL DATABASE 
+	        /*String basicCreate = createBasicTableString(json);
+	        String advancedCreate = createAdvancedTableString(json);
+        	statement.executeUpdate(basicCreate);
+	        statement.executeUpdate(advancedCreate);*/
 	    } catch (SQLException | ClassNotFoundException e){
 	    	System.err.println(e);
-	    }
+	    } finally {
+            if (resultSet != null) {
+                try {
+                	resultSet.close();
+                } catch (SQLException e) { /*ignored*/ }
+            }
+            if (statement != null) {
+                try {
+                	statement.close();
+                } catch (SQLException e) { /*ignored*/ }
+            }
+            if (connection != null) {
+                try {
+                	connection.close();
+                } catch (SQLException e) { /*ignored*/ }
+            }
+        }
 	}
 	
-	private void writeResultSet(ResultSet resultSet) throws SQLException {
-        // ResultSet is initially before the first data set
-        while (resultSet.next()) {
-            // It is possible to get the columns via name
-            // also possible to get the columns via the column number
-            // which starts at 1
-            // e.g. resultSet.getSTring(2);
-            String dati = resultSet.getString("STRING");
-            System.out.println("STRING: " + dati);
+	/**
+	 * Temp function
+	 * @param json
+	 * @return
+	 */
+	private String createBasicTableString(JsonEncoder json) {
+		ArrayList<String>  basicMetricsNames = json.getBasicMetricsNames();
+        String basicCreate = "CREATE TABLE BASIC_METRICS (id INTEGER NOT NULL, ";
+        for (int i = 0; i < basicMetricsNames.size(); i++) {
+        	basicCreate += basicMetricsNames.get(i) + " INTEGER, ";
         }
-    }
+        basicCreate += " PRIMARY KEY ( id ))";
+        return basicCreate;
+	}
+	
+	/**
+	 * Temp function
+	 * @param json
+	 * @return
+	 */
+	private String createAdvancedTableString(JsonEncoder json) {
+		ArrayList<String>  advancedMetricsNames = json.getAdvancedMetricsNames();
+        String advCreate = "CREATE TABLE ADVANCED_METRICS (id INTEGER NOT NULL, ";
+        for (int i = 0; i < advancedMetricsNames.size(); i++) {
+        	advCreate += advancedMetricsNames.get(i) + " REAL, ";
+        }
+        advCreate += " PRIMARY KEY ( id ))";
+        return advCreate;
+	}
 
 }

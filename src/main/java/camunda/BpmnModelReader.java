@@ -46,15 +46,16 @@ public class BpmnModelReader {
 		JsonEncoder jsonEncoder = new JsonEncoder(loadedFile.getName());
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
 		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
-		CrossConnectivityMetricExtractor ccExtractor = new CrossConnectivityMetricExtractor(basicExtractor);
 		long loadTime = System.currentTimeMillis() - startTime;
-		System.out.println("Tempo load del file: " + loadTime);
+		System.out.println("Tempo load del file: " + loadTime + "ms");
 		basicExtractor.runMetrics();
 		long basicTime = System.currentTimeMillis() - loadTime - startTime;
-		System.out.println("Tempo calcolo metriche di base: " + basicTime);
+		System.out.println("Tempo calcolo metriche di base: " + basicTime + "ms");
 		advExtractor.runMetrics();
 		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
-		System.out.println("Tempo calcolo metriche avanzate: " + advTime);
+		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
+		//MySqlInterface db = new MySqlInterface();
+		//db.connect(jsonEncoder);
 	}
 
 	public static void main(String[] args){
