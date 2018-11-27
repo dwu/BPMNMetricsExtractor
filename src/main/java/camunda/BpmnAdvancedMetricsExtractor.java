@@ -17,6 +17,7 @@ import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
+
 public class BpmnAdvancedMetricsExtractor {
 	
 	//modello da cui estrarre le metriche
