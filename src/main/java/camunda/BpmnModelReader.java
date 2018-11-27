@@ -45,7 +45,7 @@ public class BpmnModelReader {
 		BpmnModelInstance modelInstance = Bpmn.readModelFromFile(loadedFile);
 		JsonEncoder jsonEncoder = new JsonEncoder(loadedFile.getName());
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
-		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(modelInstance, basicExtractor, jsonEncoder);
+		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
 		CrossConnectivityMetricExtractor ccExtractor = new CrossConnectivityMetricExtractor(basicExtractor);
 		long loadTime = System.currentTimeMillis() - startTime;
 		System.out.println("Tempo load del file: " + loadTime);
@@ -58,8 +58,10 @@ public class BpmnModelReader {
 	}
 
 	public static void main(String[] args){
-		BpmnFileOpener fileOpener = new BpmnFileOpener();
-		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
-		modelReader.test();
+//		BpmnFileOpener fileOpener = new BpmnFileOpener();
+//		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
+//		modelReader.test();
+		MySqlInterface db = new MySqlInterface();
+		db.connect();
 	}
 }
