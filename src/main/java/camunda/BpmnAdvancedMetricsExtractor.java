@@ -24,11 +24,13 @@ public class BpmnAdvancedMetricsExtractor {
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private JsonEncoder json;
 	private CrossConnectivityMetricExtractor ccExtractor;
+	private ConnectorInterplayMetricsExtractor connectorInterplayMetricsExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
 		this.json = jsonEncoder;
 		this.ccExtractor = new CrossConnectivityMetricExtractor(basicMetricsExtractor);
+		this.connectorInterplayMetricsExtractor = new ConnectorInterplayMetricsExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -57,6 +59,9 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
+		json.addAdvancedMetric("GM", this.connectorInterplayMetricsExtractor.getGatewaysMismatchMetric());
+		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
+		//json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.print());
 	}

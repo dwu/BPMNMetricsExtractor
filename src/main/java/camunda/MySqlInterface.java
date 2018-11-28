@@ -9,8 +9,8 @@ import java.sql.Statement;
 public class MySqlInterface {
 	
 	private static final String CONN_STRING = "jdbc:mysql://localhost:3306/bpmn_repository?serverTimezone=Europe/Rome";
-	private static final String USERNAME = "bpmn_repo_user";
-	private static final String PASSWORD = "repo.sitory";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "root";
 
 	private Statement statement = null;
 	private Connection connection = null;
