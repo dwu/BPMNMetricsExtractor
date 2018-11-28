@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
- * Class that calculate the DSM metric
- * It equals d if there are d types of elements which occur at least d times in the model(each),
+ * Class that calculates the DSM metric
+ * It equals d if there are d types of elements which occur at least d times in the model (each),
  * and the other types occur no more than d times (each)
  * @author PROSLabTeam
  *
@@ -24,7 +24,7 @@ public class DurfeeSquareMetricExtractor {
 	}
 	
 	/**
-	 * Method that get all the flow nodes in the model and separate them into an ArrayList
+	 * Method that gets all the flow nodes in the model and separates them into an ArrayList
 	 * @param flowNodes
 	 * @return ArrayList of flownodes
 	 */
@@ -93,9 +93,11 @@ public class DurfeeSquareMetricExtractor {
 	public int[][] getOrderedMatrix(ArrayList<Integer>flowNodes, int max){
 		if (max > flowNodes.size()){
 			int [][] durfeeMatrix = new int [max][max];
-			for (int i = 0; i < max; i++){
+//			for (int i = 0; i < max; i++){
+			for (int i = 0; i < flowNodes.size(); i++){
 				int value = flowNodes.get(i);
-				for (int j = 0; j < max; i++){
+//				for (int j = 0; j < max; j++){
+				for (int j = 0; j < flowNodes.size(); j++){
 					if (value > 0){
 						durfeeMatrix[i][j] = 1;
 						value--;

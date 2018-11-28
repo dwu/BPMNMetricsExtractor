@@ -49,7 +49,11 @@ public class ConnectorInterplayMetricsExtractor {
 		 * @return the connectors homogeneity factor
 		 */
 		public double getConnectorsHomogeneity() {
-			return -(this.andRelativeFrequenceTimesLogarithm() + this.xorRelativeFrequenceTimesLogarithm() + this.orRelativeFrequenceTimesLogarithm());
+			double toReturn = -(this.andRelativeFrequenceTimesLogarithm() + this.xorRelativeFrequenceTimesLogarithm() + this.orRelativeFrequenceTimesLogarithm());
+			if (Double.isFinite(toReturn))
+				return toReturn;
+			else 
+				return 0.0;
 		}
 		/**
 		 * Internal method used to compute the relative frequency (p(l)) multiplied by log3(p(l)). In this case l = Inclusive Gateway (or).

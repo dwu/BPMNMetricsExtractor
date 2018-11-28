@@ -110,9 +110,7 @@ public class PartitionabilityMetricsExtractor {
 			int depthOut = 0;
 			int toAdd = 0;
 			int toReturn = 0;
-			int counter = 0;
 			for (ModelElementInstance modelStart : modelStartEvent) {
-				System.out.println("Counter: " + ++counter);
 				visitedNodes.clear();
 				FlowNode start = (FlowNode) modelStart;
 				calculateDepthIn(start);
@@ -129,7 +127,6 @@ public class PartitionabilityMetricsExtractor {
 			for (int result : results) {
 				toReturn = result > toReturn ? result : toReturn; 
 			}
-			System.out.println("Depth: " + toReturn);
 			return (double) toReturn;
 		}
 		
@@ -217,13 +214,13 @@ public class PartitionabilityMetricsExtractor {
 			}
 			//salvare solamente il minore tra i vari risultati ottenuti in relazione ai nodi precedenti
 			//richiamare nuovamente il metodo sui nodi successivi
-			visitedNodes.remove(sourceNode.getId());
 			if (!nodesIndepth.containsKey(sourceNode))
 				nodesIndepth.put(sourceNode, toReturn);
 			Collection<SequenceFlow> outgoingFlows = sourceNode.getOutgoing();
 			for (SequenceFlow outFlow : outgoingFlows) {
 				calculateDepthIn(outFlow.getTarget());
 			}
+			visitedNodes.remove(sourceNode.getId());
 			return;
 		}
 		

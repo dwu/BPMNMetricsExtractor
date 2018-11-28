@@ -93,6 +93,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
 		json.addAdvancedMetric("GM", this.connectorInterplayMetricsExtractor.getGatewaysMismatchMetric());
+		//TODO aggiunto il controllo per vedere se il numero è finito o meno
 		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		//json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		json.addAdvancedMetric("ECaM", this.getExtendedCardosoMetric());
