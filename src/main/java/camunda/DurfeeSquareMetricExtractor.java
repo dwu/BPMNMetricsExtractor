@@ -68,37 +68,84 @@ public class DurfeeSquareMetricExtractor {
 		int ds = 0;
 		int max = Collections.max(flowNodes);
 		Collections.sort(flowNodes);
+		Collections.reverse(flowNodes);
 		boolean found = false;
-		//check for flow nodes presence
-		if(!flowNodes.isEmpty()){
-			//if there's only one flow node it just return 1
+		if (!flowNodes.isEmpty()){
 			if (flowNodes.size() == 1){
 				ds = 1;
 			} else {
-				//set ds as max/2 in order to have a starting pivot to iterate with
-				ds = max/2;
-				do {
-					int htds = 0;
-					//if pivot*2 is higher then the amount of flow nodes
-					if (ds * 2 > flowNodes.size()){
-						ds--; //subtract 1 to ds
-					} else {
-						//check in the flow nodes if there are ds flow nodes with higher value than ds (htds)
-						for (int i = 0; i < flowNodes.size(); i++){
-							if (flowNodes.get(i) < ds){
-								htds++;
-							}
-						}
-						//if there are more htds than ds 
-						if (htds > ds)
-							ds--; //subtract 1 to ds
-						else
-							found = true; //Durfee Square has been found
-					}
-				} while (found = false); //Repeat if Durfee Square has not been found
+				int [][]durfeeMatrix = this.getOrderedMatrix(flowNodes, max);
+				//this.printMatrix(durfeeMatrix);
+				if (max > flowNodes.size())
+					ds = this.getDurfeeMetricFromMatrix(durfeeMatrix, max);
+				else
+					ds = this.getDurfeeMetricFromMatrix(durfeeMatrix, flowNodes.size());
 			}
 		}
 		return ds;
 	}
+	/**
+	 * Method that builds a matrix based on the flowNodes Arraylist
+	 * @param flowNodes
+	 * @param max
+	 * @return matrix of flowNodes values
+	 */
+	public int[][] getOrderedMatrix(ArrayList<Integer>flowNodes, int max){
+		if (max > flowNodes.size()){
+			int [][] durfeeMatrix = new int [max][max];
+			for (int i = 0; i < max; i++){
+				int value = flowNodes.get(i);
+				for (int j = 0; j < max; i++){
+					if (value > 0){
+						durfeeMatrix[i][j] = 1;
+						value--;
+					}
+				}
+			}
+			return durfeeMatrix;
+		} else {
+			int [][] durfeeMatrix = new int [flowNodes.size()][flowNodes.size()];
+			for (int i = 0; i < flowNodes.size(); i++){
+				int value = flowNodes.get(i);
+				for (int j = 0; j < flowNodes.size(); j++){
+					if (value > 0){
+						durfeeMatrix[i][j] = 1;
+						value--;
+					}
+				}
+			}
+			return durfeeMatrix;
+		}	
+	}
 	
+	/**
+	 * Calculate durfee square metric from matrix
+	 * @param matrix
+	 * @param max
+	 * @return
+	 */
+	private int getDurfeeMetricFromMatrix(int [][] matrix, int max){
+		int toReturn = 0;
+		for (int i = 0; i < max; i ++){
+			for (int j = 0; j < max; j++){
+				if (i == j && matrix[i][j] == 1){
+					toReturn ++;
+				}
+			}
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * print matrix
+	 * @param matrix
+	 */
+	public void printMatrix(int[][] matrix) {
+	    for (int row = 0; row < matrix.length; row++) {
+	        for (int col = 0; col < matrix[row].length; col++) {
+	            System.out.printf("%4d", matrix[row][col]);
+	        }
+	        System.out.println();
+	    }
+	}
 }
