@@ -62,5 +62,7 @@ public class BpmnModelReader {
 		BpmnFileOpener fileOpener = new BpmnFileOpener();
 		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
 		modelReader.test();
+		//MySqlInterface db = new MySqlInterface();
+		//db.connect();
 	}
 }

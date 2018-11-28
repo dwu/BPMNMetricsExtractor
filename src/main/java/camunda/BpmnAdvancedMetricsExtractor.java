@@ -2,6 +2,7 @@ package camunda;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
@@ -23,6 +24,8 @@ public class BpmnAdvancedMetricsExtractor {
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private JsonEncoder json;
 	private CrossConnectivityMetricExtractor ccExtractor;
+	private ConnectorInterplayMetricsExtractor connectorInterplayMetricsExtractor;
+	private DurfeeSquareMetricExtractor dsmExtractor;
 	private PartitionabilityMetricsExtractor partExtractor;
 	private SizeMetricsExtractor sizeExtractor;
 	
@@ -30,6 +33,8 @@ public class BpmnAdvancedMetricsExtractor {
 		this.basicMetricsExtractor = basicMetricsExtractor;
 		this.json = jsonEncoder;
 		this.ccExtractor = new CrossConnectivityMetricExtractor(basicMetricsExtractor);
+		this.connectorInterplayMetricsExtractor = new ConnectorInterplayMetricsExtractor(basicMetricsExtractor);
+		this.dsmExtractor = new DurfeeSquareMetricExtractor(basicMetricsExtractor);
 		this.partExtractor = new PartitionabilityMetricsExtractor(basicMetricsExtractor);
 		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
 	}
@@ -87,10 +92,13 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Density", getDensity());
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
-		json.addAdvancedMetric("ECaM", 0.0);
-		json.addAdvancedMetric("ECyM", 0.0);
+		json.addAdvancedMetric("GM", this.connectorInterplayMetricsExtractor.getGatewaysMismatchMetric());
+		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
+		//json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
+		json.addAdvancedMetric("ECaM", this.getExtendedCardosoMetric());
+		json.addAdvancedMetric("ECyM", this.getExtendedCyclomaticMetric());
+		json.addAdvancedMetric("DSM", dsmExtractor.getDurfeeMetric());
 		json.addAdvancedMetric("SM", 0.0);
-		json.addAdvancedMetric("DSM", 0.0);
 		json.addAdvancedMetric("PSM", 0.0);
 		json.addAdvancedMetric("Layout_Complexity", 0.0);
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
@@ -306,7 +314,7 @@ public class BpmnAdvancedMetricsExtractor {
 		//La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione
 		for (ModelElementInstance inGateway : inclusiveGateways) {
 			tempSize = ((FlowNode) inGateway).getOutgoing().size();
-			toReturn = Math.pow(2, tempSize) - 1;
+			toReturn += Math.pow(2, tempSize) - 1;
 		}
 		//La CFC di and-split è semplicemente 1
 		toReturn += parallelGateways.size();
@@ -601,6 +609,24 @@ public class BpmnAdvancedMetricsExtractor {
 		else 
 			return 0.0f;
 	}
+	
+	/**
+	 * Metric ECaM
+	 * It is the extension of CFC metric for Petri Nets.
+	 * @return
+	 */
+	public double getExtendedCardosoMetric(){
+		return this.getControlFlowComplexity();
+	}
+	
+	/**
+	 * Metric ECyM
+	 * it is the extension of the Cyclomatic metric for Petri Nets.
+	 * @return
+	 */
+	public int getExtendedCyclomaticMetric(){
+		return this.basicMetricsExtractor.getSequenceFlows() - this.basicMetricsExtractor.getFlowNodes() + this.basicMetricsExtractor.getPools() + this.basicMetricsExtractor.getSubprocesses();
+	}
 	/**
 	 * Metric MCD
 	 * Maximum connector degree is defined as the sum of the incoming and outgoing sequence flows of the gateway or activity with
@@ -724,4 +750,5 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
+
 }
