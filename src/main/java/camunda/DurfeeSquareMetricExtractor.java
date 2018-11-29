@@ -16,11 +16,15 @@ public class DurfeeSquareMetricExtractor {
 	
 	public DurfeeSquareMetricExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
-		this.flowNodes = new ArrayList<Integer>();
+		this.flowNodes = this.getFlowNodes(new ArrayList<Integer>());
 	}
 	
 	public double getDurfeeMetric() {
-		return this.calculateDurfee(this.getFlowNodes(flowNodes));
+		return this.calculateDurfee(this.flowNodes);
+	}
+	
+	public double getPerfectSquareMetric(){
+		return this.getPerfectSquareMetric(this.flowNodes);
 	}
 	
 	/**
@@ -55,6 +59,9 @@ public class DurfeeSquareMetricExtractor {
 		flowNodes.add(this.basicMetricsExtractor.getThrowEvents() - this.basicMetricsExtractor.getEndEvents() - this.basicMetricsExtractor.getIntermediateThrowEvents());
 		flowNodes.add(this.basicMetricsExtractor.getTransactions());
 		flowNodes.add(this.basicMetricsExtractor.getUserTasks());
+		flowNodes.removeIf(a -> (a == 0));
+		Collections.sort(flowNodes);
+		Collections.reverse(flowNodes);
 		return flowNodes;
 	}
 	
@@ -64,18 +71,14 @@ public class DurfeeSquareMetricExtractor {
 	 * @return Durfee Square
 	 */
 	private int calculateDurfee(ArrayList<Integer> flowNodes){
-		flowNodes.removeIf(a -> (a == 0));
 		int ds = 0;
 		int max = Collections.max(flowNodes);
-		Collections.sort(flowNodes);
-		Collections.reverse(flowNodes);
-		boolean found = false;
 		if (!flowNodes.isEmpty()){
 			if (flowNodes.size() == 1){
 				ds = 1;
 			} else {
 				int [][]durfeeMatrix = this.getOrderedMatrix(flowNodes, max);
-				//this.printMatrix(durfeeMatrix);
+//				this.printMatrix(durfeeMatrix);
 				if (max > flowNodes.size())
 					ds = this.getDurfeeMetricFromMatrix(durfeeMatrix, max);
 				else
@@ -93,11 +96,9 @@ public class DurfeeSquareMetricExtractor {
 	public int[][] getOrderedMatrix(ArrayList<Integer>flowNodes, int max){
 		if (max > flowNodes.size()){
 			int [][] durfeeMatrix = new int [max][max];
-//			for (int i = 0; i < max; i++){
 			for (int i = 0; i < flowNodes.size(); i++){
 				int value = flowNodes.get(i);
-//				for (int j = 0; j < max; j++){
-				for (int j = 0; j < flowNodes.size(); j++){
+				for (int j = 0; j < max; j++){
 					if (value > 0){
 						durfeeMatrix[i][j] = 1;
 						value--;
@@ -137,7 +138,22 @@ public class DurfeeSquareMetricExtractor {
 		}
 		return toReturn;
 	}
-	
+	/**
+	 * Method that calculate the perfect square metric
+	 * @param flowNodes
+	 * @return ps = perfect square
+	 */
+	private int getPerfectSquareMetric(ArrayList<Integer> flowNodes){
+		int ps = flowNodes.size();
+		int flowNodesSum = 0;
+		for (int i = 0; i < flowNodes.size(); i++){
+			flowNodesSum += flowNodes.get(i);
+		}
+		do {
+			ps--;	
+		} while(ps > (flowNodesSum/ps));
+		return ps;
+	}
 	/**
 	 * print matrix
 	 * @param matrix

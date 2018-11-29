@@ -97,7 +97,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ECyM", this.getExtendedCyclomaticMetric());
 		json.addAdvancedMetric("DSM", dsmExtractor.getDurfeeMetric());
 		json.addAdvancedMetric("SM", 0.0);
-		json.addAdvancedMetric("PSM", 0.0);
+		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
 		json.addAdvancedMetric("Layout_Complexity", 0.0);
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
 		json.addAdvancedMetric("Layout_Measure", 0.0);
