@@ -37,8 +37,7 @@ public class PartitionabilityMetricsExtractor {
 		private Collection<FlowNode> nodes;
 
 		public SeparabilityMetricExtractor() {
-			Collection<ModelElementInstance> modelNodes = new ArrayList<ModelElementInstance>(
-					basicExtractor.getCollectionOfElementType(FlowNode.class));
+			Collection<ModelElementInstance> modelNodes = new ArrayList<ModelElementInstance>(basicExtractor.getCollectionOfElementType(FlowNode.class));
 			nodes = new ArrayList<FlowNode>();
 			for (ModelElementInstance modelNode : modelNodes) {
 				nodes.add((FlowNode) modelNode);
@@ -70,21 +69,35 @@ public class PartitionabilityMetricsExtractor {
 			}
 			int tempNoOutgoingNodes = 0;
 			int tempNoIncomingNodes = 0;
+			Collection<SequenceFlow> inFlows;
+			Collection<SequenceFlow> outFlows;
 			for (FlowNode node : nodes) {
-				ModelInstance tempModel = basicExtractor.getModelInstance().clone();
-				tempModel.getModelElementById(node.getId()).getParentElement().removeChildElement(node);
-				Collection<FlowNode> tempModelNodes = tempModel.getModelElementsByType(FlowNode.class);
 				tempNoOutgoingNodes = 0;
 				tempNoIncomingNodes = 0;
-				for (FlowNode tempNode : tempModelNodes) {
-					if (tempNode.getOutgoing().size() == 0)
-						tempNoOutgoingNodes++;
-					if (tempNode.getIncoming().size() == 0)
-						tempNoIncomingNodes++;
+				for (FlowNode tempNode : nodes) {
+					if (!tempNode.equals(node)) {
+						inFlows = tempNode.getIncoming();
+						outFlows = tempNode.getOutgoing();
+						if (inFlows.size() == 0)
+							tempNoIncomingNodes++;
+						for (SequenceFlow in : inFlows) {
+							if (in.getSource().equals(node) && (inFlows.size() - 1) == 0) {
+								tempNoIncomingNodes++;
+							}
+						}
+						if (outFlows.size() == 0)
+							tempNoOutgoingNodes++;
+						for (SequenceFlow out : outFlows) {
+							if (out.getTarget().equals(node) && (outFlows.size() - 1) == 0) {
+								tempNoOutgoingNodes++;
+							}
+						}
+					}
 				}
-				if (tempNoOutgoingNodes > initialNoOutgoingNodes || tempNoIncomingNodes > initialNoIncomingNodes)
+				if (tempNoOutgoingNodes > initialNoOutgoingNodes && tempNoIncomingNodes > initialNoIncomingNodes)
 					cutVertices++;
 			}
+			System.out.println(cutVertices);
 			return (double) cutVertices;
 		}
 	}

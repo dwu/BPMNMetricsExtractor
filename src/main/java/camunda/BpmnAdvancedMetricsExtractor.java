@@ -2,9 +2,7 @@ package camunda;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
@@ -15,7 +13,6 @@ import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.camunda.bpm.model.bpmn.instance.Task;
-import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
