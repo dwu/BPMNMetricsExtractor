@@ -187,6 +187,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTCOEV", this.getStartConditionalEvents());
 		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
+		this.json.addBasicMetric("NSTMUEV", this.getStartMultipleEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getEndCompensationEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getCompensateEvents());
@@ -195,6 +196,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NENDMEV", this.getEndMessageEvents());
 		this.json.addBasicMetric("NENDSIGEV", this.getEndSignalEvents());
 		this.json.addBasicMetric("NENDTEREV", this.getEndTerminateEvents());
+		this.json.addBasicMetric("NENDMUEV", this.getEndMultipleEvents());
 		this.json.addBasicMetric("NBCANCEV", this.getBoundaryCancelEvents());
 		this.json.addBasicMetric("NBCOMPEV", this.getBoundaryCompensationEvents());
 		this.json.addBasicMetric("NBCOEV", this.getBoundaryConditionalEvents());
@@ -208,11 +210,13 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NILTEV", this.getIntermediateLinkThrowEvents());
 		this.json.addBasicMetric("NIMTEV", this.getIntermediateMessageThrowEvents());
 		this.json.addBasicMetric("NISIGTEV", this.getIntermediateSignalThrowEvents());
+		this.json.addBasicMetric("NIMUTEV",this.getIntermediateMultipleThrowEvents());
 		this.json.addBasicMetric("NICOMCEV", this.getIntermediateCompensationCatchEvents());
 		this.json.addBasicMetric("NICONCEV", this.getIntermediateConditionalCatchEvents());
 		this.json.addBasicMetric("NILCEV", this.getIntermediateLinkCatchEvents());
 		this.json.addBasicMetric("NIMCEV", this.getIntermediateMessageCatchEvents());
 		this.json.addBasicMetric("NISIGCEV", this.getIntermediateSignalCatchEvents());
+		this.json.addBasicMetric("NIMUCEV", this.getIntermediateMultipleCatchEvents());
 	}
 	
 	/**
@@ -443,8 +447,8 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryMessageEvents() {
-		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 	}
 	
 	/**
@@ -454,8 +458,8 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryTimerEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
 	}
 	
 	/**
@@ -465,8 +469,8 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryConditionalEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
 	}
 	
 	/**
@@ -476,8 +480,8 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundarySignalEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 	}
 	
 	/**
@@ -487,8 +491,8 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryEscalationEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 	}
 	
 	/**
@@ -498,9 +502,9 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryCancelEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
-	}
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
+		}
 	
 	/**
 	 * Metric: NBERREV
@@ -509,9 +513,9 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryErrorEvents() {
-		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
-	}
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
+		}
 	
 	/**
 	 * Metric: NBCOMPEV 
@@ -520,9 +524,9 @@ public class BpmnBasicMetricsExtractor {
 	 */
 	
 	public int getBoundaryCompensationEvents() {
-		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
-	}
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+		}
 	
 	
 	/**
@@ -896,7 +900,14 @@ public class BpmnBasicMetricsExtractor {
 	public int getEndTerminateEvents(){
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.TerminateEventDefinitionImpl");
-
+	}
+	/**
+	 * Metric: NENDMUEV
+	 * @return number of End Multiple Events
+	 */
+	public int getEndMultipleEvents() {
+		Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		return this.getThrowEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.EndEventImpl");
 	}
 	
 	/**
@@ -1150,6 +1161,14 @@ public class BpmnBasicMetricsExtractor {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
 	}
+	/**
+	 * Metric: NIMUCEV
+	 * @return the number of Intermediate Multiple Catch Events
+	 */
+	public int getIntermediateMultipleCatchEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getCatchEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl");
+	}
 	
 	/**
 	 * Metric: NITEV
@@ -1209,6 +1228,14 @@ public class BpmnBasicMetricsExtractor {
 	 public int getIntermediateCompensationThrowEvents() {
 		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
 		 return this.getNumberOfEventDefinitionsOfThrowEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
+	 }
+	 /**
+	  * Metric: NIMUTEV
+	  * @return number of Intermediate Multiple Throw Events
+	  */
+	 public int getIntermediateMultipleThrowEvents(){
+		 Collection<ThrowEvent> events = this.modelInstance.getModelElementsByType(ThrowEvent.class);
+		 return this.getThrowEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateThrowEventImpl");
 	 }
 	 
 	
@@ -1613,7 +1640,14 @@ public class BpmnBasicMetricsExtractor {
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 
 	}
-	
+	/**
+	 * Metric: NSTMUEV
+	 * @return the number of Start Multiple Events
+	 */
+	public int getStartMultipleEvents() {
+		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		return this.getCatchEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl");
+	}
 	
 	/**
 	 * Metric: NSUB
@@ -1978,7 +2012,21 @@ public class BpmnBasicMetricsExtractor {
 		return this.modelInstance.getModelElementsByType(modelElementType);
 	}
 	
-	
+	private int getNumberOfEventDefinitionsOfType(Collection<EventDefinition> definitions, String classPath) {
+		Class<?> aClass;
+		int toReturn = 0;
+		try {
+			aClass = Class.forName(classPath);
+				for (EventDefinition ed: definitions) {
+					if (ed.getClass().equals(aClass)) {
+						toReturn += 1;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
 	/**
 	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
 	 * @param events - La collezione of CatchEvent of cui si vuole contare number of definizioni
@@ -2008,6 +2056,7 @@ public class BpmnBasicMetricsExtractor {
 		}
 		return toReturn;
 	}
+	
 	/**
 	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
 	 * @param events - La collezione of ThrowEvent of cui si vuole contare number of definizioni
@@ -2015,7 +2064,6 @@ public class BpmnBasicMetricsExtractor {
 	 * @param definitionClassPathName - pathName della classe delle definizioni da contare
 	 * @return number of definizioni
 	 */
-
 	private int getNumberOfEventDefinitionsOfThrowEvents(Collection<ThrowEvent> events, String eventClassPathName, String definitionClassPathName) {
 		Class<?> eventClass;
 		Class<?> definitionClass;
@@ -2025,6 +2073,80 @@ public class BpmnBasicMetricsExtractor {
 			definitionClass = Class.forName(definitionClassPathName);
 			for (ThrowEvent e: events) {
 				if (e.getClass().equals(eventClass)) {
+					for (EventDefinition ed: e.getEventDefinitions()) {
+						if (ed.getClass().equals(definitionClass)) {
+							toReturn += 1;
+						}
+					}
+				}
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+	
+	private int getCatchEventsMultipleDefinitions(Collection<CatchEvent> events, String eventClassPathName) {
+		Class<?> eventClass;
+		int toReturn = 0;
+		try {
+			eventClass = Class.forName(eventClassPathName);
+			for (CatchEvent event: events) {
+				if (event.getClass().equals(eventClass) && event.getEventDefinitions().size() > 1) {
+					toReturn += 1;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+	
+	private int getThrowEventsMultipleDefinitions(Collection<ThrowEvent> events, String eventClassPathName) {
+		Class<?> eventClass;
+		int toReturn = 0;
+		try {
+			eventClass = Class.forName(eventClassPathName);
+			for (ThrowEvent event: events) {
+				if (event.getClass().equals(eventClass) && event.getEventDefinitions().size() > 1) {
+					toReturn += 1;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+	
+	private int getNonInterruptingBoundaryEventsEventDefinitions(Collection<BoundaryEvent> events, String definitionClassPathName) {
+		Class<?> definitionClass;
+		int toReturn = 0;
+		try {
+			definitionClass = Class.forName(definitionClassPathName);
+			for (BoundaryEvent e: events) {
+				if (!e.cancelActivity()) {
+					for (EventDefinition ed: e.getEventDefinitions()) {
+						if (ed.getClass().equals(definitionClass)) {
+							toReturn += 1;
+						}
+					}
+				}
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+	
+	private int getInterruptingBoundaryEventsEventDefinitions(Collection<BoundaryEvent> events, String definitionClassPathName) {
+		Class<?> definitionClass;
+		int toReturn = 0;
+		try {
+			definitionClass = Class.forName(definitionClassPathName);
+			for (BoundaryEvent e: events) {
+				if (e.cancelActivity()) {
 					for (EventDefinition ed: e.getEventDefinitions()) {
 						if (ed.getClass().equals(definitionClass)) {
 							toReturn += 1;
