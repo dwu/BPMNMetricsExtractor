@@ -8,7 +8,12 @@ import java.util.Map;
 import javax.enterprise.inject.Model;
 
 import org.camunda.bpm.model.bpmn.impl.instance.Incoming;
+import org.camunda.bpm.model.bpmn.instance.EndEvent;
+import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
+import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.xml.ModelInstance;
@@ -31,6 +36,11 @@ public class PartitionabilityMetricsExtractor {
 		DepthMetricExtractor ex = new DepthMetricExtractor();
 		return ex.getDepthInner();
 	}
+	
+	public double getStructuredness() {
+		StructurednessMetricExtractor ex = new StructurednessMetricExtractor();
+		return ex.getStructurednessInner();
+	}
 
 	private class SeparabilityMetricExtractor {
 
@@ -45,14 +55,13 @@ public class PartitionabilityMetricsExtractor {
 		}
 
 		/**
-		 * TODO "Fare finta" che il nodo dell'iterazione non esista, decrementando i vari tempIn e tempOut ogni volta che si trova un collegamento con lui
 		 * Method that calculates the separability of the model. First
 		 * it gets the number of nodes that have no outgoing or incoming flows.
 		 * Then, it checks the model obtained by removing each one of the node,
 		 * to check again the number of nodes that have no outgoing or incoming
-		 * flows. If those last numbers are greater than the the ones from the
+		 * flows. If those last numbers are greater than the ones from the
 		 * original model, the node in question is a cut-vertex, thus the
-		 * separability get incremented by one.
+		 * separability gets incremented by one.
 		 * 
 		 * @return the number of cut-vertexes
 		 */
@@ -94,10 +103,11 @@ public class PartitionabilityMetricsExtractor {
 						}
 					}
 				}
-				if (tempNoOutgoingNodes > initialNoOutgoingNodes && tempNoIncomingNodes > initialNoIncomingNodes)
+//				if (tempNoOutgoingNodes > initialNoOutgoingNodes && tempNoIncomingNodes > initialNoIncomingNodes) {
+				if (tempNoIncomingNodes > initialNoIncomingNodes) {
 					cutVertices++;
+				}
 			}
-			System.out.println(cutVertices);
 			return (double) cutVertices;
 		}
 	}
@@ -237,5 +247,315 @@ public class PartitionabilityMetricsExtractor {
 			return;
 		}
 		
+	}
+	
+	private class StructurednessMetricExtractor {
+
+		private Collection<String> visitedNodes;
+		
+		public StructurednessMetricExtractor() {
+			visitedNodes = new ArrayList<String>();
+			
+		}
+		
+		public double getStructurednessInner() {
+			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
+			int totalNumberOfNodes = modelNodes.size();
+			System.out.println("Total Number of Nodes: " + totalNumberOfNodes);
+			double result = 1 - (totalNumberOfNodes / getReducedGraphNumberOfNodesMetric());
+			return result;
+		}
+		
+		private int getReducedGraphNumberOfNodesMetric() {
+			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
+			int nodesInReducedGraph = modelNodes.size();
+			//If the model can be homogeneously reduced, the only nodes present are the start event and the end event
+			if (homogeneousReductionResult(modelNodes))
+				nodesInReducedGraph = 2;
+			else {
+				//Cycle through every node of the model to check if it is part of a reducible construct
+				int totalNumberOfNodesRemoved;
+				for (ModelElementInstance modelNode : modelNodes) {
+					totalNumberOfNodesRemoved = 0;
+					FlowNode node = (FlowNode) modelNode;
+					//Calls every reduction method and sums all the nodes that can be removed
+					totalNumberOfNodesRemoved = trivialConstructsReduction(node) + structuredStartAndEndComponentsReduction(node) + 
+							unstructuredAcyclicEndComponents(node) + unstructuredAcyclicStartAndEndComponents1(node) + 
+							unstructuredCyclicStartAndEnd1(node) + unstructuredCyclicStartAndEnd2(node) + joinConnectorMerge(node) +
+							splitConnectorsMerge(node);
+					nodesInReducedGraph -= totalNumberOfNodesRemoved;
+				}
+			}
+			System.out.println("Nodes in reduced graph: " + nodesInReducedGraph);
+			return nodesInReducedGraph;
+		}
+		
+		/**
+		 * 
+		 * @param node
+		 * @return
+		 */
+		private int structuredStartAndEndComponentsReduction(FlowNode node) {
+			boolean reducedFlag = false;
+			Collection<SequenceFlow> nodeIncoming, nodeOutgoing;
+			int numberOfNodesToRemove = 0;
+			if (node instanceof Gateway) {
+				reducedFlag = false;
+				nodeIncoming = node.getIncoming();
+				for (SequenceFlow flow : nodeIncoming) {
+					if (flow.getSource() instanceof StartEvent && flow.getSource().getOutgoing().size() == 1) {
+						//variable decreased for every start event that has a single outgoing flow 
+						numberOfNodesToRemove++;
+						reducedFlag = true;
+					}
+				}
+				//variable re-increased for the node that would substitute the ones that got merged together 
+				if (reducedFlag)
+					numberOfNodesToRemove--;
+				//Reduction of Structured End Components
+				reducedFlag = false;
+				nodeOutgoing = node.getOutgoing();
+				for (SequenceFlow flow : nodeOutgoing) {
+					if (flow.getTarget() instanceof EndEvent && flow.getTarget().getIncoming().size() == 1) {
+						//variable decreased for every end event that has a single incoming flow 
+						numberOfNodesToRemove++;
+						reducedFlag = true;
+					}
+				}
+				//variable re-increased for the node that would substitute the ones that got merged together 
+				if (reducedFlag)
+					numberOfNodesToRemove--;
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int unstructuredAcyclicEndComponents(FlowNode node) {
+			//Reduction of Unstructured Acyclic End Components 
+			Collection<SequenceFlow> nodeIncoming;
+			int numberOfNodesToRemove = 0;
+			if (node instanceof EndEvent) {
+				nodeIncoming = node.getIncoming();
+				if (node.getOutgoing().size() == 0 && nodeIncoming.size() == 1) {
+					for (SequenceFlow flow : nodeIncoming) {
+						if (flow.getSource() instanceof InclusiveGateway && !isInCycle(flow.getSource())) {
+							numberOfNodesToRemove++;
+						}
+					}
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int unstructuredAcyclicStartAndEndComponents1(FlowNode node) {
+			int numberOfNodesToRemove = 0;
+			//Reduction of Unstructured Acyclic Start and End Components (b)
+			if (node instanceof Gateway && !(node instanceof ParallelGateway) && !isInCycle(node)) {
+				boolean firstEventFound = false;
+				boolean secondEventFound = false;
+				boolean gatewayConnected = false;
+				FlowNode tempNode, secondEventNode, firstEventNode = null;
+				Collection<SequenceFlow> nodeOutgoing = node.getOutgoing();
+				Collection<SequenceFlow> tempNodeIncoming, tempNodeOutgoing;
+				for (SequenceFlow outFlow : nodeOutgoing) {
+					tempNode = outFlow.getTarget();
+					if (!firstEventFound && (tempNode instanceof EndEvent || tempNode instanceof StartEvent) && tempNode.getOutgoing().size() == 0 && tempNode.getIncoming().size() == 1) {
+						firstEventNode = tempNode;
+						firstEventFound = true;
+					}
+					if (!secondEventFound && tempNode instanceof ParallelGateway && !isInCycle(tempNode)) {
+						tempNodeIncoming = tempNode.getIncoming();
+						for (SequenceFlow inFlowTemp : tempNodeIncoming) {
+							secondEventNode = inFlowTemp.getSource();
+							if ((secondEventNode instanceof EndEvent || secondEventNode instanceof StartEvent) && !secondEventNode.equals(firstEventNode) && secondEventNode.getIncoming().size() == 0 && secondEventNode.getOutgoing().size() == 1) {
+								secondEventFound = true;
+							}
+						}
+						tempNodeOutgoing = tempNode.getOutgoing();
+						for (SequenceFlow outFlowTemp : tempNodeOutgoing) {
+							if (outFlowTemp.getTarget().equals(node))
+								gatewayConnected = true;
+						}
+					}
+				}
+				if (!gatewayConnected && firstEventFound && secondEventFound) {
+					numberOfNodesToRemove++;
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int unstructuredCyclicStartAndEnd1(FlowNode node) {
+			int numberOfNodesToRemove = 0;
+			//Reduction of Unstructured Cyclic Start and End Components
+			if (node instanceof Gateway && isInCycle(node)) {
+				boolean firstEventFound = false;
+				boolean secondEventFound = false;
+				boolean gatewayConnected = false;
+				FlowNode firstConnector = node;
+				FlowNode tempNode, firstEventNode = null;
+				Collection<SequenceFlow> nodeOutgoing = node.getOutgoing();
+				Collection<SequenceFlow> tempNodeOutgoing;
+				for (SequenceFlow outFlow : nodeOutgoing) {
+					tempNode = outFlow.getTarget();
+					if (!firstEventFound && (tempNode instanceof EndEvent || tempNode instanceof StartEvent) && tempNode.getOutgoing().size() == 0 && tempNode.getIncoming().size() == 1) {
+						firstEventNode = tempNode;
+						firstEventFound = true;
+					}
+					if (tempNode instanceof Gateway && isInCycle(tempNode) && (!(tempNode instanceof ExclusiveGateway) || !(firstConnector instanceof ExclusiveGateway))) {
+						FlowNode secondConnector = tempNode;
+						tempNodeOutgoing = secondConnector.getOutgoing();
+						for (SequenceFlow tempOutFlow : tempNodeOutgoing) {
+							FlowNode secondEvent = tempOutFlow.getTarget();
+							if (!secondEventFound && (secondEvent instanceof EndEvent || secondEvent instanceof StartEvent) && !secondEvent.equals(firstEventNode) && secondEvent.getOutgoing().size() == 0 && secondEvent.getIncoming().size() == 1) {
+								secondEventFound = true;
+							}
+							if (secondEvent.equals(node))
+								gatewayConnected = true;
+						}
+					}
+				}
+				if (!gatewayConnected && firstEventFound && secondEventFound) {
+					numberOfNodesToRemove++;
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int unstructuredCyclicStartAndEnd2(FlowNode node) {
+			int numberOfNodesToRemove = 0;
+			//Reduction of Unstructured Cyclic Start and End Components (b)
+			if (node instanceof Gateway && isInCycle(node)) {
+				boolean firstEventFound = false;
+				boolean secondEventFound = false;
+				boolean gatewayConnected = false;
+				FlowNode firstConnector = node;
+				FlowNode tempNode, firstEventNode = null;
+				Collection<SequenceFlow> nodeIncoming = node.getIncoming();
+				Collection<SequenceFlow> tempNodeIncoming;
+				for (SequenceFlow inFlow : nodeIncoming) {
+					tempNode = inFlow.getSource();
+					if (!firstEventFound && (tempNode instanceof EndEvent || tempNode instanceof StartEvent) && tempNode.getOutgoing().size() == 1 && tempNode.getIncoming().size() == 0) {
+						firstEventNode = tempNode;
+						firstEventFound = true;
+					}
+					if (tempNode instanceof Gateway && isInCycle(tempNode) && (tempNode instanceof ParallelGateway || firstConnector instanceof ParallelGateway)) {
+						FlowNode secondConnector = tempNode;
+						tempNodeIncoming = secondConnector.getIncoming();
+						for (SequenceFlow tempInFlow : tempNodeIncoming) {
+							FlowNode secondEvent = tempInFlow.getSource();
+							if (!secondEventFound && (secondEvent instanceof EndEvent || secondEvent instanceof StartEvent) && !secondEvent.equals(firstEventNode) && secondEvent.getOutgoing().size() == 1 && secondEvent.getIncoming().size() == 0) {
+								secondEventFound = true;
+							}
+							if (secondEvent.equals(node))
+								gatewayConnected = true;
+						}
+					}
+				}
+				if (!gatewayConnected && firstEventFound && secondEventFound) {
+					numberOfNodesToRemove++;
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int joinConnectorMerge(FlowNode node) {
+			//Join Connector Merge
+			int numberOfNodesToRemove = 0;
+			if (node instanceof Gateway && node.getIncoming().size() > 1 && node.getOutgoing().size() == 1) {
+				boolean possibleMerge = false;
+				boolean gatewayConnected = false;
+				Collection<SequenceFlow> nodeOutgoing = node.getOutgoing();
+				FlowNode tempNode;
+				for (SequenceFlow outFlow : nodeOutgoing) {
+					tempNode = outFlow.getTarget();
+					if (!tempNode.equals(node) && tempNode.getClass().equals(node.getClass()) && tempNode.getIncoming().size() > 1) {
+						possibleMerge = true;
+					}
+					if (tempNode.equals(node)) {
+						gatewayConnected = true;
+					}
+				}
+				if (!gatewayConnected && possibleMerge) {
+					numberOfNodesToRemove++;
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int splitConnectorsMerge(FlowNode node) {
+			int numberOfNodesToRemove = 0;
+			//Split Connector Merge
+			if (node instanceof Gateway && node.getOutgoing().size() > 1) {
+				boolean possibleMerge = false;
+				boolean gatewayConnected = false;
+				Collection<SequenceFlow> nodeOutgoing = node.getOutgoing();
+				FlowNode tempNode;
+				for (SequenceFlow outFlow : nodeOutgoing) {
+					tempNode = outFlow.getTarget();
+					if (!tempNode.equals(node) && tempNode.getClass().equals(node.getClass()) && tempNode.getIncoming().size() == 1 && tempNode.getOutgoing().size() > 1) {
+						possibleMerge = true;
+					}
+					if (tempNode.equals(node)) {
+						gatewayConnected = true;
+					}
+				}
+				if (!gatewayConnected && possibleMerge) {
+					numberOfNodesToRemove++;
+				}
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private int trivialConstructsReduction(FlowNode node) {
+			//Reduction of Trivial Constructs
+			int numberOfNodesToRemove = 0;
+			if (node.getOutgoing().size() == 1 && node.getOutgoing().size() == 1) {
+				numberOfNodesToRemove++;
+			}
+			return numberOfNodesToRemove;
+		}
+		
+		private boolean homogeneousReductionResult(Collection<ModelElementInstance> modelNodes) {
+			Collection<ModelElementInstance> modelGateways = basicExtractor.getCollectionOfElementType(Gateway.class);
+			boolean firstCase = true; 
+			boolean secondCase = true; 
+			boolean thirdCase = true;
+			for (ModelElementInstance modelGateway : modelGateways) {
+				Gateway gateway = (Gateway) modelGateway;
+				if (!(gateway instanceof ExclusiveGateway)) {
+					firstCase = false;
+				}
+				if (!(gateway instanceof InclusiveGateway)) {
+					secondCase = false;
+				}
+				if (!((gateway.getOutgoing().size() > 1 && !(gateway instanceof ParallelGateway)) || (gateway.getIncoming().size() > 1 && !(gateway instanceof ExclusiveGateway)))) {
+					thirdCase = false;
+				}
+			}
+			for (ModelElementInstance modelNode : modelNodes) {
+				FlowNode node = (FlowNode) modelNode;
+				if (isInCycle(node)) {
+					secondCase = false;
+					thirdCase = false;
+				}
+			}
+			if (firstCase || secondCase || thirdCase)
+				return true;
+			else 
+				return false;
+		}
+		
+		private boolean isInCycle(FlowNode node) {
+			if (visitedNodes.contains(node.getId()))
+				return true;
+			visitedNodes.add(node.getId());
+			Collection<SequenceFlow> nodeOutgoing = node.getOutgoing();
+			for (SequenceFlow flow : nodeOutgoing) {
+				if (isInCycle(flow.getTarget()))
+					return true;
+			}
+			visitedNodes.remove(node.getId());
+			return false;
+		}
 	}
 }

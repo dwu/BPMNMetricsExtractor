@@ -80,10 +80,10 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("Sequentiality", getSequentiality());
 		json.addAdvancedMetric("diam", sizeExtractor.getDiam());
-		json.addAdvancedMetric("Depth", partExtractor.getDepth());
+		json.addAdvancedMetric("Depth", 0.0);
 		json.addAdvancedMetric("GM", 0.0);
 		json.addAdvancedMetric("GH", 0.0);
-		json.addAdvancedMetric("Structuredness", 0.0);
+		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
 		json.addAdvancedMetric("CYC", 0.0);
 		json.addAdvancedMetric("TS", 0.0);
 		json.addAdvancedMetric("Density", getDensity());
