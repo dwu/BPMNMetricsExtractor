@@ -3,6 +3,8 @@ package camunda;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.print.attribute.standard.MediaName;
+
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
@@ -25,6 +27,7 @@ public class BpmnAdvancedMetricsExtractor {
 	private DurfeeSquareMetricExtractor dsmExtractor;
 	private PartitionabilityMetricsExtractor partExtractor;
 	private SizeMetricsExtractor sizeExtractor;
+	private NestingDepthMetricsExtractor ndExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
@@ -34,6 +37,7 @@ public class BpmnAdvancedMetricsExtractor {
 		this.dsmExtractor = new DurfeeSquareMetricExtractor(basicMetricsExtractor);
 		this.partExtractor = new PartitionabilityMetricsExtractor(basicMetricsExtractor);
 		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
+		this.ndExtractor = new NestingDepthMetricsExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -58,10 +62,10 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("HPC_D", getHalsteadBasedProcessComplexityDifficulty());
 		json.addAdvancedMetric("HPC_N", getHalsteadBasedProcessComplexityLength());
 		json.addAdvancedMetric("HPC_V", getHalsteadBasedProcessComplexityVolume());
-		json.addAdvancedMetric("NoI", 0.0);
-		json.addAdvancedMetric("NoO", 0.0);
-		json.addAdvancedMetric("Lenght", 0.0);
-		json.addAdvancedMetric("IC", 0.0);
+		json.addAdvancedMetric("NoI", getNumberOfActivityInputs());
+		json.addAdvancedMetric("NoO", getNumberOfActivityOutputs());
+		json.addAdvancedMetric("Lenght", getActivityLength());
+		json.addAdvancedMetric("IC", getInterfaceComplexityOfActivityMetric());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());	
 		json.addAdvancedMetric("TNSF", getTotalNumberOfSequenceFlow());	
 		//Diminuire il numero di cifre?
@@ -69,18 +73,18 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
 		json.addAdvancedMetric("W", 0.0);
-		json.addAdvancedMetric("MaxND", 0.0);
+		json.addAdvancedMetric("MaxND", ndExtractor.getMaxNestingDepth());
 		json.addAdvancedMetric("AntiPatterns_for_BPM", 0.0);
 		json.addAdvancedMetric("CP", getProcessCoupling());
 		json.addAdvancedMetric("Cohesion", 0.0);
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
-		json.addAdvancedMetric("MeanND", 0.0);
+		json.addAdvancedMetric("MeanND", ndExtractor.getMeanNestingDepth());
 		json.addAdvancedMetric("CI", 0.0);
 		json.addAdvancedMetric("RT", 0.0);
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("Sequentiality", getSequentiality());
 		json.addAdvancedMetric("diam", sizeExtractor.getDiam());
-		json.addAdvancedMetric("Depth", 0.0);
+		json.addAdvancedMetric("Depth", partExtractor.getDepth());
 		json.addAdvancedMetric("GM", 0.0);
 		json.addAdvancedMetric("GH", 0.0);
 		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
@@ -398,7 +402,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getNumberOfActivityInputs() {
-		return 0;
+		return basicMetricsExtractor.getDataInputAssociations();
 	}
 	
 	/**
@@ -408,7 +412,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getNumberOfActivityOutputs() {
-		return 0;
+		return basicMetricsExtractor.getDataOutputAssociations();
 	}
 	
 	/**
@@ -420,19 +424,19 @@ public class BpmnAdvancedMetricsExtractor {
 	 *  @return
 	 */
 	public int getActivityLength() {
-		return 0;
+		return basicMetricsExtractor.getActivities();
 	}
 	
 	/**
 	 * Metric: IC
-	 * Interface complexity of an activity metric. IC = Length ? (NoI ? NoO)2, where 
+	 * Interface complexity of an activity metric. IC = Length * (NoI * NoO), where 
 	 *  the length of the activity can be calculated using traditional Software Engineering metrics
 	 *  such as LOC (1 if the activity source code is unknown) and NoI and NoO are 
 	 *  the number of inputs and outputs.
 	 * @return
 	 */
 	public int getInterfaceComplexityOfActivityMetric() {
-		return 0;
+		return getActivityLength() * getNumberOfActivityInputs() * getNumberOfActivityOutputs();
 	}
 	
 	/**

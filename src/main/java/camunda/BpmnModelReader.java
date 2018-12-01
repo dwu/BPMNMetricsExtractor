@@ -1,7 +1,15 @@
 package camunda;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.xml.impl.ModelInstanceImpl;
+import org.camunda.bpm.model.xml.impl.validation.ModelInstanceValidator;
+import org.camunda.bpm.model.xml.validation.ModelElementValidator;
+import org.camunda.bpm.engine.impl.migration.validation.instruction.OnlyOnceMappedActivityInstructionValidator;
 import org.camunda.bpm.model.bpmn.Bpmn;
 
 /**

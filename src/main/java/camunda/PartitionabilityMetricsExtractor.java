@@ -86,12 +86,13 @@ public class PartitionabilityMetricsExtractor {
 		}
 
 		/**
-		 * Method that calculates the separability of the model. First it gets the
-		 * number of nodes that have no outgoing or incoming flows. Then, it checks the
-		 * model obtained by removing each one of the node, to check again the number of
-		 * nodes that have no outgoing or incoming flows. If those last numbers are
-		 * greater than the ones from the original model, the node in question is a
-		 * cut-vertex, thus the separability gets incremented by one.
+		 * Method that calculates the separability of the model. First it gets
+		 * the number of nodes that have no outgoing or incoming flows. Then, it
+		 * checks the model obtained by removing each one of the node, to check
+		 * again the number of nodes that have no outgoing or incoming flows. If
+		 * those last numbers are greater than the ones from the original model,
+		 * the node in question is a cut-vertex, thus the separability gets
+		 * incremented by one.
 		 * 
 		 * @return
 		 */
@@ -133,7 +134,8 @@ public class PartitionabilityMetricsExtractor {
 						}
 					}
 				}
-				// if (tempNoOutgoingNodes > initialNoOutgoingNodes && tempNoIncomingNodes >
+				// if (tempNoOutgoingNodes > initialNoOutgoingNodes &&
+				// tempNoIncomingNodes >
 				// initialNoIncomingNodes) {
 				if (tempNoIncomingNodes > initialNoIncomingNodes) {
 					cutVertices++;
@@ -164,9 +166,12 @@ public class PartitionabilityMetricsExtractor {
 		}
 
 		/**
-		 * Method that calculates the depth of the model. The depth of a node represents
-		 * the minimun between the depth-in and the depth-out of a Node in the model.
-		 * This method iterates on the start nodes of the model to calculate recursively the depth-in and the depth-out for each one of them.
+		 * Method that calculates the depth of the model. The depth of a node
+		 * represents the minimun between the depth-in and the depth-out of a
+		 * Node in the model. This method iterates on the start nodes of the
+		 * model to calculate recursively the depth-in and the depth-out for
+		 * each one of them.
+		 * 
 		 * @return the depth of the model
 		 */
 		public double getDepthInner() {
@@ -178,7 +183,8 @@ public class PartitionabilityMetricsExtractor {
 			int depthOut = 0;
 			int toAdd = 0;
 			int toReturn = 0;
-			//Iterate on every start event, to get every possibile path and, thus, every node
+			// Iterate on every start event, to get every possibile path and,
+			// thus, every node
 			for (ModelElementInstance modelStart : modelStartEvent) {
 				visitedNodes.clear();
 				FlowNode start = (FlowNode) modelStart;
@@ -186,7 +192,8 @@ public class PartitionabilityMetricsExtractor {
 				visitedNodes.clear();
 				calculateDepthOut(start);
 			}
-			//Iterate on every node to check the minimum between the depth-in and the depth-out
+			// Iterate on every node to check the minimum between the depth-in
+			// and the depth-out
 			for (ModelElementInstance modelNode : modelNodes) {
 				FlowNode node = (FlowNode) modelNode;
 				depthIn = nodesIndepth.get(node);
@@ -194,20 +201,26 @@ public class PartitionabilityMetricsExtractor {
 				toAdd = depthIn < depthOut ? depthIn : depthOut;
 				results.add(toAdd);
 			}
-			//Iterate on the array of the minumum results obtained to get the maximum
+			// Iterate on the array of the minumum results obtained to get the
+			// maximum
 			for (int result : results) {
 				toReturn = result > toReturn ? result : toReturn;
 			}
 			return (double) toReturn;
 		}
-		
+
 		/**
-		 * Recursive method that calculates the depth out of a node. The depth out of a node is based on the depth out of the successive node.
-		 * The depth out is incremented by one for every join node that is on the path of the node, and decremented for every split.
-		 * @param sourceNode 
+		 * Recursive method that calculates the depth out of a node. The depth
+		 * out of a node is based on the depth out of the successive node. The
+		 * depth out is incremented by one for every join node that is found on
+		 * the path of the node, and decremented for every split.
+		 * 
+		 * @param sourceNode
 		 * @return the depthOut of the node
 		 */
 		private int calculateDepthOut(FlowNode sourceNode) {
+			// Check if the node has already been visited to avoid an infinite
+			// loop in presence of cycles in the model
 			if (visitedNodes.contains(sourceNode.getId())) {
 				return 0;
 			}
@@ -221,44 +234,57 @@ public class PartitionabilityMetricsExtractor {
 			Collection<SequenceFlow> outgoingFlows = sourceNode.getOutgoing();
 			Collection<SequenceFlow> incomingFlows = sourceNode.getIncoming();
 			int incomingSize = incomingFlows.size();
-			//Iterates on each outgoing flow of the source node
+			// Iterates on each outgoing flow of the source node
 			for (SequenceFlow outFlow : outgoingFlows) {
 				succNode = outFlow.getTarget();
-				//Check if the successive node's depth-out has already been calculated
+				// Check if the successive node's depth-out has already been
+				// calculated
 				if (nodesOutdepth.containsKey(succNode.getId())) {
 					tempDepthOut = nodesOutdepth.get(succNode.getId());
 				} else {
-					//The successive node's depth out has not already been calculated, so the method is recursively called 
+					// The successive node's depth out has not already been
+					// calculated, so the method is recursively called
 					tempDepthOut = calculateDepthOut(succNode);
 				}
-				//Save the greatest depth-out of the various possible successive nodes
+				// Save the greatest depth-out of the various successive nodes
 				if (tempDepthOut > succDepthOut || succDepthOut == 0) {
 					succDepthOut = tempDepthOut;
 					succOutgoing = succNode.getOutgoing().size();
 				}
 			}
+			// Calculate the depth-out checking if the successive node is either
+			// a split node or not and if the current node is a join node or not
 			if ((succOutgoing > 1 && incomingSize > 1)
 					|| ((succOutgoing == 1 || succOutgoing == 0) && (incomingSize == 0 || incomingSize == 1))) {
 				// max(depthout(curr), depthout(succ)) if pre -> Split && curr -> Join OR
 				// max(depthout(curr), depthout(succ)) if pre -/> Split && curr -/> Join
-				// toReturn = succDepthOut > baseDepthOut ? succDepthOut : baseDepthOut;
 				toReturn = succDepthOut;
 			} else if (succOutgoing > 1 && (incomingSize == 0 || incomingSize == 1)) {
 				// max(depthout(curr), depthout(succ) - 1) if pre -> Split && curr -/> Join
 				toReturn = (succDepthOut - 1) > baseDepthOut ? (succDepthOut - 1) : baseDepthOut;
 			} else if ((succOutgoing == 1 || succOutgoing == 0) && incomingSize > 1) {
 				// max(depthout(curr), depthout(succ) + 1) if pre -/> Split && curr -> Join
-				// toReturn = (succDepthOut + 1) > baseDepthOut ? (succDepthOut + 1) :
-				// baseDepthOut;
 				toReturn = (succDepthOut + 1);
 			}
 			visitedNodes.remove(sourceNode.getId());
+			// Save the depth-out of the node in the relative map
 			if (!nodesOutdepth.containsKey(sourceNode.getId()))
 				nodesOutdepth.put(sourceNode.getId(), toReturn);
 			return toReturn;
 		}
 
+		/**
+		 * Recursive method that calculates the depth in of a node. The depth in
+		 * of a node is based on the depth in of the previous node. The depth in
+		 * is incremented by one for every split node that is found on the path
+		 * of the node, and decremented for every join.
+		 * 
+		 * @param sourceNode
+		 * @return the depthOut of the node
+		 */
 		private void calculateDepthIn(FlowNode sourceNode) {
+			// Check if the node has already been visited to avoid an infinite
+			// loop in presence of cycles in the model
 			if (visitedNodes.contains(sourceNode.getId())) {
 				return;
 			}
@@ -271,37 +297,38 @@ public class PartitionabilityMetricsExtractor {
 			int toReturn = 0;
 			Collection<SequenceFlow> incomingFlows = sourceNode.getIncoming();
 			int incomingSize = incomingFlows.size();
-			// fare i confronti relativi
+			// Iterates on each incoming flow of the source node
 			for (SequenceFlow inFlow : incomingFlows) {
 				precNode = inFlow.getSource();
+				// Check if the previous node's depth-in has already been
+				// calculated
 				if (nodesIndepth.containsKey(precNode)) {
 					tempDepthIn = nodesIndepth.get(precNode);
 				}
+				// Save the greatest depth-in of the various previous nodes
 				if (tempDepthIn > precNodeDepthIn || precNodeDepthIn == 0) {
 					precNodeDepthIn = tempDepthIn;
 					precNodeOutgoing = precNode.getOutgoing().size();
 				}
 			}
+			// Calculate the depth-in checking if the previous node is either a
+			// split node or not and if the current node is a join node or not
 			if ((precNodeOutgoing > 1 && incomingSize > 1)
 					|| ((precNodeOutgoing == 1 || precNodeOutgoing == 0) && (incomingSize == 0 || incomingSize == 1))) {
 				// max(depthin(curr), depthin(succ)) if pre -> Split && curr -> Join OR
 				// max(depthin(curr), depthin(succ)) if pre -/> Split && curr -/> Join
-				// toReturn = precNodeDepthIn > baseDepthIn ? precNodeDepthIn : baseDepthIn;
 				toReturn = precNodeDepthIn;
 			} else if (precNodeOutgoing > 1 && (incomingSize == 0 || incomingSize == 1)) {
 				// max(depthin(curr), depthin(succ) + 1) if pre -> Split && curr -/> Join
-				// toReturn = (precNodeDepthIn + 1) > baseDepthIn ? (precNodeDepthIn + 1):
-				// baseDepthIn;
 				toReturn = (precNodeDepthIn + 1);
 			} else if ((precNodeOutgoing == 1 || precNodeOutgoing == 0) && incomingSize > 1) {
 				// max(depthin(curr), depthin(succ) - 1) if pre -/> Split && curr -> Join
 				toReturn = (precNodeDepthIn - 1) > baseDepthIn ? (precNodeDepthIn - 1) : baseDepthIn;
 			}
-			// salvare solamente il minore tra i vari risultati ottenuti in relazione ai
-			// nodi precedenti
-			// richiamare nuovamente il metodo sui nodi successivi
+			// Save the depth-out of the node in the relative map
 			if (!nodesIndepth.containsKey(sourceNode))
 				nodesIndepth.put(sourceNode, toReturn);
+			// Call the method recursively on the successive nodes
 			Collection<SequenceFlow> outgoingFlows = sourceNode.getOutgoing();
 			for (SequenceFlow outFlow : outgoingFlows) {
 				calculateDepthIn(outFlow.getTarget());
@@ -312,23 +339,42 @@ public class PartitionabilityMetricsExtractor {
 
 	}
 
+	/**
+	 * Inner class the is used to calculate the model structuredness
+	 * 
+	 * @author PROSLabTeam
+	 *
+	 */
 	private class StructurednessMetricExtractor {
 
 		private Collection<String> visitedNodes;
 
 		public StructurednessMetricExtractor() {
 			visitedNodes = new ArrayList<String>();
-
 		}
 
+		/**
+		 * Method that calculates the structuredness of the model. The
+		 * structuredness of a model is given by 1 minus the division between
+		 * the number of nodes in the reduced graph and the number of nodes of
+		 * the current graph.
+		 * 
+		 * @return the structuredness of the model
+		 */
 		public double getStructurednessInner() {
 			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
 			int totalNumberOfNodes = modelNodes.size();
-			System.out.println("Total Number of Nodes: " + totalNumberOfNodes);
 			double result = 1 - (totalNumberOfNodes / getReducedGraphNumberOfNodesMetric());
 			return result;
 		}
 
+		/**
+		 * Method that, given the base model, determines what nodes would be
+		 * removed in the construction of the reduced graph, applying only the
+		 * rules that would have changed the number of nodes in the graph.
+		 * 
+		 * @return the number of nodes in the reduced graph
+		 */
 		private int getReducedGraphNumberOfNodesMetric() {
 			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
 			int nodesInReducedGraph = modelNodes.size();
@@ -337,67 +383,79 @@ public class PartitionabilityMetricsExtractor {
 			if (homogeneousReductionResult(modelNodes))
 				nodesInReducedGraph = 2;
 			else {
-				// Cycle through every node of the model to check if it is part of a reducible
-				// construct
+				// Cycle through every node of the model to check if it would be removed
+				// in the reduced graph applying all the possible rules
 				int totalNumberOfNodesRemoved;
 				for (ModelElementInstance modelNode : modelNodes) {
 					totalNumberOfNodesRemoved = 0;
 					FlowNode node = (FlowNode) modelNode;
-					// Calls every reduction method and sums all the nodes that can be removed
+					// Calls every reduction method and sums all the nodes that
+					// can be removed
 					totalNumberOfNodesRemoved = trivialConstructsReduction(node)
-							+ structuredStartAndEndComponentsReduction(node) + unstructuredAcyclicEndComponents(node)
-							+ unstructuredAcyclicStartAndEndComponents1(node) + unstructuredCyclicStartAndEnd1(node)
-							+ unstructuredCyclicStartAndEnd2(node) + joinConnectorMerge(node)
+							+ structuredStartAndEndComponentsReduction(node) + unstructuredAcyclicEndComponentsReduction(node)
+							+ unstructuredAcyclicStartAndEndComponentsReduction(node) + unstructuredCyclicStartAndEndReduction1(node)
+							+ unstructuredCyclicStartAndEndReduction2(node) + joinConnectorMerge(node)
 							+ splitConnectorsMerge(node);
 					nodesInReducedGraph -= totalNumberOfNodesRemoved;
 				}
 			}
-			System.out.println("Nodes in reduced graph: " + nodesInReducedGraph);
 			return nodesInReducedGraph;
 		}
 
 		/**
-		 * 
-		 * @param node
-		 * @return
+		 * Method that applies the structured start and end components reduction and calculates the number of 
+		 * nodes that it would remove. 
+		 * The rule states that if two or more start nodes are linked only to the same gateway, or if two or more
+		 * end nodes' only incoming flows come from the same gateway, those events can be merged.
+		 * @param node: current node
+		 * @return the number of nodes that would be removed applying this rule
 		 */
 		private int structuredStartAndEndComponentsReduction(FlowNode node) {
+			// "Reduction of Structured Start Components"
 			boolean reducedFlag = false;
 			Collection<SequenceFlow> nodeIncoming, nodeOutgoing;
 			int numberOfNodesToRemove = 0;
+			//Check if node is a gateway 
 			if (node instanceof Gateway) {
 				reducedFlag = false;
 				nodeIncoming = node.getIncoming();
+				//Iterate on the incoming flows and check if the nodes that generated them are Start Events with 
+				// only one outgoing flow
 				for (SequenceFlow flow : nodeIncoming) {
 					if (flow.getSource() instanceof StartEvent && flow.getSource().getOutgoing().size() == 1) {
-						// variable decreased for every start event that has a single outgoing flow
 						numberOfNodesToRemove++;
 						reducedFlag = true;
 					}
 				}
-				// variable re-increased for the node that would substitute the ones that got
-				// merged together
+				//The number of the nodes to remove is decreased by one, to add the node that would be the 
+				// sum of the ones that got removed
 				if (reducedFlag)
 					numberOfNodesToRemove--;
-				// Reduction of Structured End Components
+				// "Reduction of Structured End Components"
 				reducedFlag = false;
 				nodeOutgoing = node.getOutgoing();
+				//Iterate on the outgoing flows and check if the nodes that are linked to them are End Events with 
+				// only one incoming flow
 				for (SequenceFlow flow : nodeOutgoing) {
 					if (flow.getTarget() instanceof EndEvent && flow.getTarget().getIncoming().size() == 1) {
-						// variable decreased for every end event that has a single incoming flow
 						numberOfNodesToRemove++;
 						reducedFlag = true;
 					}
 				}
-				// variable re-increased for the node that would substitute the ones that got
-				// merged together
+				//The number of the nodes to remove is decreased by one, to add the node that would be the 
+				// sum of the ones that got removed
 				if (reducedFlag)
 					numberOfNodesToRemove--;
 			}
 			return numberOfNodesToRemove;
 		}
-
-		private int unstructuredAcyclicEndComponents(FlowNode node) {
+		
+		/**
+		 * 
+		 * @param node
+		 * @return
+		 */
+		private int unstructuredAcyclicEndComponentsReduction(FlowNode node) {
 			// Reduction of Unstructured Acyclic End Components
 			Collection<SequenceFlow> nodeIncoming;
 			int numberOfNodesToRemove = 0;
@@ -414,7 +472,7 @@ public class PartitionabilityMetricsExtractor {
 			return numberOfNodesToRemove;
 		}
 
-		private int unstructuredAcyclicStartAndEndComponents1(FlowNode node) {
+		private int unstructuredAcyclicStartAndEndComponentsReduction(FlowNode node) {
 			int numberOfNodesToRemove = 0;
 			// Reduction of Unstructured Acyclic Start and End Components (b)
 			if (node instanceof Gateway && !(node instanceof ParallelGateway) && !isInCycle(node)) {
@@ -456,7 +514,7 @@ public class PartitionabilityMetricsExtractor {
 			return numberOfNodesToRemove;
 		}
 
-		private int unstructuredCyclicStartAndEnd1(FlowNode node) {
+		private int unstructuredCyclicStartAndEndReduction1(FlowNode node) {
 			int numberOfNodesToRemove = 0;
 			// Reduction of Unstructured Cyclic Start and End Components
 			if (node instanceof Gateway && isInCycle(node)) {
@@ -498,7 +556,7 @@ public class PartitionabilityMetricsExtractor {
 			return numberOfNodesToRemove;
 		}
 
-		private int unstructuredCyclicStartAndEnd2(FlowNode node) {
+		private int unstructuredCyclicStartAndEndReduction2(FlowNode node) {
 			int numberOfNodesToRemove = 0;
 			// Reduction of Unstructured Cyclic Start and End Components (b)
 			if (node instanceof Gateway && isInCycle(node)) {
@@ -589,16 +647,32 @@ public class PartitionabilityMetricsExtractor {
 			}
 			return numberOfNodesToRemove;
 		}
-
+		
+		/**
+		 * Checks if the node would be part of a trivial constructs and returns 1 in a positive case, and 0 otherwise.
+		 * A trivial construct is a node of the graph with only one incoming flow and one outgoing flow.
+		 * @param node
+		 * @return the number of nodes that would be removed by the trivial constructs reduction if applied on the current node
+		 */
 		private int trivialConstructsReduction(FlowNode node) {
-			// Reduction of Trivial Constructs
 			int numberOfNodesToRemove = 0;
 			if (node.getOutgoing().size() == 1 && node.getOutgoing().size() == 1) {
 				numberOfNodesToRemove++;
 			}
 			return numberOfNodesToRemove;
 		}
-
+		
+		/**
+		 * Checks the three possible cases in which the homogeneous reduction is possible on the model.
+		 * In the first case, every gateway of the model must be a XOR-node (exclusive gateway)
+		 * In the second case, every gateway of the model must be an OR-node (inclusive gateway)
+		 * In the third case, every split gateway mustn't be an AND-node (parallel gateway) and 
+		 *  every join gateway mustn't be a XOR-node.
+		 * For both the second and the third node, every node of the cycle mustn't be part of a cycle.
+		 * The homogeneous reduction reduces the graph to just the start and the end node.
+		 * @param modelNodes
+		 * @return true if the homogeneous reduction is applicable, false otherwise
+		 */
 		private boolean homogeneousReductionResult(Collection<ModelElementInstance> modelNodes) {
 			Collection<ModelElementInstance> modelGateways = basicExtractor.getCollectionOfElementType(Gateway.class);
 			boolean firstCase = true;
@@ -629,7 +703,12 @@ public class PartitionabilityMetricsExtractor {
 			else
 				return false;
 		}
-
+		
+		/**
+		 * Checks if the node is part of a cycle through recursion
+		 * @param node
+		 * @return true if the node is part of a cycle, false otherwise
+		 */
 		private boolean isInCycle(FlowNode node) {
 			if (visitedNodes.contains(node.getId()))
 				return true;
