@@ -444,6 +444,11 @@ public class BpmnBasicMetricsExtractor {
 	
 	public int getBoundaryMessageEvents() {
 		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
+		Collection<ModelElementInstance> events = this.getCollectionOfElementType(BoundaryEvent.class);
+		for (ModelElementInstance event: events) {
+			BoundaryEvent boundEv = (BoundaryEvent) event;
+			System.out.println(boundEv.cancelActivity());
+		}
 		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 	}
 	
@@ -1296,7 +1301,7 @@ public class BpmnBasicMetricsExtractor {
 	/**
 	 * Metric: NMESEV
 	 * 
-	 * @return number of Message Event 
+	 * @return number of Message Event Definition
 	 */
 	public int getMessageEvents() {
 		return getNumberOfTypeElement(MessageEventDefinition.class);

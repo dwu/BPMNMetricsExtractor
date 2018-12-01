@@ -11,8 +11,8 @@ import java.util.Collection;
 public class MySqlInterface {
 	
 	private static final String CONN_STRING = "jdbc:mysql://localhost:3306/bpmn_repository?serverTimezone=Europe/Rome";
-	private static final String USERNAME = "bpmn_repo_user";
-	private static final String PASSWORD = "repo.sitory";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "root";
 	private static final String DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
 	
 	public void connect(JsonEncoder json) {
@@ -26,10 +26,10 @@ public class MySqlInterface {
 	        System.out.println("Connected");
 	        statement = connection.createStatement();   
 	        //CODICE PER LA CREAZIONE DEL DATABASE 
-	        /*String basicCreate = createBasicTableString(json);
-	        String advancedCreate = createAdvancedTableString(json);
-        	statement.executeUpdate(basicCreate);
-	        statement.executeUpdate(advancedCreate);*/
+	        //String basicCreate = createBasicTableString(json);
+	        //String advancedCreate = createAdvancedTableString(json);
+        	//statement.executeUpdate(basicCreate);
+	        //statement.executeUpdate(advancedCreate);
 	    } catch (SQLException | ClassNotFoundException e){
 	    	System.err.println(e);
 	    } finally {
