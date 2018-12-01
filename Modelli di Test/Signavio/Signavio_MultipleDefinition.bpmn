@@ -64,8 +64,8 @@
             <signavio:signavioMetaData metaKey="preceedingprocesses" metaValue="[]"/>
          </extensionElements>
          <outgoing>sid-807BB698-A7C8-42C3-88B7-A582140E8C5F</outgoing>
-         <timerEventDefinition id="sid-380205d1-5b7a-4096-b618-3fcc0c182538"/>
-         <signalEventDefinition id="sid-143a0556-9c56-47b2-8855-5b42fb8ebef6"/>
+         <cancelEventDefinition id="sid-380205d1-5b7a-4096-b618-3fcc0c182538"/>
+         <terminateEventDefinition id="sid-143a0556-9c56-47b2-8855-5b42fb8ebef6"/>
       </startEvent>
       <sequenceFlow id="sid-807BB698-A7C8-42C3-88B7-A582140E8C5F" name="" sourceRef="sid-D72D9224-61AA-4385-8CAE-C99E2A3871C0" targetRef="sid-2B7D3C95-DC68-486F-872B-85C0FCFF4E5F">
          <extensionElements>

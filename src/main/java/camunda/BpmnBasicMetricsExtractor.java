@@ -197,14 +197,15 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NENDSIGEV", this.getEndSignalEvents());
 		this.json.addBasicMetric("NENDTEREV", this.getEndTerminateEvents());
 		this.json.addBasicMetric("NENDMUEV", this.getEndMultipleEvents());
-		this.json.addBasicMetric("NBCANCEV", this.getBoundaryCancelEvents());
-		this.json.addBasicMetric("NBCOMPEV", this.getBoundaryCompensationEvents());
-		this.json.addBasicMetric("NBCOEV", this.getBoundaryConditionalEvents());
-		this.json.addBasicMetric("NBERREV", this.getBoundaryErrorEvents());
-		this.json.addBasicMetric("NBESCEV", this.getBoundaryEscalationEvents());
-		this.json.addBasicMetric("NBMEV", this.getBoundaryMessageEvents());
-		this.json.addBasicMetric("NBSIGEV", this.getBoundarySignalEvents());
-		this.json.addBasicMetric("NBTEV", this.getBoundaryTimerEvents());
+		this.json.addBasicMetric("NIBEV", this.getInterruptingBoundaryEvents());
+		this.json.addBasicMetric("NIBCANCEV", this.getInterruptingBoundaryCancelEvents());
+		this.json.addBasicMetric("NIBCOMPEV", this.getInterruptingBoundaryCompensationEvents());
+		this.json.addBasicMetric("NIBCOEV", this.getInterruptingBoundaryConditionalEvents());
+		this.json.addBasicMetric("NIBERREV", this.getInterruptingBoundaryErrorEvents());
+		this.json.addBasicMetric("NIBESCEV", this.getInterruptingBoundaryEscalationEvents());
+		this.json.addBasicMetric("NIBMEV", this.getInterruptingBoundaryMessageEvents());
+		this.json.addBasicMetric("NIBSIGEV", this.getInterruptingBoundarySignalEvents());
+		this.json.addBasicMetric("NIBTEV", this.getInterruptingBoundaryTimerEvents());
 		this.json.addBasicMetric("NIESCTEV", this.getIntermediateEscalationThrowEvents());
 		this.json.addBasicMetric("NICOMTEV", this.getIntermediateCompensationThrowEvents());
 		this.json.addBasicMetric("NILTEV", this.getIntermediateLinkThrowEvents());
@@ -217,6 +218,13 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NIMCEV", this.getIntermediateMessageCatchEvents());
 		this.json.addBasicMetric("NISIGCEV", this.getIntermediateSignalCatchEvents());
 		this.json.addBasicMetric("NIMUCEV", this.getIntermediateMultipleCatchEvents());
+		this.json.addBasicMetric("NBNIEV", this.getNonInterruptingBoundaryEvents());
+		this.json.addBasicMetric("NBNIMEV", this.getNonInterruptingBoundaryMessageEvents());
+		this.json.addBasicMetric("NBNITEV", this.getNonInterruptingBoundaryTimerEvents());
+		this.json.addBasicMetric("NBNICONEV", this.getNonInterruptingBoundaryConditionalEvents());
+		this.json.addBasicMetric("NBNISIGEV", this.getNonInterruptingBoundarySignalEvents());
+		this.json.addBasicMetric("NBNIMUEV", this.getNonInterruptingBoundaryMultipleEvents());
+		this.json.addBasicMetric("NBNIESCEV", this.getNonInterruptingBoundaryEscalationEvents());
 	}
 	
 	/**
@@ -441,93 +449,174 @@ public class BpmnBasicMetricsExtractor {
 	}
 	
 	/**
-	 * Metric: NBRT
-	 * 
-	 * @return number of Boundary Message Events
+	 * Metric: NIBEV
+	 * @return the number of Interrupting Boundary Events
 	 */
+		public int getInterruptingBoundaryEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		int toReturn = 0;
+		 for (BoundaryEvent event: boundaryEvents) {
+			 if (event.cancelActivity()) {
+				 toReturn += 1;
+			 }
+		 }
+		return toReturn;
+	}
 	
-	public int getBoundaryMessageEvents() {
+	/**
+	 * Metric: NIBMT
+	 * 
+	 * @return number of interrupting Boundary Message Events
+	 */
+	public int getInterruptingBoundaryMessageEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
 	}
 	
 	/**
-	 * Metric: NBTEV
+	 * Metric: NIBTEV
 	 * 
-	 * @return number of Boundary Timer Events
+	 * @return number of interrupting Boundary Timer Events
 	 */
-	
-	public int getBoundaryTimerEvents() {
+	public int getInterruptingBoundaryTimerEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
 	}
 	
 	/**
-	 * Metric: NBCOEV
+	 * Metric: NIBCOEV
 	 * 
-	 * @return number of Boundary Conditional Events
+	 * @return number of interrupting Boundary Conditional Events
 	 */
-	
-	public int getBoundaryConditionalEvents() {
+	public int getInterruptingBoundaryConditionalEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
 	}
 	
 	/**
-	 * Metric: NBSIGEV
+	 * Metric: NIBSIGEV
 	 * 
-	 * @return number of Boundary Signal Events
+	 * @return number of interrupting Boundary Signal Events
 	 */
-	
-	public int getBoundarySignalEvents() {
+	public int getInterruptingBoundarySignalEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 	}
 	
 	/**
-	 * Metric: NBESCEV
+	 * Metric: NIBESCEV
 	 * 
-	 * @return number of Boundary Escalation Events
+	 * @return number of interrupting Boundary Escalation Events
 	 */
-	
-	public int getBoundaryEscalationEvents() {
+	public int getInterruptingBoundaryEscalationEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
 	}
 	
 	/**
-	 * Metric: NBCANCEV
+	 * Metric: NIBCANCEV
 	 * 
-	 * @return number of Boundary Cancel Events
+	 * @return number of interrupting Boundary Cancel Events
 	 */
-	
-	public int getBoundaryCancelEvents() {
+	public int getInterruptingBoundaryCancelEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.CancelEventDefinitionImpl");
-		}
+	}
 	
 	/**
-	 * Metric: NBERREV
+	 * Metric: NIBERREV
 	 * 
-	 * @return number of Boundary Error Events
+	 * @return number of interrupting Boundary Error Events
 	 */
-	
-	public int getBoundaryErrorEvents() {
+	public int getInterruptingBoundaryErrorEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.ErrorEventDefinitionImpl");
 		}
 	
 	/**
-	 * Metric: NBCOMPEV 
+	 * Metric: NIBCOMPEV 
 	 * 
-	 * @return number of Boundary Compensation Events
+	 * @return number of  interrupting Boundary Compensation Events
 	 */
-	
-	public int getBoundaryCompensationEvents() {
+	public int getInterruptingBoundaryCompensationEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		return this.getInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
-		}
+	}
 	
+	/**
+	 * Metric: NBNIEV
+	 * @return the number of non-interrupting boundary events
+	 */
+	public int getNonInterruptingBoundaryEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		int toReturn = 0;
+		 for (BoundaryEvent event: boundaryEvents) {
+			 if (!event.cancelActivity()) {
+				 toReturn += 1;
+			 }
+		 }
+		return toReturn;
+	}
+	
+	/**
+	 * Metric: NBNIMEV
+	 * @return the number of non-interrupting boundary message events
+	 */
+	public int getNonInterruptingBoundaryMessageEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getNonInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
+	}
+	
+	/**
+	 * Metric: NBNITEV
+	 * @return
+	 */
+	public int getNonInterruptingBoundaryTimerEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getNonInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.TimerEventDefinitionImpl");
+	}
+	
+	/**
+	 * Metric: NBNICONEV
+	 * @return the number of non-interrupting boundary conditional events
+	 */
+	public int getNonInterruptingBoundaryConditionalEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getNonInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.ConditionalEventDefinitionImpl");
+	}
+	
+	/**
+	 * Metric: NBNISIGEV
+	 * @return the number of non-interrupting boundary signal events
+	 */
+	public int getNonInterruptingBoundarySignalEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getNonInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
+	}
+	
+	/**
+	 * Metric: NBNIESCEV
+	 * @return the number of non-interrupting boundary escalation events
+	 */
+	public int getNonInterruptingBoundaryEscalationEvents() {
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		return this.getNonInterruptingBoundaryEventsEventDefinitions(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.EscalationEventDefinitionImpl");
+	}
+	/**
+	 * Metric: NBNIMUEV
+	 * @return the number of non-interrupting boundary multiple events
+	 */
+	public int getNonInterruptingBoundaryMultipleEvents() {
+		int toReturn = 0;
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		for (BoundaryEvent event: boundaryEvents) {
+			if (!event.cancelActivity() && event.getEventDefinitions().size() > 1) {
+				toReturn += 1;
+			}
+		}
+		
+		return toReturn;
+	}
 	
 	/**
 	 * Metric: NBRT
@@ -1323,7 +1412,7 @@ public class BpmnBasicMetricsExtractor {
 	/**
 	 * Metric: NMESEV
 	 * 
-	 * @return number of Message Event 
+	 * @return number of Message Event Definition
 	 */
 	public int getMessageEvents() {
 		return getNumberOfTypeElement(MessageEventDefinition.class);
@@ -2012,21 +2101,6 @@ public class BpmnBasicMetricsExtractor {
 		return this.modelInstance.getModelElementsByType(modelElementType);
 	}
 	
-	private int getNumberOfEventDefinitionsOfType(Collection<EventDefinition> definitions, String classPath) {
-		Class<?> aClass;
-		int toReturn = 0;
-		try {
-			aClass = Class.forName(classPath);
-				for (EventDefinition ed: definitions) {
-					if (ed.getClass().equals(aClass)) {
-						toReturn += 1;
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return toReturn;
-	}
 	/**
 	 * Metodo che cerca number of eventDefinitions del tipo specificato dal parametro definitionClassPathName per gli eventi del tipo specificato dal parametro eventClassPathName.
 	 * @param events - La collezione of CatchEvent of cui si vuole contare number of definizioni

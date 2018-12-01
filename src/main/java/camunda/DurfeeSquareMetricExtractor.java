@@ -27,6 +27,9 @@ public class DurfeeSquareMetricExtractor {
 		return this.getPerfectSquareMetric(this.flowNodes);
 	}
 	
+	public double getLayoutComplexityMetric(){
+		return this.getLayoutComplexity(this.flowNodes);
+	}
 	/**
 	 * Method that gets all the flow nodes in the model and separates them into an ArrayList
 	 * @param flowNodes
@@ -138,8 +141,9 @@ public class DurfeeSquareMetricExtractor {
 		}
 		return toReturn;
 	}
+	
 	/**
-	 * Method that calculate the perfect square metric
+	 * Method that calculates the perfect square metric
 	 * @param flowNodes
 	 * @return ps = perfect square
 	 */
@@ -154,6 +158,30 @@ public class DurfeeSquareMetricExtractor {
 		} while(ps > (flowNodesSum/ps));
 		return ps;
 	}
+	
+	/**
+	 * Method that calculates the layout complexity metric based on the Bonsiepe's Technique
+	 * @param flowNodes
+	 * @return
+	 */
+	private double getLayoutComplexity(ArrayList<Integer> flowNodes){
+		double toReturn = 0.0;
+		double p = 0.0;
+		int totalElements = 0;
+		double size = flowNodes.size();
+		
+		for (int i = 0; i < flowNodes.size(); i++){
+			double nodeAtIndex = flowNodes.get(i);
+			p = nodeAtIndex / size;
+			totalElements += flowNodes.get(i);
+			toReturn += this.logBase2(Math.pow(p, p));
+		}
+	
+		toReturn *= -totalElements;
+		toReturn = Math.round(toReturn * 100.0) / 100.0;
+		return toReturn;
+	}
+	
 	/**
 	 * print matrix
 	 * @param matrix
@@ -166,4 +194,21 @@ public class DurfeeSquareMetricExtractor {
 	        System.out.println();
 	    }
 	}
+	
+	/**
+	 * Base 2 logarithm implementation
+	 * @param d
+	 * @return
+	 */
+	private double logBase2(double d) {
+		double toReturn = 0;
+		try {
+			toReturn = Math.log(d) / Math.log(2);
+		} catch (ArithmeticException e) {
+			System.out.println(e);
+		}
+		return toReturn;
+	}
+
+
 }
