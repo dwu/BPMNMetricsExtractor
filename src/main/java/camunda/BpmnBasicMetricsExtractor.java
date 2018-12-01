@@ -452,18 +452,7 @@ public class BpmnBasicMetricsExtractor {
 	 * Metric: NIBEV
 	 * @return the number of Interrupting Boundary Events
 	 */
-<<<<<<< HEAD
-	
-	public int getBoundaryMessageEvents() {
-		Collection<CatchEvent> boundaryEvents = this.modelInstance.getModelElementsByType(CatchEvent.class);
-		Collection<ModelElementInstance> events = this.getCollectionOfElementType(BoundaryEvent.class);
-		for (ModelElementInstance event: events) {
-			BoundaryEvent boundEv = (BoundaryEvent) event;
-			System.out.println(boundEv.cancelActivity());
-		}
-		return this.getNumberOfEventDefinitionsOfCatchEvents(boundaryEvents, "org.camunda.bpm.model.bpmn.impl.instance.BoundaryEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.MessageEventDefinitionImpl");
-=======
-	public int getInterruptingBoundaryEvents() {
+		public int getInterruptingBoundaryEvents() {
 		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
 		int toReturn = 0;
 		 for (BoundaryEvent event: boundaryEvents) {
@@ -472,7 +461,6 @@ public class BpmnBasicMetricsExtractor {
 			 }
 		 }
 		return toReturn;
->>>>>>> dec72142e0dc9a013ca66229d1837c37259017a9
 	}
 	
 	/**
