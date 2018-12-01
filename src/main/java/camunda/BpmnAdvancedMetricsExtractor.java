@@ -85,7 +85,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("GH", 0.0);
 		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
 		json.addAdvancedMetric("CYC", 0.0);
-		json.addAdvancedMetric("TS", 0.0);
+		json.addAdvancedMetric("TS", this.getTokenSplit());
 		json.addAdvancedMetric("Density", getDensity());
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
@@ -615,6 +615,27 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public double getExtendedCardosoMetric(){
 		return this.getControlFlowComplexity();
+	}
+	
+	/**
+	 * Metric: TS
+	 * Token Split counts the number of tokens introduced by an AND-Split or an OR-Split
+	 * 
+	 * @return the token split degree
+	 */
+	public int getTokenSplit() {
+		int tokenSplitDegree = 0;
+		Collection<ModelElementInstance> gateways = this.basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
+		Gateway temp;
+		for (ModelElementInstance modelGateway: gateways) {
+			temp = (Gateway) modelGateway;
+			if ((temp instanceof ParallelGateway && temp.getOutgoing().size() > 1) || (temp instanceof InclusiveGateway && temp.getOutgoing().size() > 1)) {
+				//Each time an Or-Split or an And-Split is encountered, the token split degree is increased by the out-degree of the gateway - 1.
+				//This corresponds to the number of tokens newly introduced by the split
+				tokenSplitDegree += (temp.getOutgoing().size() - 1);
+			}
+		}
+		return tokenSplitDegree;
 	}
 	
 	/**
