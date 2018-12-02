@@ -196,8 +196,11 @@ public class PartitionabilityMetricsExtractor {
 			// and the depth-out
 			for (ModelElementInstance modelNode : modelNodes) {
 				FlowNode node = (FlowNode) modelNode;
-				depthIn = nodesIndepth.get(node);
-				depthOut = nodesOutdepth.get(node.getId());
+				//Boundary events controls
+				if (nodesIndepth.containsKey(node))
+					depthIn = nodesIndepth.get(node);
+				if (nodesOutdepth.containsKey(node.getId()))
+					depthOut = nodesOutdepth.get(node.getId());
 				toAdd = depthIn < depthOut ? depthIn : depthOut;
 				results.add(toAdd);
 			}
@@ -649,7 +652,7 @@ public class PartitionabilityMetricsExtractor {
 		}
 		
 		/**
-		 * Checks if the node would be part of a trivial constructs and returns 1 in a positive case, and 0 otherwise.
+		 * Checks if the node is part of a trivial constructs and returns 1 in a positive case, and 0 otherwise.
 		 * A trivial construct is a node of the graph with only one incoming flow and one outgoing flow.
 		 * @param node
 		 * @return the number of nodes that would be removed by the trivial constructs reduction if applied on the current node

@@ -3,8 +3,6 @@ package camunda;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.print.attribute.standard.MediaName;
-
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
@@ -74,9 +72,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
 		json.addAdvancedMetric("W", 0.0);
 		json.addAdvancedMetric("MaxND", ndExtractor.getMaxNestingDepth());
-		json.addAdvancedMetric("AntiPatterns_for_BPM", 0.0);
 		json.addAdvancedMetric("CP", getProcessCoupling());
-		json.addAdvancedMetric("Cohesion", 0.0);
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
 		json.addAdvancedMetric("MeanND", ndExtractor.getMeanNestingDepth());
 		json.addAdvancedMetric("CI", 0.0);
@@ -106,6 +102,8 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
 		json.addAdvancedMetric("Layout_Measure", 0.0);
 		json.addAdvancedMetric("Separability", partExtractor.getSeparability());
+		//Degree of parallelism
+		json.addAdvancedMetric("DoP", 0.0);
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.getString());
 	}
