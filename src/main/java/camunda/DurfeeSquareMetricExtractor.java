@@ -2,7 +2,6 @@ package camunda;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 /**
  * Class that calculates the DSM metric
  * It equals d if there are d types of elements which occur at least d times in the model (each),

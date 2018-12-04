@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.camunda.bpm.engine.impl.util.json.*;
 /**
@@ -80,8 +81,41 @@ public class JsonEncoder {
 		return names;
 	}
 	
+	public ArrayList<Integer> getBasicMetricsValues() {
+		JSONObject basicMetrics = this.json.getJSONObject("Basic Metrics");
+		JSONArray namesArray = basicMetrics.names();
+		ArrayList<Integer> values = new ArrayList<Integer>();
+		for (int i = 0; i < namesArray.length(); ++i) {
+			values.add(basicMetrics.getInt(namesArray.getString(i)));
+        }
+		return values;
+	}
 	
+	public ArrayList<Double> getAdvancedMetricsValues() {
+		JSONObject advancedMetrics = this.json.getJSONObject("Advanced Metrics");
+		JSONArray namesArray = advancedMetrics.names();
+		ArrayList<Double> values = new ArrayList<Double>();
+		for (int i = 0; i < namesArray.length(); ++i) {
+			values.add(advancedMetrics.getDouble(namesArray.getString(i)));
+        }
+		return values;
+	}
 	
+	public ArrayList<String> getHeaderValues() {
+		JSONObject header = this.json.getJSONObject("Header");
+		JSONArray namesArray = header.names();
+		ArrayList<String> values = new ArrayList<String>();
+		for (int i = 0; i < namesArray.length(); ++i) {
+			values.add(header.getString(namesArray.getString(i)));
+        }
+		return values;
+	}
+	
+	public String getModelId() {
+		JSONObject header = this.json.getJSONObject("Header");
+		return header.getString("id");
+	}
+
 	/**
 	 * 
 	 * @return file json
@@ -107,19 +141,28 @@ public class JsonEncoder {
 	}
 
 	private void populateHeader(LocalDateTime now) {
-		this.json.getJSONObject("Header").put("File Name", fileName);
-		String time = now.getHour() + ":" + now.getMinute();
-		this.json.getJSONObject("Header").put("Time", time);
-		String date = now.getDayOfMonth() + "/" + now.getMonthValue() + "/" + now.getYear();
-		this.json.getJSONObject("Header").put("Date", date);
+		this.json.getJSONObject("Header").put("File_Name", fileName);
+		String hour = appendLeadingZero(now.getHour());
+		String minute = appendLeadingZero(now.getMinute());
+		String second = appendLeadingZero(now.getSecond());
+		String time = hour + ":" + minute + ":" + second;
+		this.json.getJSONObject("Header").put("Creation_Time", time);
+		String month = appendLeadingZero(now.getMonthValue());
+		String day = appendLeadingZero(now.getDayOfMonth());
+		String date = now.getYear() + "-" + month + "-" + day;
+		this.json.getJSONObject("Header").put("Creation_Date", date);
 		int id = createFileId(now);
-		this.json.getJSONObject("Header").put("ID", id);
+		this.json.getJSONObject("Header").put("id", id);
+	}
+
+	private String appendLeadingZero(int number) {
+		return number < 10 ? "0" + Integer.toString(number) : Integer.toString(number);
 	}
 
 	/**
 	 * Function that creates an ID based on date, time and file name.
 	 * TODO Files created in the same moment, with the same letters in their name have the same ID
-	 * @param now LocalDateTime initialized during the json finalization
+	 * @param now: LocalDateTime initialized during the json finalization
 	 * @return the id for the file
 	 */
 	private int createFileId(LocalDateTime now) {
@@ -128,7 +171,7 @@ public class JsonEncoder {
 		for (int i = 0; i < fileName.length(); i++) {
 			temp += (int) fileName.charAt(i);
 		}
-		temp += now.getHour() + + now.getMinute() + now.getSecond() + now.getDayOfMonth() + now.getMonthValue() + now.getYear();
+		temp += now.getHour() + now.getMinute() + now.getSecond() + now.getDayOfMonth() + now.getMonthValue() + now.getYear();
 		return baseId * 31 + temp;
 	}
 	

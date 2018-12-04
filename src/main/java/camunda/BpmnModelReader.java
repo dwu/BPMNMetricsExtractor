@@ -1,15 +1,8 @@
 package camunda;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.xml.impl.ModelInstanceImpl;
-import org.camunda.bpm.model.xml.impl.validation.ModelInstanceValidator;
-import org.camunda.bpm.model.xml.validation.ModelElementValidator;
-import org.camunda.bpm.engine.impl.migration.validation.instruction.OnlyOnceMappedActivityInstructionValidator;
 import org.camunda.bpm.model.bpmn.Bpmn;
 
 /**
@@ -62,15 +55,19 @@ public class BpmnModelReader {
 		advExtractor.runMetrics();
 		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
 		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
-		//MySqlInterface db = new MySqlInterface();
-		//db.connect(jsonEncoder);
+		jsonEncoder.getBasicMetricsValues();
+		jsonEncoder.getAdvancedMetricsValues();
+		jsonEncoder.getHeaderValues();
+		MySqlInterface db = new MySqlInterface();
+//		db.connect();
+////		db.createTables(jsonEncoder);
+//		db.saveMetrics(jsonEncoder);
+//		db.closeConnection();
 	}
 
 	public static void main(String[] args){
 		BpmnFileOpener fileOpener = new BpmnFileOpener();
 		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
 		modelReader.test();
-		//MySqlInterface db = new MySqlInterface();
-		//db.connect();
 	}
 }

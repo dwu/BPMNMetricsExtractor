@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.camunda.bpm.model.bpmn.instance.BoundaryEvent;
 import org.camunda.bpm.model.bpmn.instance.ComplexGateway;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
@@ -31,11 +32,11 @@ public class NestingDepthMetricsExtractor {
 		visitedNodes = new ArrayList<String>();
 		nestingDepthValues = new HashMap<String, Integer>();
 		Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
-		ArrayList<FlowNode> nodesList = new ArrayList<FlowNode>();
+		nodes = new ArrayList<FlowNode>();
 		for (ModelElementInstance modelNode : modelNodes) {
-			nodesList.add((FlowNode) modelNode);
+			if (!(modelNodes instanceof BoundaryEvent))
+				nodes.add((FlowNode) modelNode);
 		}
-		nodes = nodesList;
 		initializeNestingDepthValuesMap();
 	}
 	
@@ -56,7 +57,8 @@ public class NestingDepthMetricsExtractor {
 	public double getMeanNestingDepth() {
 		int meanNestingDepth = 0;
 		for (FlowNode node : nodes) {
-			meanNestingDepth += nestingDepthValues.get(node.getId());
+			if (nestingDepthValues.containsKey(node.getId()))
+				meanNestingDepth += nestingDepthValues.get(node.getId());
 		}
 		return (double) meanNestingDepth / (double) nodes.size();
 	}
@@ -69,7 +71,9 @@ public class NestingDepthMetricsExtractor {
 		int maxNestingDepth = 0;
 		int tempNestingDepth = 0;
 		for (FlowNode node : nodes) {
-			tempNestingDepth = nestingDepthValues.get(node.getId());
+			//Boundary events control, as they are never reached by getNodeNestingDepth
+			if (nestingDepthValues.containsKey(node.getId()))
+				tempNestingDepth = nestingDepthValues.get(node.getId());
 			maxNestingDepth = tempNestingDepth > maxNestingDepth ? tempNestingDepth : maxNestingDepth;
 		}
 		return (double) maxNestingDepth;
