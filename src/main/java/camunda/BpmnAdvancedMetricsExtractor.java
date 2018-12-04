@@ -28,6 +28,7 @@ public class BpmnAdvancedMetricsExtractor {
 	private PartitionabilityMetricsExtractor partExtractor;
 	private SizeMetricsExtractor sizeExtractor;
 	private NestingDepthMetricsExtractor ndExtractor;
+	private CyclicityMetricExtractor cycExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
@@ -38,6 +39,7 @@ public class BpmnAdvancedMetricsExtractor {
 		this.partExtractor = new PartitionabilityMetricsExtractor(basicMetricsExtractor);
 		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
 		this.ndExtractor = new NestingDepthMetricsExtractor(basicMetricsExtractor);
+		this.cycExtractor = new CyclicityMetricExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -106,6 +108,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
 		json.addAdvancedMetric("Layout_Measure", 0.0);
 		json.addAdvancedMetric("Separability", partExtractor.getSeparability());
+		this.cycExtractor.getModelStronglyConnectedComponents();
 		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.getString());
 	}
