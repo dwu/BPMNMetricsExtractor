@@ -26,7 +26,7 @@ public class BpmnAdvancedMetricsExtractor {
 	private PartitionabilityMetricsExtractor partExtractor;
 	private SizeMetricsExtractor sizeExtractor;
 	private NestingDepthMetricsExtractor ndExtractor;
-	private CyclicityMetricExtractor cycExtractor;
+	private StronglyConnectedComponentsMetricExtractor sccExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
@@ -37,7 +37,7 @@ public class BpmnAdvancedMetricsExtractor {
 		this.partExtractor = new PartitionabilityMetricsExtractor(basicMetricsExtractor);
 		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
 		this.ndExtractor = new NestingDepthMetricsExtractor(basicMetricsExtractor);
-		this.cycExtractor = new CyclicityMetricExtractor(basicMetricsExtractor);
+		this.sccExtractor = new StronglyConnectedComponentsMetricExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -86,7 +86,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("GM", 0.0);
 		json.addAdvancedMetric("GH", 0.0);
 		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
-		json.addAdvancedMetric("CYC", 0.0);
+		json.addAdvancedMetric("CYC", this.sccExtractor.getCyclicity());
 		json.addAdvancedMetric("TS", this.getTokenSplit());
 		json.addAdvancedMetric("Density", getDensity());
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
@@ -103,8 +103,6 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Layout_Complexity", dsmExtractor.getLayoutComplexityMetric());
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
 		json.addAdvancedMetric("Layout_Measure", 0.0);
-		json.addAdvancedMetric("Separability", partExtractor.getSeparability());
-		this.cycExtractor.getModelStronglyConnectedComponents();
 		//Degree of parallelism
 		json.addAdvancedMetric("DoP", 0.0);
 		this.json.exportJson();

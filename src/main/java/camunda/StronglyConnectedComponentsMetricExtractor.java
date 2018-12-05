@@ -9,19 +9,24 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 /**
- * 
+ * A Class that implements Tarjan's ALgorithm for Strongly Connected Components and that calculates scc-related metrics.
+ * For further information on the algorithm: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm.
  * @author PROSLabTeam
  *
  */
-public class CyclicityMetricExtractor {
+public class StronglyConnectedComponentsMetricExtractor {
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
+	
 	private ArrayList<TarjanNode> nodes = new ArrayList<TarjanNode>();
-	private ArrayList<TarjanNode> nodesInCycle = new ArrayList<TarjanNode>();
-	private ArrayList<ArrayList<TarjanNode>> stronglyConnectedComponents = new ArrayList<ArrayList<TarjanNode>>();
+	
+	//Variables for Tarjan's algorithm implementation
 	private int index = 0;
 	private Stack<TarjanNode> nodesStack;
-
-	public CyclicityMetricExtractor(BpmnBasicMetricsExtractor bpmnBasicExtractor) {
+	
+	private ArrayList<TarjanNode> nodesInCycle = new ArrayList<TarjanNode>();
+	private ArrayList<ArrayList<TarjanNode>> stronglyConnectedComponents = new ArrayList<ArrayList<TarjanNode>>();
+	
+	public StronglyConnectedComponentsMetricExtractor(BpmnBasicMetricsExtractor bpmnBasicExtractor) {
 		this.basicMetricsExtractor = bpmnBasicExtractor;
 		this.nodesStack = new Stack<TarjanNode>();
 		//Creates a TarjanNode for each node in the model
@@ -33,21 +38,45 @@ public class CyclicityMetricExtractor {
 		for (TarjanNode node: this.nodes) {
 			node.setSuccessors(this.nodes);
 		}
-
+		//computes the strongly connected components of the model
+		this.getModelStronglyConnectedComponents();
+	}
+	/**
+	 * METRIC: CYC
+	 * @return the cyclicity degree of the model
+	 */
+	public double getCyclicity(){
+		for (ArrayList<TarjanNode> scc: this.stronglyConnectedComponents) {
+			this.setNodesInCycle(scc);
+		}
+		
+		try {
+			return (double) this.nodesInCycle.size()/this.nodes.size();
+		} catch (ArithmeticException e) {
+			return 0;
+		}
+		
+	}
+	/**
+	 * METRIC: EcyM
+	 * @return
+	 */
+	public int getEcym() {
+		return 0;
 	}
 	
-	
-	public void getModelStronglyConnectedComponents() {
+	private void getModelStronglyConnectedComponents() {
 		for (TarjanNode node: this.nodes) {
 			if (node.getIndex() == -1) {
 				this.getStronglyConnectedComponents(node);
 			}
 		}
-		
-		System.out.println("NODI NEL CICLO: " + this.nodesInCycle.size());
 		System.out.println("COMPONENTI FORTEMENTE CONNESSE: " + this.stronglyConnectedComponents.size());
 	}
-	
+	/**
+	 * Tarjan's algorithm implementation
+	 * @param node 
+	 */
 	private void getStronglyConnectedComponents(TarjanNode node) {
 		node.setIndex(this.index);
 		node.setLowLink(this.index);
@@ -76,7 +105,10 @@ public class CyclicityMetricExtractor {
 			
 		}
 	}
-	
+	/**
+	 * Calculates whether the nodes in the given strongly connected component are in a cycle or not
+	 * @param scc
+	 */
 	private void setNodesInCycle(List<TarjanNode> scc) {
 		if (scc.size() > 1) {
 			this.nodesInCycle.addAll(scc);
@@ -86,7 +118,11 @@ public class CyclicityMetricExtractor {
 			}
 		}
 	}
-	
+	/**
+	 * Checks if the given node has a self-loop. (A backedge which target is the node itself)
+	 * @param node - the node to be checked
+	 * @return true if the node has a self-loop, false if not.
+	 */
 	private boolean hasSelfLoop(TarjanNode node) {
 		for (TarjanNode successor: node.getSuccessors()) {
 			if (successor.equals(node)) {
@@ -95,17 +131,19 @@ public class CyclicityMetricExtractor {
 		}
 		return false;
 	}
-	
+	/**
+	 * A Class implementing nodes as defined by the Tarjan's algorithm.
+	 * Each node has an index and a lowlink, that is the node with the minimum index that can be reached from this node.
+	 * @author PROSLabTeam
+	 *
+	 */
 	private class TarjanNode {
 		
 		private FlowNode node;
 		private int index;
 		private int lowLink;
 		private ArrayList<TarjanNode> successors = new ArrayList<TarjanNode>();
-		
-		private ArrayList<TarjanNode> predecessors = new ArrayList<TarjanNode>();
-		
-		
+	
 		public TarjanNode (FlowNode node) {
 			this.node = node;
 			this.index = -1;
@@ -127,9 +165,7 @@ public class CyclicityMetricExtractor {
 		public ArrayList<TarjanNode> getSuccessors() {
 			return this.successors;
 		}
-		public ArrayList<TarjanNode> getPredecessors() {
-			return this.predecessors;
-		}
+		
 		public void setIndex(int index) {
 			this.index = index;
 		}
