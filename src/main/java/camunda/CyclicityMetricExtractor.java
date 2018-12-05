@@ -2,6 +2,7 @@ package camunda;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.ibatis.reflection.SystemMetaObject;
@@ -16,14 +17,21 @@ public class CyclicityMetricExtractor {
 	private BpmnBasicMetricsExtractor basicMetricsExtractor;
 	private ArrayList<TarjanNode> nodes = new ArrayList<TarjanNode>();
 	private ArrayList<TarjanNode> nodesInCycle = new ArrayList<TarjanNode>();
+	private ArrayList<ArrayList<TarjanNode>> stronglyConnectedComponents = new ArrayList<ArrayList<TarjanNode>>();
 	private int index = 0;
 	private Stack<TarjanNode> nodesStack;
 
 	public CyclicityMetricExtractor(BpmnBasicMetricsExtractor bpmnBasicExtractor) {
 		this.basicMetricsExtractor = bpmnBasicExtractor;
 		this.nodesStack = new Stack<TarjanNode>();
+		//Creates a TarjanNode for each node in the model
 		for (FlowNode node: this.basicMetricsExtractor.getModelInstance().getModelElementsByType(FlowNode.class)) {
 			this.nodes.add(new TarjanNode(node));
+		}
+		
+		//Initializes the successors of all the nodes
+		for (TarjanNode node: this.nodes) {
+			node.setSuccessors(this.nodes);
 		}
 
 	}
@@ -31,19 +39,13 @@ public class CyclicityMetricExtractor {
 	
 	public void getModelStronglyConnectedComponents() {
 		for (TarjanNode node: this.nodes) {
-			System.out.println("TROVO I SUCCESSORI DI: " + node.getNode().getId());
-			node.setSuccessors();
-			for (TarjanNode successor: node.getSuccessors()) {
-				System.out.println(successor.getNode().getId());
-			}
-		}
-		for (TarjanNode node: this.nodes) {
 			if (node.getIndex() == -1) {
 				this.getStronglyConnectedComponents(node);
 			}
 		}
 		
 		System.out.println("NODI NEL CICLO: " + this.nodesInCycle.size());
+		System.out.println("COMPONENTI FORTEMENTE CONNESSE: " + this.stronglyConnectedComponents.size());
 	}
 	
 	private void getStronglyConnectedComponents(TarjanNode node) {
@@ -51,8 +53,6 @@ public class CyclicityMetricExtractor {
 		node.setLowLink(this.index);
 		this.index++;
 		nodesStack.push(node);
-		System.out.println("LOWLINK DEL NODO " + node.getNode().getId() + " " + node.getLowLink());
-		System.out.println("INDEX DEL NODO " + node.getNode().getId() + " " + node.getIndex());
 
 		for (TarjanNode successor: node.getSuccessors()) {
 			if (successor.getIndex() == -1) {
@@ -72,14 +72,28 @@ public class CyclicityMetricExtractor {
 				scc.add(anotherNode);
 			} while (!node.equals(anotherNode));
 			
-			System.out.println("SCC SIZE: " + scc.size());
-			for (TarjanNode nodino: scc) {
-				System.out.println("NODI NELLA SCC: " + nodino.getNode().getId());
-			}
-			if (scc.size() > 1) {
+			this.stronglyConnectedComponents.add(scc);
+			
+		}
+	}
+	
+	private void setNodesInCycle(List<TarjanNode> scc) {
+		if (scc.size() > 1) {
+			this.nodesInCycle.addAll(scc);
+		} else if (scc.size() == 1) {
+			if (this.hasSelfLoop(scc.get(0))) {
 				this.nodesInCycle.addAll(scc);
 			}
 		}
+	}
+	
+	private boolean hasSelfLoop(TarjanNode node) {
+		for (TarjanNode successor: node.getSuccessors()) {
+			if (successor.equals(node)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private class TarjanNode {
@@ -128,9 +142,13 @@ public class CyclicityMetricExtractor {
 			this.lowLink = lowLink;
 		}
 		
-		public void setSuccessors() {
+		public void setSuccessors(List<TarjanNode> nodes) {
 			for (SequenceFlow flow: this.node.getOutgoing()) {
-				this.successors.add(new TarjanNode(flow.getTarget()));
+				for (TarjanNode node: nodes) {
+					if ((flow.getTarget()).equals(node.getNode())) {
+						this.successors.add(node);
+					}
+				}
 			}
 		}
 		
