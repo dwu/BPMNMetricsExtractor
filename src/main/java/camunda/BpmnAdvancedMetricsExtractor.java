@@ -96,7 +96,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		//json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		json.addAdvancedMetric("ECaM", this.getExtendedCardosoMetric());
-		json.addAdvancedMetric("ECyM", this.getExtendedCyclomaticMetric());
+		json.addAdvancedMetric("ECyM", this.sccExtractor.getEcym());
 		json.addAdvancedMetric("DSM", dsmExtractor.getDurfeeMetric());
 		json.addAdvancedMetric("SM", 0.0);
 		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
@@ -641,14 +641,6 @@ public class BpmnAdvancedMetricsExtractor {
 		return tokenSplitDegree;
 	}
 	
-	/**
-	 * Metric ECyM
-	 * it is the extension of the Cyclomatic metric for Petri Nets.
-	 * @return
-	 */
-	public int getExtendedCyclomaticMetric(){
-		return this.basicMetricsExtractor.getSequenceFlows() - this.basicMetricsExtractor.getFlowNodes() + this.basicMetricsExtractor.getPools() + this.basicMetricsExtractor.getSubprocesses();
-	}
 	/**
 	 * Metric MCD
 	 * Maximum connector degree is defined as the sum of the incoming and outgoing sequence flows of the gateway or activity with

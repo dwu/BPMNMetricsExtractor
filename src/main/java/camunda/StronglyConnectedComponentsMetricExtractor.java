@@ -62,7 +62,7 @@ public class StronglyConnectedComponentsMetricExtractor {
 	 * @return
 	 */
 	public int getEcym() {
-		return 0;
+		return this.basicMetricsExtractor.getSequenceFlows() - this.basicMetricsExtractor.getFlowNodes() + this.stronglyConnectedComponents.size();
 	}
 	
 	private void getModelStronglyConnectedComponents() {
