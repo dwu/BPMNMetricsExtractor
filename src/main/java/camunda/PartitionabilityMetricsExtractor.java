@@ -366,9 +366,14 @@ public class PartitionabilityMetricsExtractor {
 		 */
 		public double getStructurednessInner() {
 			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
-			int totalNumberOfNodes = modelNodes.size();
-			double result = 1 - (totalNumberOfNodes / getReducedGraphNumberOfNodesMetric());
-			return result;
+			double totalNumberOfNodes = (double) modelNodes.size();
+			double reducedGraphNodes = (double) getReducedGraphNumberOfNodes();
+			if (reducedGraphNodes == 2.0) {
+				return 1.0;
+			} else {
+				double result = 1.0 - (reducedGraphNodes / totalNumberOfNodes);
+				return result;
+			}
 		}
 
 		/**
@@ -378,7 +383,7 @@ public class PartitionabilityMetricsExtractor {
 		 * 
 		 * @return the number of nodes in the reduced graph
 		 */
-		private int getReducedGraphNumberOfNodesMetric() {
+		private int getReducedGraphNumberOfNodes() {
 			Collection<ModelElementInstance> modelNodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
 			int nodesInReducedGraph = modelNodes.size();
 			// If the model can be homogeneously reduced, the only nodes present are the

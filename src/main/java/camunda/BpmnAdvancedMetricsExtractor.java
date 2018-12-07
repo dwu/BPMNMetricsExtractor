@@ -27,6 +27,7 @@ public class BpmnAdvancedMetricsExtractor {
 	private SizeMetricsExtractor sizeExtractor;
 	private NestingDepthMetricsExtractor ndExtractor;
 	private StronglyConnectedComponentsMetricExtractor sccExtractor;
+	private CognitiveWeightMetricExtractor cwExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
@@ -38,6 +39,7 @@ public class BpmnAdvancedMetricsExtractor {
 		this.sizeExtractor = new SizeMetricsExtractor(basicMetricsExtractor);
 		this.ndExtractor = new NestingDepthMetricsExtractor(basicMetricsExtractor);
 		this.sccExtractor = new StronglyConnectedComponentsMetricExtractor(basicMetricsExtractor);
+		this.cwExtractor = new CognitiveWeightMetricExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -72,7 +74,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
-		json.addAdvancedMetric("W", 0.0);
+		json.addAdvancedMetric("W", cwExtractor.getCognitiveWeight());
 		json.addAdvancedMetric("MaxND", ndExtractor.getMaxNestingDepth());
 		json.addAdvancedMetric("CP", getProcessCoupling());
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
