@@ -59,7 +59,7 @@ public class StronglyConnectedComponentsMetricExtractor {
 	}
 	/**
 	 * METRIC: EcyM
-	 * @return
+	 * @return the extended cyclomatic metric
 	 */
 	public int getEcym() {
 		return this.basicMetricsExtractor.getSequenceFlows() - this.basicMetricsExtractor.getFlowNodes() + this.stronglyConnectedComponents.size();

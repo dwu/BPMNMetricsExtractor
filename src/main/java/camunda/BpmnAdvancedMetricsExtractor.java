@@ -1,5 +1,6 @@
 package camunda;
 
+import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -13,6 +14,13 @@ import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnDiagram;
+import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
+import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnPlane;
+import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
+import org.camunda.bpm.model.bpmn.instance.di.Diagram;
+import org.camunda.bpm.model.bpmn.instance.di.DiagramElement;
+import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
@@ -28,6 +36,7 @@ public class BpmnAdvancedMetricsExtractor {
 	private NestingDepthMetricsExtractor ndExtractor;
 	private StronglyConnectedComponentsMetricExtractor sccExtractor;
 	private CognitiveWeightMetricExtractor cwExtractor;
+	private LayoutMetricsExtractor lmExtractor;
 	
 	public BpmnAdvancedMetricsExtractor(BpmnBasicMetricsExtractor basicMetricsExtractor, JsonEncoder jsonEncoder) {
 		this.basicMetricsExtractor = basicMetricsExtractor;
@@ -40,6 +49,7 @@ public class BpmnAdvancedMetricsExtractor {
 		this.ndExtractor = new NestingDepthMetricsExtractor(basicMetricsExtractor);
 		this.sccExtractor = new StronglyConnectedComponentsMetricExtractor(basicMetricsExtractor);
 		this.cwExtractor = new CognitiveWeightMetricExtractor(basicMetricsExtractor);
+		this.lmExtractor = new LayoutMetricsExtractor(basicMetricsExtractor);
 	}
 	
 	public void runMetrics() {
@@ -104,7 +114,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
 		json.addAdvancedMetric("Layout_Complexity", dsmExtractor.getLayoutComplexityMetric());
 		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
-		json.addAdvancedMetric("Layout_Measure", 0.0);
+		json.addAdvancedMetric("Layout_Measure", this.lmExtractor.getLayoutMeasure());
 		//Degree of parallelism
 		json.addAdvancedMetric("DoP", 0.0);
 		this.json.exportJson();
@@ -665,6 +675,8 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 		return toReturn;
 	}
+	
+
 	/**
 	 * The number of unique activities, splits and joins, and control-flow elements 
 	 * Per le metriche di Halstead corrisponde a n1
