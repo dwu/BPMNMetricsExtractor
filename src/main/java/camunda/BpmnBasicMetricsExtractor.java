@@ -188,6 +188,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSTSIGEV", this.getStartSignalEvents());
 		this.json.addBasicMetric("NSTTEV", this.getStartTimerEvents());
 		this.json.addBasicMetric("NSTMUEV", this.getStartMultipleEvents());
+		this.json.addBasicMetric("NSTPMUEV", this.getStartParallelMultipleEvents());
 		this.json.addBasicMetric("NENDCEV", this.getEndCancelEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getEndCompensationEvents());
 		this.json.addBasicMetric("NENDCOMEV", this.getCompensateEvents());
@@ -218,6 +219,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NIMCEV", this.getIntermediateMessageCatchEvents());
 		this.json.addBasicMetric("NISIGCEV", this.getIntermediateSignalCatchEvents());
 		this.json.addBasicMetric("NIMUCEV", this.getIntermediateMultipleCatchEvents());
+		this.json.addBasicMetric("NIPMUCEV", this.getIntermediateParallelMultipleCatchEvents());
 		this.json.addBasicMetric("NBNIEV", this.getNonInterruptingBoundaryEvents());
 		this.json.addBasicMetric("NBNIMEV", this.getNonInterruptingBoundaryMessageEvents());
 		this.json.addBasicMetric("NBNITEV", this.getNonInterruptingBoundaryTimerEvents());
@@ -225,6 +227,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NBNISIGEV", this.getNonInterruptingBoundarySignalEvents());
 		this.json.addBasicMetric("NBNIMUEV", this.getNonInterruptingBoundaryMultipleEvents());
 		this.json.addBasicMetric("NBNIESCEV", this.getNonInterruptingBoundaryEscalationEvents());
+		this.json.addBasicMetric("NBNIPMUEV", this.getNonInterruptingBoundaryParallelMultipleEvents());
 	}
 	
 	/**
@@ -612,6 +615,22 @@ public class BpmnBasicMetricsExtractor {
 		for (BoundaryEvent event: boundaryEvents) {
 			if (!event.cancelActivity() && event.getEventDefinitions().size() > 1) {
 				toReturn += 1;
+			}
+		}
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Metric: NBNIPMUEV
+	 * @return the number of non-interrupting boundary parallel multiple events
+	 */
+	public int getNonInterruptingBoundaryParallelMultipleEvents() {
+		int toReturn = 0;
+		Collection<BoundaryEvent> boundaryEvents = this.modelInstance.getModelElementsByType(BoundaryEvent.class);
+		for (BoundaryEvent event: boundaryEvents) {
+			if (!event.cancelActivity() && event.isParallelMultiple()) {
+				toReturn++;
 			}
 		}
 		
@@ -1250,6 +1269,7 @@ public class BpmnBasicMetricsExtractor {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.CompensateEventDefinitionImpl");
 	}
+	
 	/**
 	 * Metric: NIMUCEV
 	 * @return the number of Intermediate Multiple Catch Events
@@ -1257,6 +1277,22 @@ public class BpmnBasicMetricsExtractor {
 	public int getIntermediateMultipleCatchEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getCatchEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.IntermediateCatchEventImpl");
+	}
+	
+	/**
+	 * Metric: NIPMUCEV
+	 * @return the number of Intermediate Parallel Multiple Catch Events
+	 */
+	public int getIntermediateParallelMultipleCatchEvents() {
+		int toReturn = 0;
+		Collection<IntermediateCatchEvent> events = this.modelInstance.getModelElementsByType(IntermediateCatchEvent.class);
+		for (IntermediateCatchEvent event: events) {
+			if (event.isParallelMultiple()) {
+				toReturn++;
+			}
+		}
+		
+		return toReturn;
 	}
 	
 	/**
@@ -1729,6 +1765,7 @@ public class BpmnBasicMetricsExtractor {
 		return this.getNumberOfEventDefinitionsOfCatchEvents(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl", "org.camunda.bpm.model.bpmn.impl.instance.SignalEventDefinitionImpl");
 
 	}
+	
 	/**
 	 * Metric: NSTMUEV
 	 * @return the number of Start Multiple Events
@@ -1736,6 +1773,22 @@ public class BpmnBasicMetricsExtractor {
 	public int getStartMultipleEvents() {
 		Collection<CatchEvent> events = this.modelInstance.getModelElementsByType(CatchEvent.class);
 		return this.getCatchEventsMultipleDefinitions(events, "org.camunda.bpm.model.bpmn.impl.instance.StartEventImpl");
+	}
+	
+	/**
+	 * Metric: NSTPMUEV
+	 * @return the number of Start Parallel Multiple Events
+	 */
+	public int getStartParallelMultipleEvents() {
+		int toReturn = 0;
+		Collection<StartEvent> events = this.modelInstance.getModelElementsByType(StartEvent.class);
+		for (StartEvent event: events) {
+			if (event.isParallelMultiple()) {
+				toReturn++;
+			}
+		}
+		
+		return toReturn;
 	}
 	
 	/**
