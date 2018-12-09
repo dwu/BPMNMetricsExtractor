@@ -8,7 +8,14 @@ import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.di.Edge;
 import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-
+/**
+ * Class that contains the methods to calculate the Layout Measure metric.
+ * For this metric the following weights have been used:
+ * Non-Rectilinear sequence flow = 1;
+ * Intersecting sequence flows = 1;
+ * @author PROSLabTeam
+ *
+ */
 public class LayoutMetricsExtractor {
 	
 	private BpmnBasicMetricsExtractor basicExtractor;
@@ -73,26 +80,24 @@ public class LayoutMetricsExtractor {
 				toReturn ++;
 		}
 		
-		return this.checkIntersections(segments);
+		return this.checkIntersections(segments)/2 + toReturn;
 	}
 	
 	private int checkIntersections(ArrayList<Segment> segments){
 		int numberOfIntersections = 0;
-		System.out.println(segments.size());
-		for (Segment firstSegment: segments){
-			//Segment firstSegment = segments.get(i);
-			for (Segment secondSegment: segments){
-				//Segment secondSegment = segments.get(j);
-				if (!(firstSegment.equals(secondSegment))){ //TOFIX controllare che i segmenti non condividano lo stesso waypoint
-					System.out.println("Intersezione :" + this.isIntersected(firstSegment.w1, firstSegment.w2, secondSegment.w1, secondSegment.w2));
-					if(this.isIntersected(firstSegment.w1, firstSegment.w2, secondSegment.w1, secondSegment.w2) == true){
-						numberOfIntersections ++;
+		for (int i = 0; i < segments.size(); i++){
+			Segment firstSegment = segments.get(i);
+			for (int j = 0; j < segments.size(); j++){
+				Segment secondSegment = segments.get(j);
+				if (!(firstSegment.equals(secondSegment))){
+					if (!this.checkSharedVertex(firstSegment, secondSegment)){
+						if(this.isIntersected(firstSegment.w1, firstSegment.w2, secondSegment.w1, secondSegment.w2))
+							numberOfIntersections ++;
 					}
 				}
 					
 			}
 		}
-		System.out.println(numberOfIntersections);
 		return numberOfIntersections;
 	}
 	
@@ -103,9 +108,16 @@ public class LayoutMetricsExtractor {
 	 * @param w3
 	 * @return true if w3 lies on the [w1,w2] segment
 	 */
-	private boolean pointOnSegment(Waypoint w1, Waypoint w2, Waypoint w3){
-		if (w3.getX() <= Math.max(w1.getX(), w2.getX()) && w2.getX() >= Math.min(w1.getX(), w2.getX()) && 
-			w3.getY() <= Math.max(w1.getY(), w2.getY()) && w2.getY() >= Math.min(w1.getY(),  w2.getY()))
+	private boolean pointOnSegment(Waypoint w1, Waypoint w3, Waypoint w2){
+		double w1x = w1.getX();
+		double w1y = w1.getY();
+		double w2x = w2.getX();
+		double w2y = w2.getY();
+		double w3x = w3.getX();
+		double w3y = w3.getY();
+		
+		if (w3x <= Math.max(w1x, w2x) && w3x >= Math.min(w1x, w2x) && 
+			w3y <= Math.max(w1y, w2y) && w3y >= Math.min(w1y,  w2y))
 				return true;
 		return false;
 	}
@@ -117,9 +129,14 @@ public class LayoutMetricsExtractor {
 	 * @param w3
 	 * @return
 	 */
-	private int orientation(Waypoint w1, Waypoint w2, Waypoint w3){
-		double val = (w3.getY() + w1.getY()) * (w2.getX() - w3.getX()) -
-				  (w3.getX() - w1.getX()) * (w2.getY() - w3.getY());
+	private int orientation(Waypoint w1, Waypoint w3, Waypoint w2){
+		double w1x = w1.getX();
+		double w1y = w1.getY();
+		double w2x = w2.getX();
+		double w2y = w2.getY();
+		double w3x = w3.getX();
+		double w3y = w3.getY();
+		double val = (w3y - w1y) * (w2x - w3x) - (w3x - w1x) * (w2y - w3y);
 		
 	if ( val == 0)  //colinear
 		return 0;
@@ -142,36 +159,47 @@ public class LayoutMetricsExtractor {
 		int o4 = this.orientation(w3, w4, w2);
 		boolean intersected = false;
 		
-//		System.out.println("Waypoint 1: " + w1.getX() + ", " + w1.getY());
-//		System.out.println("Waypoint 2: " + w2.getX() + ", " + w2.getY());
-//		System.out.println("Waypoint 3: " + w3.getX() + ", " + w3.getY());
-//		System.out.println("Waypoint 4: " + w4.getX() + ", " + w4.getY());
-//		System.out.println("Orientation 1: " + o1);
-//		System.out.println("Orientation 2: " + o2);
-//		System.out.println("Orientation 3: " + o3);
-//		System.out.println("Orientation 4: " + o4);
-		
 		if (o1 != o2 && o3 != o4){
-			return true;
+			intersected = true;
 		}
-		if (o1 == 0 && this.pointOnSegment(w1, w2, w3)) 
+//		Check if the two segmenets are colinear and they intersect
+//		if (o1 == 0 && this.pointOnSegment(w1, w2, w3)) {
+//			intersected = true;
+//			return intersected;
+//		}
+//
+//		
+//		if (o2 == 0 && this.pointOnSegment(w1, w2, w4)) {
+//			intersected = true;
+//			return intersected;			
+//		}
+//		
+//		if (o3 == 0 && this.pointOnSegment(w3, w4, w1)) {
+//			intersected = true;
+//			return intersected;	
+//		}
+//		
+//		if (o4 == 0 && this.pointOnSegment(w3, w4, w2)) {
+//			intersected = true;
+//			return intersected;
+//	}
+		return intersected;
+	}
+
+	private boolean checkSharedVertex(Segment s1, Segment s2){
+		double wp1x = s1.w1.getX();
+		double wp1y = s1.w1.getY();
+		double wp2x = s1.w2.getX();
+		double wp2y = s1.w2.getY();
+		double wp3x = s2.w1.getX();
+		double wp3y = s2.w1.getY();
+		double wp4x = s2.w2.getX();
+		double wp4y = s2.w2.getY();
+
+		if (((wp1x == wp3x && wp1y == wp3y) || (wp1x == wp4x && wp1y == wp4y)) 
+		||  ((wp2x == wp3x && wp2y == wp3y) || (wp2x == wp4x && wp2y == wp4y)))
 			return true;
-		
-		if (o2 == 0 && this.pointOnSegment(w1, w2, w4)) 
-			return true;
-		
-		if (o3 == 0 && this.pointOnSegment(w3, w4, w1)) 
-			return true;
-		
-		if (o4 == 0 && this.pointOnSegment(w3, w4, w2)) 
-			return true;
-		
 		return false;
 	}
-	//Controllo brutto
-//	!((firstSegment.w1.getX() == secondSegment.w1.getX() || firstSegment.w1.getX() == secondSegment.w2.getX() || 
-//			firstSegment.w2.getX() == secondSegment.w1.getX() || firstSegment.w2.getX() == secondSegment.w2.getX() )&&
-//			(firstSegment.w1.getY() == secondSegment.w1.getY() || firstSegment.w1.getY() == secondSegment.w2.getY() || 
-//			firstSegment.w2.getY() == secondSegment.w1.getY() || firstSegment.w2.getY() == secondSegment.w2.getY())))
-//	
+	
 }
