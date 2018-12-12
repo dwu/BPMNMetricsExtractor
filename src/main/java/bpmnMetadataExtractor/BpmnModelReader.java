@@ -58,9 +58,9 @@ public class BpmnModelReader {
 		jsonEncoder.getBasicMetricsValues();
 		jsonEncoder.getAdvancedMetricsValues();
 		jsonEncoder.getHeaderValues();
-		MySqlInterface db = new MySqlInterface();
+//		MySqlInterface db = new MySqlInterface();
 //		db.connect();
-////		db.createTables(jsonEncoder);
+//		db.createTables(jsonEncoder);
 //		db.saveMetrics(jsonEncoder);
 //		db.closeConnection();
 	}
