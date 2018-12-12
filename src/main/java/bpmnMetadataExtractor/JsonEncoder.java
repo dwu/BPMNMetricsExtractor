@@ -1,4 +1,4 @@
-package camunda;
+package bpmnMetadataExtractor;
 
 import java.io.FileWriter;
 import java.io.IOException;

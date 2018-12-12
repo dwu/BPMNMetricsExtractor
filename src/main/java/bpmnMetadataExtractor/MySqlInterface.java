@@ -1,4 +1,4 @@
-package camunda;
+package bpmnMetadataExtractor;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

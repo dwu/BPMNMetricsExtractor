@@ -1,4 +1,4 @@
-package camunda;
+package bpmnMetadataExtractor;
 
 import java.util.Collection;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -10,13 +10,11 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 
 /**
  * 
- * Classe in cui andare a inserire i metoof per l'estrazione delle
+ * Classe in cui andare a inserire i metodi per l'estrazione delle
  * statistiche/metadati
  * 
  * @author PROSLabTeam
  *
- *TODO: aggiungere task con più flussi entranti o uscenti ai parallel gateways
- *		distinzione event boundary, intermediate e start e end
  */
 public class BpmnBasicMetricsExtractor {
 
@@ -158,7 +156,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NTC", this.getTimeCycles());
 		this.json.addBasicMetric("NTDA", this.getTimeDates());
 		this.json.addBasicMetric("NTDU", this.getTimeDurations());
-		this.json.addBasicMetric("NTEVD", this.getTimerEventDefinitions());
+		this.json.addBasicMetric("NTEV", this.getTimerEventDefinitions());
 		this.json.addBasicMetric("NTR", this.getTransactions());
 		this.json.addBasicMetric("NUT", this.getUserTasks());
 		this.json.addBasicMetric("NSUB", this.getSubprocesses());
@@ -1875,12 +1873,12 @@ public class BpmnBasicMetricsExtractor {
 	/**
 	 * Metric: NTEVD
 	 * 
-	 * @return number of Timer Events
+	 * @return number of Timer Event Definitions
 	 */
 	public int getTimerEventDefinitions() {
 		return getNumberOfTypeElement(TimerEventDefinition.class);
 	}
-	
+
 	/**
 	 * Metric: NTR
 	 * 

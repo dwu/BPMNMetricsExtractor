@@ -31,12 +31,14 @@
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-cdi</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- provides a default EjbProcessApplication -->
     <dependency>
       <groupId>org.camunda.bpm.javaee</groupId>
       <artifactId>camunda-ejb-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Java EE 7 Specification -->
@@ -52,7 +54,34 @@
           <groupId>xalan</groupId>
         </exclusion>
       </exclusions>
-    </dependency>   
+    </dependency>
+    
+    <!-- Jersey Dependencies --> 
+    <dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.19.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20170516</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.19.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.19.4</version>
+		</dependency>
   </dependencies>
   
     <build>
@@ -66,6 +95,13 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+       <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
     </plugins> 
   </build>
   

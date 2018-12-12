@@ -1,4 +1,4 @@
-package camunda;
+package bpmnMetadataExtractor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -552,7 +552,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public double getCoefficientOfNetworkComplexity() {
 		try {
-			return this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+			return (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
 		} 
 		catch (ArithmeticException e) {
 			return 0;	

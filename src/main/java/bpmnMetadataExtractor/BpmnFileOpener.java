@@ -1,4 +1,4 @@
-package camunda;
+package bpmnMetadataExtractor;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
