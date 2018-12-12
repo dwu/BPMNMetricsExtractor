@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.di.Edge;
+import org.camunda.bpm.model.bpmn.instance.di.Shape;
 import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 /**
@@ -29,7 +30,7 @@ public class LayoutMetricsExtractor {
 	}
 	
 	public int getLayoutMeasure(){
-		return this.getWaypointsMeasures(edges);
+		return this.getWaypointsMeasures(edges); // + this.getShapesMeasures(shapes) 
 	}
 	
 	private class Segment{
@@ -40,14 +41,7 @@ public class LayoutMetricsExtractor {
 			this.w1 = w1;
 			this.w2 = w2;
 		}
-		
-		public Waypoint getFirstWaypoint(){
-			return this.w1;
-		}
-		
-		public Waypoint getSecondWaypoint(){
-			return this.w2;
-		}
+
 		@Override
 		public boolean equals(Object obj){
 			if (obj == null) 
@@ -82,13 +76,18 @@ public class LayoutMetricsExtractor {
 		
 		return this.checkIntersections(segments)/2 + toReturn;
 	}
-	
+	/**
+	 * Check if there are intersection in the model
+	 * It calls methods checkSharedVertex and isIntersected
+	 * @param segments
+	 * @return
+	 */
 	private int checkIntersections(ArrayList<Segment> segments){
 		int numberOfIntersections = 0;
-		for (int i = 0; i < segments.size(); i++){
-			Segment firstSegment = segments.get(i);
-			for (int j = 0; j < segments.size(); j++){
-				Segment secondSegment = segments.get(j);
+		for (Segment s: segments){
+			Segment firstSegment = s;
+			for (Segment t: segments){
+				Segment secondSegment = t;
 				if (!(firstSegment.equals(secondSegment))){
 					if (!this.checkSharedVertex(firstSegment, secondSegment)){
 						if(this.isIntersected(firstSegment.w1, firstSegment.w2, secondSegment.w1, secondSegment.w2))
@@ -185,7 +184,12 @@ public class LayoutMetricsExtractor {
 //	}
 		return intersected;
 	}
-
+	/**
+	 * Check if the same vertex is shared by two segments
+	 * @param s1	first segment
+	 * @param s2	second segment
+	 * @return
+	 */
 	private boolean checkSharedVertex(Segment s1, Segment s2){
 		double wp1x = s1.w1.getX();
 		double wp1y = s1.w1.getY();
@@ -199,7 +203,101 @@ public class LayoutMetricsExtractor {
 		if (((wp1x == wp3x && wp1y == wp3y) || (wp1x == wp4x && wp1y == wp4y)) 
 		||  ((wp2x == wp3x && wp2y == wp3y) || (wp2x == wp4x && wp2y == wp4y)))
 			return true;
+		
 		return false;
 	}
 	
+	private int getShapesMeasures(Collection<ModelElementInstance> shapes){
+		int toReturn = 0;
+		for (ModelElementInstance s: shapes){
+			BpmnShape firstShape = (BpmnShape) s;	
+			for (ModelElementInstance t: shapes){
+				BpmnShape secondShape = (BpmnShape) t;
+				if (!firstShape.equals(secondShape)) {
+					if(this.isOverlapped(firstShape, secondShape))
+						toReturn++;
+				}
+			}
+			
+		}
+		System.out.println("Figure che si overlappano :" + toReturn);
+		return toReturn;
+	}
+	
+	/**
+	 * Method which check wheter or not two different shapes are overlapped
+	 * The center of the shapes is the position of the object
+	 * TODO Generalizzare le coordinate degli elementi nel modello in modo che le coordinate riflettano il punto centrale delle figure
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	private boolean isOverlapped(BpmnShape s1, BpmnShape s2){
+		System.out.println(s1);
+		System.out.println(s2);
+		System.out.println(s1.equals(s2));
+		double firstX = s1.getBounds().getX();
+		double firstY = s1.getBounds().getY();
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY();
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		
+		if (firstX > secondX && firstY > secondY){
+			//Seconda figura in alto a destra
+			if (firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			//seconda figura in basso a destra
+			if (firstX + firstWidth > secondX - secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			//seconda figura in alto a sinsitra
+			if (firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			//seconda figura in basso a sinistra
+			if (firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+		}
+		
+		if (firstX == secondX && firstY == secondY){
+			//seconda figura sovrapposta
+				return true;
+		}
+		
+		if (firstX == secondX && firstY > secondY){
+			//seconda figura sopra alla prima
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			//seconda figura a destra della prima
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			//seconda figura sotto la prima
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			//seconda figura a sinistra della prima
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+		}
+		return false;
+	}
 }
