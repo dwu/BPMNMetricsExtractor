@@ -1,6 +1,5 @@
 package bpmnMetadataExtractor;
 
-import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,13 +13,6 @@ import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.camunda.bpm.model.bpmn.instance.Task;
-import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnDiagram;
-import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
-import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnPlane;
-import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
-import org.camunda.bpm.model.bpmn.instance.di.Diagram;
-import org.camunda.bpm.model.bpmn.instance.di.DiagramElement;
-import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
@@ -89,14 +81,10 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("CP", getProcessCoupling());
 		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
 		json.addAdvancedMetric("MeanND", ndExtractor.getMeanNestingDepth());
-		json.addAdvancedMetric("CI", 0.0);
-		json.addAdvancedMetric("RT", 0.0);
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("Sequentiality", getSequentiality());
 		json.addAdvancedMetric("diam", sizeExtractor.getDiam());
 		json.addAdvancedMetric("Depth", partExtractor.getDepth());
-		json.addAdvancedMetric("GM", 0.0);
-		json.addAdvancedMetric("GH", 0.0);
 		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
 		json.addAdvancedMetric("CYC", this.sccExtractor.getCyclicity());
 		json.addAdvancedMetric("TS", this.getTokenSplit());
@@ -104,20 +92,13 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("ACD", this.getAverageConnectorDegree());
 		json.addAdvancedMetric("MCD", this.getMaximumConnectorDegree());
 		json.addAdvancedMetric("GM", this.connectorInterplayMetricsExtractor.getGatewaysMismatchMetric());
-		//TODO aggiunto il controllo per vedere se il numero è finito o meno
 		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
-		//json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		json.addAdvancedMetric("ECaM", this.getExtendedCardosoMetric());
 		json.addAdvancedMetric("ECyM", this.sccExtractor.getEcym());
 		json.addAdvancedMetric("DSM", dsmExtractor.getDurfeeMetric());
-		json.addAdvancedMetric("SM", 0.0);
 		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
 		json.addAdvancedMetric("Layout_Complexity", dsmExtractor.getLayoutComplexityMetric());
-		json.addAdvancedMetric("Layout_Appropriateness", 0.0);
 		json.addAdvancedMetric("Layout_Measure", this.lmExtractor.getLayoutMeasure());
-		//Degree of parallelism
-		json.addAdvancedMetric("DoP", 0.0);
-		this.json.exportJson();
 		System.out.println("JSON adv: " + this.json.getString());
 	}
 

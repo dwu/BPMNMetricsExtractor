@@ -81,11 +81,13 @@
 	    <version>2.27</version>
 	</dependency>
 	
+	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20170516</version>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>8.0.13</version>
 	</dependency>
+	
   </dependencies>
   
     <build>

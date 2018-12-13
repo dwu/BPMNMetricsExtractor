@@ -1,11 +1,9 @@
 package bpmnMetadataExtractor;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 /**
@@ -71,7 +69,6 @@ public class StronglyConnectedComponentsMetricExtractor {
 				this.getStronglyConnectedComponents(node);
 			}
 		}
-		System.out.println("COMPONENTI FORTEMENTE CONNESSE: " + this.stronglyConnectedComponents.size());
 	}
 	/**
 	 * Tarjan's algorithm implementation

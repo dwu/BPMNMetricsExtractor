@@ -1,6 +1,8 @@
 package bpmnMetadataExtractor;
 
 import java.io.File;
+import java.io.InputStream;
+import java.time.LocalDateTime;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -20,6 +22,10 @@ public class BpmnModelReader {
 	 */
 	public BpmnModelReader(String filePath) {
 		loadedFile = new File(filePath);
+	}
+	
+	public BpmnModelReader() {
+		
 	}
 	
 	/**
@@ -55,14 +61,27 @@ public class BpmnModelReader {
 		advExtractor.runMetrics();
 		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
 		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
-		jsonEncoder.getBasicMetricsValues();
-		jsonEncoder.getAdvancedMetricsValues();
-		jsonEncoder.getHeaderValues();
-//		MySqlInterface db = new MySqlInterface();
+		jsonEncoder.exportJson();
+		MySqlInterface db = new MySqlInterface();
 //		db.connect();
 //		db.createTables(jsonEncoder);
 //		db.saveMetrics(jsonEncoder);
 //		db.closeConnection();
+	}
+	
+	public String getJsonMetrics(InputStream fileStream, String fileName) {
+		BpmnModelInstance modelInstance = Bpmn.readModelFromStream(fileStream);
+		JsonEncoder jsonEncoder = new JsonEncoder(fileName);
+		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
+		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
+		basicExtractor.runMetrics();
+		advExtractor.runMetrics();
+		jsonEncoder.populateHeader(LocalDateTime.now());
+//		MySqlInterface db = new MySqlInterface();
+//		db.connect();
+//		db.saveMetrics(jsonEncoder);
+//		db.closeConnection();
+		return jsonEncoder.getJson().toString();
 	}
 
 	public static void main(String[] args){

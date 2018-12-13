@@ -6,21 +6,23 @@
 </head>
 <body>
 	<h1> BPMN Metadata Extractor</h1>
-	<table border="1">
-		<tr>
-			<td>
-			Select BPMN Model to upload:
-			</td>
-			<td>
-				<input type="file" name="model">
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="button" name="confirm" value="Compute Metrics">
-			</td>
-		</tr>
-	</table>
+	<form action="extractorRest/api/fileUpload" method="post" enctype="multipart/form-data">
+		<table border="1">
+			<tr>
+				<td>
+				Select BPMN Model to upload:
+				</td>
+				<td>
+					<input type="file" name="model">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="submit" name="confirm" value="Compute Metrics">
+				</td>
+			</tr>
+		</table>
+	</form>
 	
 </body>
 </html>

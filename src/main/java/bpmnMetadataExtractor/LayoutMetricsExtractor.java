@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.di.Edge;
-import org.camunda.bpm.model.bpmn.instance.di.Shape;
 import org.camunda.bpm.model.bpmn.instance.di.Waypoint;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 /**
@@ -220,7 +219,6 @@ public class LayoutMetricsExtractor {
 			}
 			
 		}
-		System.out.println("Figure che si overlappano :" + toReturn);
 		return toReturn;
 	}
 	
@@ -233,9 +231,6 @@ public class LayoutMetricsExtractor {
 	 * @return
 	 */
 	private boolean isOverlapped(BpmnShape s1, BpmnShape s2){
-		System.out.println(s1);
-		System.out.println(s2);
-		System.out.println(s1.equals(s2));
 		double firstX = s1.getBounds().getX();
 		double firstY = s1.getBounds().getY();
 		double firstHeight = s1.getBounds().getHeight() / 2;

@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.camunda.bpm.engine.impl.util.json.*;
 /**
@@ -25,6 +24,10 @@ public class JsonEncoder {
 		json = new JSONObject();
 		this.fileName = fileName;
 		this.initializeJSON();
+	}
+	
+	public JSONObject getJson() {
+		return json;
 	}
 	
 	/**
@@ -140,7 +143,7 @@ public class JsonEncoder {
 		}
 	}
 
-	private void populateHeader(LocalDateTime now) {
+	public void populateHeader(LocalDateTime now) {
 		this.json.getJSONObject("Header").put("File_Name", fileName);
 		String hour = appendLeadingZero(now.getHour());
 		String minute = appendLeadingZero(now.getMinute());

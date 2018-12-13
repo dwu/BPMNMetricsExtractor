@@ -32,16 +32,16 @@ public class PartitionabilityMetricsExtractor {
 		this.basicExtractor = basicExtractor;
 	}
 
-	/**
-	 * Public method to calculate the separability, using the inner class
-	 * SeparabilityMetricExtractor
-	 * 
-	 * @return mdoel separability
-	 */
-	public double getSeparability() {
-		SeparabilityMetricExtractor extractor = new SeparabilityMetricExtractor();
-		return extractor.getSeparabilityInner();
-	}
+//	/**
+//	 * Public method to calculate the separability, using the inner class
+//	 * SeparabilityMetricExtractor
+//	 * 
+//	 * @return mdoel separability
+//	 */
+//	public double getSeparability() {
+//		SeparabilityMetricExtractor extractor = new SeparabilityMetricExtractor();
+//		return extractor.getSeparabilityInner();
+//	}
 
 	/**
 	 * Public method to calculate the depth, using the inner class
@@ -65,85 +65,85 @@ public class PartitionabilityMetricsExtractor {
 		return ex.getStructurednessInner();
 	}
 
-	/**
-	 * Inner class the is used to calculate the model separability
-	 * 
-	 * @author PROSLabTeam
-	 *
-	 */
-	private class SeparabilityMetricExtractor {
-
-		// The collection of the Flow Nodes from the model
-		private Collection<FlowNode> nodes;
-
-		public SeparabilityMetricExtractor() {
-			Collection<ModelElementInstance> modelNodes = new ArrayList<ModelElementInstance>(
-					basicExtractor.getCollectionOfElementType(FlowNode.class));
-			nodes = new ArrayList<FlowNode>();
-			for (ModelElementInstance modelNode : modelNodes) {
-				nodes.add((FlowNode) modelNode);
-			}
-		}
-
-		/**
-		 * Method that calculates the separability of the model. First it gets
-		 * the number of nodes that have no outgoing or incoming flows. Then, it
-		 * checks the model obtained by removing each one of the node, to check
-		 * again the number of nodes that have no outgoing or incoming flows. If
-		 * those last numbers are greater than the ones from the original model,
-		 * the node in question is a cut-vertex, thus the separability gets
-		 * incremented by one.
-		 * 
-		 * @return
-		 */
-		public double getSeparabilityInner() {
-			int initialNoIncomingNodes = 0;
-			int initialNoOutgoingNodes = 0;
-			int cutVertices = 0;
-			// Iterate the nodes of the model
-			for (FlowNode node : nodes) {
-				if (node.getOutgoing().size() == 0)
-					initialNoOutgoingNodes++;
-				if (node.getIncoming().size() == 0)
-					initialNoIncomingNodes++;
-			}
-			int tempNoOutgoingNodes = 0;
-			int tempNoIncomingNodes = 0;
-			Collection<SequenceFlow> inFlows;
-			Collection<SequenceFlow> outFlows;
-			for (FlowNode node : nodes) {
-				tempNoOutgoingNodes = 0;
-				tempNoIncomingNodes = 0;
-				for (FlowNode tempNode : nodes) {
-					if (!tempNode.equals(node)) {
-						inFlows = tempNode.getIncoming();
-						outFlows = tempNode.getOutgoing();
-						if (inFlows.size() == 0)
-							tempNoIncomingNodes++;
-						for (SequenceFlow in : inFlows) {
-							if (in.getSource().equals(node) && (inFlows.size() - 1) == 0) {
-								tempNoIncomingNodes++;
-							}
-						}
-						if (outFlows.size() == 0)
-							tempNoOutgoingNodes++;
-						for (SequenceFlow out : outFlows) {
-							if (out.getTarget().equals(node) && (outFlows.size() - 1) == 0) {
-								tempNoOutgoingNodes++;
-							}
-						}
-					}
-				}
-				// if (tempNoOutgoingNodes > initialNoOutgoingNodes &&
-				// tempNoIncomingNodes >
-				// initialNoIncomingNodes) {
-				if (tempNoIncomingNodes > initialNoIncomingNodes) {
-					cutVertices++;
-				}
-			}
-			return (double) cutVertices;
-		}
-	}
+//	/**
+//	 * Inner class the is used to calculate the model separability
+//	 * 
+//	 * @author PROSLabTeam
+//	 *
+//	 */
+//	private class SeparabilityMetricExtractor {
+//
+//		// The collection of the Flow Nodes from the model
+//		private Collection<FlowNode> nodes;
+//
+//		public SeparabilityMetricExtractor() {
+//			Collection<ModelElementInstance> modelNodes = new ArrayList<ModelElementInstance>(
+//					basicExtractor.getCollectionOfElementType(FlowNode.class));
+//			nodes = new ArrayList<FlowNode>();
+//			for (ModelElementInstance modelNode : modelNodes) {
+//				nodes.add((FlowNode) modelNode);
+//			}
+//		}
+//
+//		/**
+//		 * Method that calculates the separability of the model. First it gets
+//		 * the number of nodes that have no outgoing or incoming flows. Then, it
+//		 * checks the model obtained by removing each one of the node, to check
+//		 * again the number of nodes that have no outgoing or incoming flows. If
+//		 * those last numbers are greater than the ones from the original model,
+//		 * the node in question is a cut-vertex, thus the separability gets
+//		 * incremented by one.
+//		 * 
+//		 * @return
+//		 */
+//		public double getSeparabilityInner() {
+//			int initialNoIncomingNodes = 0;
+//			int initialNoOutgoingNodes = 0;
+//			int cutVertices = 0;
+//			// Iterate the nodes of the model
+//			for (FlowNode node : nodes) {
+//				if (node.getOutgoing().size() == 0)
+//					initialNoOutgoingNodes++;
+//				if (node.getIncoming().size() == 0)
+//					initialNoIncomingNodes++;
+//			}
+//			int tempNoOutgoingNodes = 0;
+//			int tempNoIncomingNodes = 0;
+//			Collection<SequenceFlow> inFlows;
+//			Collection<SequenceFlow> outFlows;
+//			for (FlowNode node : nodes) {
+//				tempNoOutgoingNodes = 0;
+//				tempNoIncomingNodes = 0;
+//				for (FlowNode tempNode : nodes) {
+//					if (!tempNode.equals(node)) {
+//						inFlows = tempNode.getIncoming();
+//						outFlows = tempNode.getOutgoing();
+//						if (inFlows.size() == 0)
+//							tempNoIncomingNodes++;
+//						for (SequenceFlow in : inFlows) {
+//							if (in.getSource().equals(node) && (inFlows.size() - 1) == 0) {
+//								tempNoIncomingNodes++;
+//							}
+//						}
+//						if (outFlows.size() == 0)
+//							tempNoOutgoingNodes++;
+//						for (SequenceFlow out : outFlows) {
+//							if (out.getTarget().equals(node) && (outFlows.size() - 1) == 0) {
+//								tempNoOutgoingNodes++;
+//							}
+//						}
+//					}
+//				}
+//				// if (tempNoOutgoingNodes > initialNoOutgoingNodes &&
+//				// tempNoIncomingNodes >
+//				// initialNoIncomingNodes) {
+//				if (tempNoIncomingNodes > initialNoIncomingNodes) {
+//					cutVertices++;
+//				}
+//			}
+//			return (double) cutVertices;
+//		}
+//	}
 
 	/**
 	 * Inner class the is used to calculate the model depth
