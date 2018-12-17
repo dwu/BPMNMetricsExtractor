@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
@@ -72,7 +73,6 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("IC", getInterfaceComplexityOfActivityMetric());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());	
 		json.addAdvancedMetric("TNSF", getTotalNumberOfSequenceFlow());	
-		//Diminuire il numero di cifre?
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
 		json.addAdvancedMetric("ICP",getImportedCouplingOfProcess());
 		json.addAdvancedMetric("ECP",getExportedCouplingOfProcess());
@@ -421,14 +421,14 @@ public class BpmnAdvancedMetricsExtractor {
 	
 	/**
 	 * Metric: IC
-	 * Interface complexity of an activity metric. IC = Length * (NoI * NoO), where 
+	 * Interface complexity of an activity metric. IC = Length * (NoI * NoO)^2, where 
 	 *  the length of the activity can be calculated using traditional Software Engineering metrics
 	 *  such as LOC (1 if the activity source code is unknown) and NoI and NoO are 
 	 *  the number of inputs and outputs.
 	 * @return
 	 */
-	public int getInterfaceComplexityOfActivityMetric() {
-		return getActivityLength() * getNumberOfActivityInputs() * getNumberOfActivityOutputs();
+	public double getInterfaceComplexityOfActivityMetric() {
+		return getActivityLength() * Math.pow((getNumberOfActivityInputs() * getNumberOfActivityOutputs()), 2);
 	}
 	
 	/**
@@ -460,8 +460,12 @@ public class BpmnAdvancedMetricsExtractor {
 	public int getImportedCouplingOfProcess(){
 		int toReturn = 0;
 		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
-		for (ModelElementInstance sP : subProcesses){
-			toReturn += ((FlowNode) sP).getOutgoing().size();
+		for (ModelElementInstance modelSubProcess : subProcesses){
+			for (FlowElement subProcEl : ((SubProcess) modelSubProcess).getFlowElements()) {
+				if (subProcEl instanceof Activity) {
+					toReturn += ((Activity) subProcEl).getOutgoing().size();
+				}
+			}
 		}
 		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
 		for (ModelElementInstance t : tasks){
@@ -481,8 +485,12 @@ public class BpmnAdvancedMetricsExtractor {
 	public int getExportedCouplingOfProcess(){
 		int toReturn = 0;
 		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
-		for (ModelElementInstance sP : subProcesses){
-			toReturn += ((FlowNode) sP).getIncoming().size();
+		for (ModelElementInstance modelSubProcess : subProcesses){
+			for (FlowElement subProcEl : ((SubProcess) modelSubProcess).getFlowElements()) {
+				if (subProcEl instanceof Activity) {
+					toReturn += ((Activity) subProcEl).getIncoming().size();
+				}
+			}
 		}
 		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
 		for (ModelElementInstance t : tasks){
@@ -501,17 +509,17 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getProcessCoupling(){
 		float toReturn = 0;
-		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
-		if (tasks.size() > 1){
-			for (ModelElementInstance t: tasks){
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		if (activities.size() > 1){
+			for (ModelElementInstance t: activities){
 				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
 				for (SequenceFlow s: outgoing){
-					if (s.getTarget() instanceof Task){
+					if (s.getTarget() instanceof Activity){
 						toReturn++;
 					}
 				}
 			}
-			toReturn = toReturn/(tasks.size() * tasks.size() - 1);
+			toReturn = toReturn/(activities.size() * activities.size() - 1);
 		}
 		return toReturn;
 	}
@@ -579,7 +587,7 @@ public class BpmnAdvancedMetricsExtractor {
 		float sum = 0.0f, n = 0.0f;
 		try {
 			Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
-			Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+			Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
 			for (ModelElementInstance modelGateway : gateways){
 				FlowNode g = (FlowNode) modelGateway;
 				if (g.getOutgoing().size() > 1 || g.getIncoming().size() > 1){
@@ -587,8 +595,8 @@ public class BpmnAdvancedMetricsExtractor {
 					sum += g.getOutgoing().size() + g.getIncoming().size();
 				}
 			}
-			for (ModelElementInstance taskModel: tasks){
-				FlowNode t = (FlowNode) taskModel;
+			for (ModelElementInstance activityModel: activities){
+				FlowNode t = (FlowNode) activityModel;
 				if (t.getOutgoing().size() > 1 || t.getIncoming().size() > 1){
 					n++;
 					sum += t.getOutgoing().size() + t.getIncoming().size();	
@@ -643,13 +651,13 @@ public class BpmnAdvancedMetricsExtractor {
 	public float getMaximumConnectorDegree(){
 		float toReturn = 0;
 		Collection<ModelElementInstance> gateways = basicMetricsExtractor.getCollectionOfElementType(Gateway.class);
-		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Task.class);
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
 		for (ModelElementInstance g: gateways){
 			if (((FlowNode) g).getOutgoing().size() + ((FlowNode) g).getIncoming().size() > toReturn){
 				toReturn = ((FlowNode) g).getOutgoing().size() + ((FlowNode)g).getIncoming().size();
 			}
 		}
-		for (ModelElementInstance t: tasks){
+		for (ModelElementInstance t: activities){
 			if (((FlowNode) t).getOutgoing().size() + ((FlowNode) t).getIncoming().size() > toReturn){
 				toReturn = ((FlowNode) t).getOutgoing().size() + ((FlowNode)t).getIncoming().size();
 			}

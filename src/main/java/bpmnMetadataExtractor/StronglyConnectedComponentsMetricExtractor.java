@@ -7,7 +7,7 @@ import java.util.Stack;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 /**
- * A Class that implements Tarjan's ALgorithm for Strongly Connected Components and that calculates scc-related metrics.
+ * A Class that implements Tarjan's Algorithm for Strongly Connected Components and that calculates scc-related metrics.
  * For further information on the algorithm: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm.
  * @author PROSLabTeam
  *
