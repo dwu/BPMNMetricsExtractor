@@ -1,6 +1,7 @@
 package bpmnMetadataExtractor;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
@@ -63,10 +64,11 @@ public class BpmnModelReader {
 		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
 		jsonEncoder.exportJson();
 		MySqlInterface db = new MySqlInterface();
-//		db.connect();
+		db.connect();
 //		db.createTables(jsonEncoder);
-//		db.saveMetrics(jsonEncoder);
-//		db.closeConnection();
+//		db.createAndInsertMetricsInfosTable();
+		db.saveMetrics(jsonEncoder);
+		db.closeConnection();
 	}
 	
 	public String getJsonMetrics(InputStream fileStream, String fileName) {
@@ -77,16 +79,16 @@ public class BpmnModelReader {
 		basicExtractor.runMetrics();
 		advExtractor.runMetrics();
 		jsonEncoder.populateHeader(LocalDateTime.now());
-//		MySqlInterface db = new MySqlInterface();
-//		db.connect();
-//		db.saveMetrics(jsonEncoder);
-//		db.closeConnection();
+		MySqlInterface db = new MySqlInterface();
+		db.connect();
+		db.saveMetrics(jsonEncoder);
+		db.closeConnection();
 		return jsonEncoder.getJson().toString();
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		BpmnFileOpener fileOpener = new BpmnFileOpener();
 		BpmnModelReader modelReader = new BpmnModelReader(fileOpener.openFile());
-		modelReader.test();
+		modelReader.test();		
 	}
 }

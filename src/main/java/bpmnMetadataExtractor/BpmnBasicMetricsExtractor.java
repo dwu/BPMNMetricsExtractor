@@ -140,7 +140,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NRESPB", this.getResourceParameterBindings());
 		this.json.addBasicMetric("NRESR", this.getResourceRoles());
 		this.json.addBasicMetric("NRE", this.getRootElements());
-		this.json.addBasicMetric("NSC", this.getScripts());
+		this.json.addBasicMetric("NSCR", this.getScripts());
 		this.json.addBasicMetric("NSCT", this.getScriptTasks());
 		this.json.addBasicMetric("NSENT", this.getSendTasks());
 		this.json.addBasicMetric("NSEQF", this.getSequenceFlows());
@@ -148,7 +148,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NSI", this.getSignals());
 		this.json.addBasicMetric("NSIEV", this.getSignalEvent());
 		this.json.addBasicMetric("NSTEV", this.getStartEvents());
-		this.json.addBasicMetric("NSC", this.getSubConversations());
+		this.json.addBasicMetric("NSCONV", this.getSubConversations());
 		this.json.addBasicMetric("NTEEV", this.getTerminateEvents());
 		this.json.addBasicMetric("NTEX", this.getTexts());
 		this.json.addBasicMetric("NTEXA", this.getTextAnnotations());

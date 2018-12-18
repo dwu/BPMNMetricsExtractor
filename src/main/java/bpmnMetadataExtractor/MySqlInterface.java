@@ -1,11 +1,21 @@
 package bpmnMetadataExtractor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class MySqlInterface {
 	
@@ -108,7 +118,7 @@ public class MySqlInterface {
 
 	public void createTables(JsonEncoder json) {
 		try {
-	        String infosCreate = createModelInfosTableString(json);
+	        String infosCreate = createModelInfosTableString();
 	        String basicCreate = createBasicTableString(json);
 	        String advancedCreate = createAdvancedTableString(json);
 	        System.out.println("Creazione tabella MODELS_INFO...");
@@ -155,13 +165,55 @@ public class MySqlInterface {
         return advCreate;
 	}
 	
-	private String createModelInfosTableString(JsonEncoder json) {
+	private String createModelInfosTableString() {
         String infosCreate = "CREATE TABLE MODELS_INFO (id INTEGER NOT NULL, ";
         infosCreate += " FILE_NAME VARCHAR(50), ";
         infosCreate += " CREATION_TIME TIME, ";
         infosCreate += " CREATION_DATE DATE, ";
         infosCreate += " PRIMARY KEY ( id ))";
         return infosCreate;
+	}
+	
+	public void createAndInsertMetricsInfosTable() {
+		try {
+			System.out.println("Creating table METRICS_INFO...");
+			statement.executeUpdate(createMetricsInfosTableString());
+			System.out.println("Table Created \nInserting metrics values...");;
+			statement.executeUpdate(generateMetricsInfosInsertString());
+			System.out.println("Values inserted correctly");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("Connection error, closing connection");
+			closeConnection();
+		}
+		
+	}
+	
+	private String createMetricsInfosTableString() {
+		String metricInfosCreate = "CREATE TABLE METRICS_INFOS ( ";
+		metricInfosCreate += "NAME VARCHAR(30), ";
+		metricInfosCreate += "DESCRIPTION VARCHAR(150), ";
+		metricInfosCreate += "SOURCE VARCHAR(150), ";
+		metricInfosCreate += "PRIMARY KEY ( NAME ))";
+		return metricInfosCreate;
+	}
+	
+	private String generateMetricsInfosInsertString() throws IOException {
+		List<String> advMetrics = Files.readAllLines(Paths.get("metriche_complete.txt"), StandardCharsets.ISO_8859_1);
+		String base = "INSERT INTO METRICS_INFOS VALUES ";
+		String inserts = "";
+		String name, desc, source;
+		for (String m : advMetrics) {
+			name = m.substring(0, m.indexOf('%'));
+			name = name.trim();
+			desc = m.substring(m.indexOf('%') + 1, m.indexOf('{'));
+			desc = desc.trim();
+			source = m.substring(m.indexOf('{') + 1, m.length() - 1);
+			source = source.trim();
+			inserts += "('" + name + "', '" + desc + "', '" + source + "'), ";
+		}
+		inserts = inserts.substring(0, inserts.length() - 2);
+		return base + inserts;
 	}
 
 }

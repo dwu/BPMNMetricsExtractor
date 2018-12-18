@@ -1,0 +1,194 @@
+NT	%Number of tasks
+NCD	%Number of complex decisions 
+NDOin	%Number of data objects that are input of activities
+NDOout	%Number of data objects that are output of activities
+NID	%Number of inclusive decisions
+NEDDB	%Number of exclusive data based decisions
+NEDEB	%Number of event based decisions
+NL	%Number of lanes
+NMF	%Number of message flows
+NP	%Number of pools
+NSFE	%Number of outgoing sequence flows from events
+NSFG	%Number of outgoing sequence flows from gateways
+NSFA	%Number of sequence flows between activities
+NAC	%Number of Activation Conditions 
+NACT	%Number of Activities
+NART	%Number of Artifacts
+NASI	%Number of Assignments
+NASO	%Number of Associations
+NAUD	%Number of Auditings
+NBEL	%Number of base elements
+NBEV	%Number of Boundary Events
+NIBEV	%Number of Interrupting Boundary Events
+NIBCANCEV	%Number of Interrupting Boundary Cancel Events
+NIBCOMPEV	%Number of Interrupting Boundary Compensation Events
+NIBCOEV	%Number of Interrupting Boundary Conditional Events
+NIBERREV	%Number of Interrupting Boundary Error Events
+NIBESCEV	%Number of Interrupting Boundary Escalation Events
+NIBMEV	%Number of Interrupting Boundary Message Events
+NIBSIGEV	%Number of Interrupting Boundary Signal Events
+NIBTEV	%Number of Interrupting Boundary Timer Events
+NBNIEV	%Number of Non Interrupting Boundary Events
+NBNIMEV	%Number of Non Interrupting Boundary Message Events
+NBNITEV	%Number of Non Interrupting Boundary Timer Events
+NBNICONEV	%Number of Non Interrupting Boundary Conditional Events
+NBNISIGEV	%Number of Non Interrupting Boundary Signal Events
+NBNIMUEV	%Number of Non Interrupting Boundary Multiple Events
+NBNIPMUEV	%Number of Non Interrupting Boundary Parallel Multiple Events
+NBNIESCEV	%Number of Non Interrupting Boundary Escalation Events
+NBRT	%Number of Business Rule Tasks
+NCEL	%Number of Callable Elements
+NCAC	%Number of Call Activities
+NCCO	%Number of Call Conversations
+NCANEV	%Number of Cancel Events
+NCATEV	%Number of Catch Events
+NCVAL	%Number of Category Values
+NCOL	%Number of Collaborations
+NCOMEV	%Number of Compensate Events 
+NCOCON	%Number of Completion Conditions
+NCBDEF	%Number of Complex Behavior
+NCOND	%Number of Conditions
+NCONDEV	%Number of Conditional Event
+NCONDEX	%Number of Condition Expressions
+NCONV	%Number of Conversations
+NCONVAS	%Number of Conversation Associations
+NCONVL	%Number of Conversation Links
+NCONVN	%Number of Conversation Node
+NCORK	%Number of Correlation Keys
+NCORP	%Number of Correlation Properties
+NCORPB	%Number of Correlation Property Bindings
+NCORPRE	%Number of Correlation Property Retrieval Expressions
+NCORS	%Number of Correlation Subscriptions
+NDA	%Number of Data Associations
+NDInA	%Number of Data Input Associations
+NDO	%Number of Data Objects
+NDOR	%Number of Data Object References
+NDOutA	%Number of Data Output Associations
+NDSTA	%Number of Data States
+NDSTO	%Number of Data Stores
+NDEF	%Number of Definitions
+NDOC	%Number of Documentations
+NENDEV	%Number of End Events
+NENDCEV	%Number of End Cancel Events
+NENDCOMEV	%Number of End Compensation Events
+NENDERREV	%Number of End Error Events
+NENDESCEV	%Number of End Escalation Events
+NENDMEV	%Number of End Message Events
+NENDSIGEV	%Number of End Signal Events
+NENDTEREV	%Number of End Terminate Events
+NENDMUEV	%Number of End Multiple Events
+NENDP	%Number of End Points
+NERR	%Number of Errors
+NERREV	%Number of Error Events
+NESC	%Number of Escalations
+NESCEV	%Number of Escalation Events
+NEV	%Number of Events
+NEVDEF	%Number of Event Definitions
+NEXP	%Number of Expressions
+NEXT	%Number of Extensions
+NEXTEL	%Number of Extension Elements 
+NFLEL	%Number of Flow Elements
+NFLNO	%Number of Flow Nodes
+NFOREXP	%Number of Formal Expressions
+NGA	%Number of Gateways
+NGC	%Number of Global Conversations
+NHP	%Number of Human Performers
+NIMP	%Number of Import
+NInDI	%Number of Input Data Items
+NInS	%Number of Input Sets
+NINTNO	%Number of Interaction Nodes
+NINTE	%Number of Interfaces
+NICEV	%Number of Intermediate Catch Events
+NICOMCEV	%Number of Intermediate Compensation Catch Events
+NICONCEV	%Number of Intermediate Conditional Catch Events
+NILCEV	%Number of Intermediate Link Catch Events
+NIMCEV	%Number of Intermediate Message Catch Events
+NISIGCEV	%Number of Intermediate Signal Catch Events
+NIMUCEV	%Number of Intermediate Multiple Catch Events
+NIPMUCEV	%Number of Intermediate Parallel Multiple Catch Events
+NITEV	%Number of Intermediate Throw Events
+NICOMTEV	%Number degli Intermediate Compensation Throw Events
+NIESCTEV	%Number of Intermediate Escalation Throw Events
+NILTEV	%Number of Intermediate Link Throw Events
+NIMTEV	%Number of Intermediate Message Throw Events
+NISIGTEV	%Number of Intermediate Signal Throw Events
+NIMUTEV	%Number of Intermediate Multiple Throw Events
+NIOB	%Number of IO Bindings
+NIOS	%Number of IO Specifications
+NIAEL	%Number of Item Aware Elements
+NIDEF	%Number of Item Definitions
+NLEV	%Number of Link Events
+NLOOPCA	%Number of Loop Cardinalities
+NLOOPCH	%Number of Loop Characteristics
+NMT	%Number of Manual Tasks
+NMES	%Number of Messages
+NMESEV	%Number of Message Events
+NMESFA	%Number of Message Flow Associations
+NMON	%Number of Monitorings
+NMILCH	%Number of Multi Instance Loop Characteristics
+NOP	%Number of Operations
+NOutDI	%Number of Output Data Items
+NOutS	%Number of Output Sets
+NPG	%Number of Parallel Gateways
+NPAS	%Number of Participant Associations
+NPM	%Number of Participant Multiplicities
+NPER	%Number of Performers
+NPO	%Number of Potential Owners
+NPROC	%Number of Processes
+NPROP	%Number of Properties
+NRT	%Number of Receive Tasks
+NREL	%Number of Relationships
+NREN	%Number of Renderings
+NRES	%Number of Resources
+NRESAEX	%Number of  Resource Assignment Expressions
+NRESP	%Number of Resource Parameters
+NRESPB	%Number of Resource Parameter Bindings
+NRESR	%Number of Resource Roles
+NRE	%Number of Root Elements
+NSCR	%Number of Scripts
+NSCT	%Number of Script Tasks
+NSENT	%Number of Send Tasks
+NSEQF	%Number of Squence Flows
+NSERT	%Number of Service Tasks
+NSI	%Number of Signals
+NSIEV	%Number of Signal Events
+NSTEV	%Number of Start Events
+NSTMEV	%Number of Start Message Events
+NSTCOEV	%Number of Start Conditional Events
+NSTSIGEV	%Number of Start Signal Events
+NSTTEV	%Number of Start Timer Events
+NSTMUEV	%Number of Start Multiple Events
+NSTPMUEV	%Number of Start Parallel Multiple Events
+NSCONV	%Number of Subconversations
+NTEEV	%Number of Terminate Events
+NTEX	%Number of Texts
+NTEXA	%Number of Text Annotations
+NTHEV	%Number of Throw Events
+NTC	%Number of Time-Cycles
+NTDA	%Number of Time Dates
+NTDU	%Number of Time Durations
+NTEV	%Number of Timer Events
+NTR	%Number of Transactions
+NUT	%Number of User Tasks
+NSUB	%Number of Subprocesses
+NFDCG	%Number of Flows dividing complex gateways
+NFDEBG	%Number of Flows dividing event-based gateways
+NFDEXG	%Number of Flows dividing exclusive gateways
+NFDIG	%Number of Flows dividing inclusive gateways
+NFDPG	%Number of Flows dividing parallel gateways
+NFDG	%Number of Flows dividing gateways
+NFDT	%Number of Flows dividing tasks
+NFJCG	%Number of Flows joining complex gateways
+NFJEBG	%Number of Flows joining event-based gateways
+NFJEXG	%Number of Flows joining exclusive gateways
+NFJIG	%Number of Flows joining inclusive gateways
+NFJPG	%Number of Flows joining parallel gateways
+NFJG	%Number of Flows joining gateways
+NFJT	%Number of flows joining tasks
+NFJDCG	%Number of Flows joining and dividing complex gateways
+NFJDEBG	%Number of Flows joining and dividing event-based gateways
+NFJDEXG	%Number of Flows joining and dividing exclusive gateways
+NFJDIG	%Number of Flows joining and dividing inclusive gateways
+NFJDPG	%Number of Flows joining and dividing parallel gateways
+NFJDG	%Number of Flows joining and dividing gateways
+NFJDT	%Number of flows joining and dividing tasks

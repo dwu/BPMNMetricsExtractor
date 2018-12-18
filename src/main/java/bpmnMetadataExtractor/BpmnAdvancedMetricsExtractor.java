@@ -69,7 +69,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("HPC_V", getHalsteadBasedProcessComplexityVolume());
 		json.addAdvancedMetric("NoI", getNumberOfActivityInputs());
 		json.addAdvancedMetric("NoO", getNumberOfActivityOutputs());
-		json.addAdvancedMetric("Lenght", getActivityLength());
+		json.addAdvancedMetric("Length", getActivityLength());
 		json.addAdvancedMetric("IC", getInterfaceComplexityOfActivityMetric());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());	
 		json.addAdvancedMetric("TNSF", getTotalNumberOfSequenceFlow());	
@@ -85,7 +85,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("Sequentiality", getSequentiality());
 		json.addAdvancedMetric("diam", sizeExtractor.getDiam());
 		json.addAdvancedMetric("Depth", partExtractor.getDepth());
-		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
+//		json.addAdvancedMetric("Structuredness", partExtractor.getStructuredness());
 		json.addAdvancedMetric("CYC", this.sccExtractor.getCyclicity());
 		json.addAdvancedMetric("TS", this.getTokenSplit());
 		json.addAdvancedMetric("Density", getDensity());

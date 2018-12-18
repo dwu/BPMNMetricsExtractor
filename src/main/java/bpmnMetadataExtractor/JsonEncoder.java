@@ -2,8 +2,18 @@ package bpmnMetadataExtractor;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.spi.Context;
 
 import org.camunda.bpm.engine.impl.util.json.*;
 /**
@@ -16,6 +26,7 @@ public class JsonEncoder {
 	
 	private JSONObject json;
 	private String fileName;
+	private Map<String, String[]> metricsInfos;  
 	
 	/**
 	 * Costruttore per l'encoder Json
@@ -24,8 +35,9 @@ public class JsonEncoder {
 		json = new JSONObject();
 		this.fileName = fileName;
 		this.initializeJSON();
+		this.initializeMetricsInfos();
 	}
-	
+
 	public JSONObject getJson() {
 		return json;
 	}
@@ -38,14 +50,46 @@ public class JsonEncoder {
 	 * "Advanced Metrics":{}
 	 * }
 	 */
-	public void initializeJSON(){
+	private void initializeJSON(){
 		JSONObject header = new JSONObject();
-		
 		JSONObject basicMetrics = new JSONObject();
-		
 		JSONObject advancedMetrics = new JSONObject();
-		
-		this.json.put("Header", header).put("Basic Metrics", basicMetrics).put("Advanced Metrics", advancedMetrics);	
+		this.json.put("Header", header).put("Basic Metrics", basicMetrics).put("Advanced Metrics", advancedMetrics);
+		this.json.getJSONObject("Basic Metrics").put("NT", 0);
+	}
+	
+	private void initializeMetricsInfos() {
+		String path = "";
+		try {
+			path = Paths.get(this.getClass().getClassLoader().getResource("metriche_complete.txt").toURI()).toString();
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println(path);
+		metricsInfos = new HashMap<String, String[]>();
+		List<String> metrics = new ArrayList<String>();
+		try {
+//			metrics = Files.readAllLines(Paths.get("metriche_complete.txt"), StandardCharsets.ISO_8859_1);
+			metrics = Files.readAllLines(Paths.get(path), StandardCharsets.ISO_8859_1);
+		} catch (IOException e) {
+			System.out.println(e);
+			System.out.println("Error reading metrics file");
+		}
+		String name, desc, source;
+		String infos[];
+		for (String m : metrics) {
+			infos = new String[2];
+			name = m.substring(0, m.indexOf('%'));
+			name = name.trim();
+			desc = m.substring(m.indexOf('%') + 1, m.indexOf('{'));
+			desc = desc.trim();
+			source = m.substring(m.indexOf('{') + 1, m.length() - 1);
+			source = source.trim();
+			infos[0] = desc;
+			infos[1] = source;
+			metricsInfos.put(name, infos);
+		}
 	}
 	
 	/**
@@ -54,7 +98,12 @@ public class JsonEncoder {
 	 * @param n numero delle metriche
 	 */
 	public void addBasicMetric(String metricName, int n){
-		this.json.getJSONObject("Basic Metrics").put(metricName, n);
+		JSONObject basicMetric = new JSONObject();
+		String metricInfos[] = metricsInfos.get(metricName);
+		basicMetric.put("Value", n);
+		basicMetric.put("Description", metricInfos[0]);
+		basicMetric.put("Source", metricInfos[1]);
+		this.json.getJSONObject("Basic Metrics").put(metricName, basicMetric);
 	}
 	
 	/**
@@ -63,7 +112,12 @@ public class JsonEncoder {
 	 * @param n numero delle metriche
 	 */
 	public void addAdvancedMetric(String metricName, double n){
-		this.json.getJSONObject("Advanced Metrics").put(metricName, n);
+		JSONObject advMetric = new JSONObject();
+		String metricInfos[] = metricsInfos.get(metricName);
+		advMetric.put("Value", n);
+		advMetric.put("Description", metricInfos[0]);
+		advMetric.put("Source", metricInfos[1]);
+		this.json.getJSONObject("Advanced Metrics").put(metricName, advMetric);
 	}
 	
 	public ArrayList<String> getBasicMetricsNames() {
@@ -89,7 +143,7 @@ public class JsonEncoder {
 		JSONArray namesArray = basicMetrics.names();
 		ArrayList<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < namesArray.length(); ++i) {
-			values.add(basicMetrics.getInt(namesArray.getString(i)));
+			values.add(basicMetrics.getJSONObject(namesArray.getString(i)).getInt("Value"));
         }
 		return values;
 	}
@@ -99,7 +153,7 @@ public class JsonEncoder {
 		JSONArray namesArray = advancedMetrics.names();
 		ArrayList<Double> values = new ArrayList<Double>();
 		for (int i = 0; i < namesArray.length(); ++i) {
-			values.add(advancedMetrics.getDouble(namesArray.getString(i)));
+			values.add(advancedMetrics.getJSONObject(namesArray.getString(i)).getDouble("Value"));
         }
 		return values;
 	}

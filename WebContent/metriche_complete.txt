@@ -1,0 +1,248 @@
+NT	%Number of tasks {Camunda API Instance Package}
+NCD	%Number of complex decisions  {Camunda API Instance Package}
+NDOin	%Number of data objects that are input of activities {Camunda API Instance Package}
+NDOout	%Number of data objects that are output of activities {Camunda API Instance Package}
+NID	%Number of inclusive decisions {Camunda API Instance Package}
+NEDDB	%Number of exclusive data based decisions {Camunda API Instance Package}
+NEDEB	%Number of event based decisions {Camunda API Instance Package}
+NL	%Number of lanes {Camunda API Instance Package}
+NMF	%Number of message flows {Camunda API Instance Package}
+NP	%Number of pools {Camunda API Instance Package}
+NSFE	%Number of outgoing sequence flows from events {Camunda API Instance Package}
+NSFG	%Number of outgoing sequence flows from gateways {Camunda API Instance Package}
+NSFA	%Number of sequence flows between activities {Camunda API Instance Package}
+NAC	%Number of Activation Conditions  {Camunda API Instance Package}
+NACT	%Number of Activities {Camunda API Instance Package}
+NART	%Number of Artifacts {Camunda API Instance Package}
+NASI	%Number of Assignments {Camunda API Instance Package}
+NASO	%Number of Associations {Camunda API Instance Package}
+NAUD	%Number of Auditings {Camunda API Instance Package}
+NBEL	%Number of base elements {Camunda API Instance Package}
+NBEV	%Number of Boundary Events {Camunda API Instance Package}
+NIBEV	%Number of Interrupting Boundary Events {Camunda API Instance Package}
+NIBCANCEV	%Number of Interrupting Boundary Cancel Events {Camunda API Instance Package}
+NIBCOMPEV	%Number of Interrupting Boundary Compensation Events {Camunda API Instance Package}
+NIBCOEV	%Number of Interrupting Boundary Conditional Events {Camunda API Instance Package}
+NIBERREV	%Number of Interrupting Boundary Error Events {Camunda API Instance Package}
+NIBESCEV	%Number of Interrupting Boundary Escalation Events {Camunda API Instance Package}
+NIBMEV	%Number of Interrupting Boundary Message Events {Camunda API Instance Package}
+NIBSIGEV	%Number of Interrupting Boundary Signal Events {Camunda API Instance Package}
+NIBTEV	%Number of Interrupting Boundary Timer Events {Camunda API Instance Package}
+NBNIEV	%Number of Non Interrupting Boundary Events {Camunda API Instance Package}
+NBNIMEV	%Number of Non Interrupting Boundary Message Events {Camunda API Instance Package}
+NBNITEV	%Number of Non Interrupting Boundary Timer Events {Camunda API Instance Package}
+NBNICONEV	%Number of Non Interrupting Boundary Conditional Events {Camunda API Instance Package}
+NBNISIGEV	%Number of Non Interrupting Boundary Signal Events {Camunda API Instance Package}
+NBNIMUEV	%Number of Non Interrupting Boundary Multiple Events {Camunda API Instance Package}
+NBNIPMUEV	%Number of Non Interrupting Boundary Parallel Multiple Events {Camunda API Instance Package}
+NBNIESCEV	%Number of Non Interrupting Boundary Escalation Events {Camunda API Instance Package}
+NBRT	%Number of Business Rule Tasks {Camunda API Instance Package}
+NCEL	%Number of Callable Elements {Camunda API Instance Package}
+NCAC	%Number of Call Activities {Camunda API Instance Package}
+NCCO	%Number of Call Conversations {Camunda API Instance Package}
+NCANEV	%Number of Cancel Events {Camunda API Instance Package}
+NCATEV	%Number of Catch Events {Camunda API Instance Package}
+NCVAL	%Number of Category Values {Camunda API Instance Package}
+NCOL	%Number of Collaborations {Camunda API Instance Package}
+NCOMEV	%Number of Compensate Events  {Camunda API Instance Package}
+NCOCON	%Number of Completion Conditions {Camunda API Instance Package}
+NCBDEF	%Number of Complex Behavior {Camunda API Instance Package}
+NCOND	%Number of Conditions {Camunda API Instance Package}
+NCONDEV	%Number of Conditional Event {Camunda API Instance Package}
+NCONDEX	%Number of Condition Expressions {Camunda API Instance Package}
+NCONV	%Number of Conversations {Camunda API Instance Package}
+NCONVAS	%Number of Conversation Associations {Camunda API Instance Package}
+NCONVL	%Number of Conversation Links {Camunda API Instance Package}
+NCONVN	%Number of Conversation Node {Camunda API Instance Package}
+NCORK	%Number of Correlation Keys {Camunda API Instance Package}
+NCORP	%Number of Correlation Properties {Camunda API Instance Package}
+NCORPB	%Number of Correlation Property Bindings {Camunda API Instance Package}
+NCORPRE	%Number of Correlation Property Retrieval Expressions {Camunda API Instance Package}
+NCORS	%Number of Correlation Subscriptions {Camunda API Instance Package}
+NDA	%Number of Data Associations {Camunda API Instance Package}
+NDInA	%Number of Data Input Associations {Camunda API Instance Package}
+NDO	%Number of Data Objects {Camunda API Instance Package}
+NDOR	%Number of Data Object References {Camunda API Instance Package}
+NDOutA	%Number of Data Output Associations {Camunda API Instance Package}
+NDSTA	%Number of Data States {Camunda API Instance Package}
+NDSTO	%Number of Data Stores {Camunda API Instance Package}
+NDEF	%Number of Definitions {Camunda API Instance Package}
+NDOC	%Number of Documentations {Camunda API Instance Package}
+NENDEV	%Number of End Events {Camunda API Instance Package}
+NENDCEV	%Number of End Cancel Events {Camunda API Instance Package}
+NENDCOMEV	%Number of End Compensation Events {Camunda API Instance Package}
+NENDERREV	%Number of End Error Events {Camunda API Instance Package}
+NENDESCEV	%Number of End Escalation Events {Camunda API Instance Package}
+NENDMEV	%Number of End Message Events {Camunda API Instance Package}
+NENDSIGEV	%Number of End Signal Events {Camunda API Instance Package}
+NENDTEREV	%Number of End Terminate Events {Camunda API Instance Package}
+NENDMUEV	%Number of End Multiple Events {Camunda API Instance Package}
+NENDP	%Number of End Points {Camunda API Instance Package}
+NERR	%Number of Errors {Camunda API Instance Package}
+NERREV	%Number of Error Events {Camunda API Instance Package}
+NESC	%Number of Escalations {Camunda API Instance Package}
+NESCEV	%Number of Escalation Events {Camunda API Instance Package}
+NEV	%Number of Events {Camunda API Instance Package}
+NEVDEF	%Number of Event Definitions {Camunda API Instance Package}
+NEXP	%Number of Expressions {Camunda API Instance Package}
+NEXT	%Number of Extensions {Camunda API Instance Package}
+NEXTEL	%Number of Extension Elements  {Camunda API Instance Package}
+NFLEL	%Number of Flow Elements {Camunda API Instance Package}
+NFLNO	%Number of Flow Nodes {Camunda API Instance Package}
+NFOREXP	%Number of Formal Expressions {Camunda API Instance Package}
+NGA	%Number of Gateways {Camunda API Instance Package}
+NGC	%Number of Global Conversations {Camunda API Instance Package}
+NHP	%Number of Human Performers {Camunda API Instance Package}
+NIMP	%Number of Import {Camunda API Instance Package}
+NInDI	%Number of Input Data Items {Camunda API Instance Package}
+NInS	%Number of Input Sets {Camunda API Instance Package}
+NINTNO	%Number of Interaction Nodes {Camunda API Instance Package}
+NINTE	%Number of Interfaces {Camunda API Instance Package}
+NICEV	%Number of Intermediate Catch Events {Camunda API Instance Package}
+NICOMCEV	%Number of Intermediate Compensation Catch Events {Camunda API Instance Package}
+NICONCEV	%Number of Intermediate Conditional Catch Events {Camunda API Instance Package}
+NILCEV	%Number of Intermediate Link Catch Events {Camunda API Instance Package}
+NIMCEV	%Number of Intermediate Message Catch Events {Camunda API Instance Package}
+NISIGCEV	%Number of Intermediate Signal Catch Events {Camunda API Instance Package}
+NIMUCEV	%Number of Intermediate Multiple Catch Events {Camunda API Instance Package}
+NIPMUCEV	%Number of Intermediate Parallel Multiple Catch Events {Camunda API Instance Package}
+NITEV	%Number of Intermediate Throw Events {Camunda API Instance Package}
+NICOMTEV	%Number degli Intermediate Compensation Throw Events {Camunda API Instance Package}
+NIESCTEV	%Number of Intermediate Escalation Throw Events {Camunda API Instance Package}
+NILTEV	%Number of Intermediate Link Throw Events {Camunda API Instance Package}
+NIMTEV	%Number of Intermediate Message Throw Events {Camunda API Instance Package}
+NISIGTEV	%Number of Intermediate Signal Throw Events {Camunda API Instance Package}
+NIMUTEV	%Number of Intermediate Multiple Throw Events {Camunda API Instance Package}
+NIOB	%Number of IO Bindings {Camunda API Instance Package}
+NIOS	%Number of IO Specifications {Camunda API Instance Package}
+NIAEL	%Number of Item Aware Elements {Camunda API Instance Package}
+NIDEF	%Number of Item Definitions {Camunda API Instance Package}
+NLEV	%Number of Link Events {Camunda API Instance Package}
+NLOOPCA	%Number of Loop Cardinalities {Camunda API Instance Package}
+NLOOPCH	%Number of Loop Characteristics {Camunda API Instance Package}
+NMT	%Number of Manual Tasks {Camunda API Instance Package}
+NMES	%Number of Messages {Camunda API Instance Package}
+NMESEV	%Number of Message Events {Camunda API Instance Package}
+NMESFA	%Number of Message Flow Associations {Camunda API Instance Package}
+NMON	%Number of Monitorings {Camunda API Instance Package}
+NMILCH	%Number of Multi Instance Loop Characteristics {Camunda API Instance Package}
+NOP	%Number of Operations {Camunda API Instance Package}
+NOutDI	%Number of Output Data Items {Camunda API Instance Package}
+NOutS	%Number of Output Sets {Camunda API Instance Package}
+NPG	%Number of Parallel Gateways {Camunda API Instance Package}
+NPAS	%Number of Participant Associations {Camunda API Instance Package}
+NPM	%Number of Participant Multiplicities {Camunda API Instance Package}
+NPER	%Number of Performers {Camunda API Instance Package}
+NPO	%Number of Potential Owners {Camunda API Instance Package}
+NPROC	%Number of Processes {Camunda API Instance Package}
+NPROP	%Number of Properties {Camunda API Instance Package}
+NRT	%Number of Receive Tasks {Camunda API Instance Package}
+NREL	%Number of Relationships {Camunda API Instance Package}
+NREN	%Number of Renderings {Camunda API Instance Package}
+NRES	%Number of Resources {Camunda API Instance Package}
+NRESAEX	%Number of Resource Assignment Expressions {Camunda API Instance Package}
+NRESP	%Number of Resource Parameters {Camunda API Instance Package}
+NRESPB	%Number of Resource Parameter Bindings {Camunda API Instance Package}
+NRESR	%Number of Resource Roles {Camunda API Instance Package}
+NRE	%Number of Root Elements {Camunda API Instance Package}
+NSCR	%Number of Scripts {Camunda API Instance Package}
+NSCT	%Number of Script Tasks {Camunda API Instance Package}
+NSENT	%Number of Send Tasks {Camunda API Instance Package}
+NSEQF	%Number of Squence Flows {Camunda API Instance Package}
+NSERT	%Number of Service Tasks {Camunda API Instance Package}
+NSI	%Number of Signals {Camunda API Instance Package}
+NSIEV	%Number of Signal Events {Camunda API Instance Package}
+NSTEV	%Number of Start Events {Camunda API Instance Package}
+NSTMEV	%Number of Start Message Events {Camunda API Instance Package}
+NSTCOEV	%Number of Start Conditional Events {Camunda API Instance Package}
+NSTSIGEV	%Number of Start Signal Events {Camunda API Instance Package}
+NSTTEV	%Number of Start Timer Events {Camunda API Instance Package}
+NSTMUEV	%Number of Start Multiple Events {Camunda API Instance Package}
+NSTPMUEV	%Number of Start Parallel Multiple Events {Camunda API Instance Package}
+NSCONV	%Number of Subconversations {Camunda API Instance Package}
+NTEEV	%Number of Terminate Events {Camunda API Instance Package}
+NTEX	%Number of Texts {Camunda API Instance Package}
+NTEXA	%Number of Text Annotations {Camunda API Instance Package}
+NTHEV	%Number of Throw Events {Camunda API Instance Package}
+NTC	%Number of Time-Cycles {Camunda API Instance Package}
+NTDA	%Number of Time Dates {Camunda API Instance Package}
+NTDU	%Number of Time Durations {Camunda API Instance Package}
+NTEV	%Number of Timer Events {Camunda API Instance Package}
+NTR	%Number of Transactions {Camunda API Instance Package}
+NUT	%Number of User Tasks {Camunda API Instance Package}
+NSUB	%Number of Subprocesses {Camunda API Instance Package}
+NFDCG	%Number of Flows dividing complex gateways {Camunda API Instance Package}
+NFDEBG	%Number of Flows dividing event-based gateways {Camunda API Instance Package}
+NFDEXG	%Number of Flows dividing exclusive gateways {Camunda API Instance Package}
+NFDIG	%Number of Flows dividing inclusive gateways {Camunda API Instance Package}
+NFDPG	%Number of Flows dividing parallel gateways {Camunda API Instance Package}
+NFDG	%Number of Flows dividing gateways {Camunda API Instance Package}
+NFDT	%Number of Flows dividing tasks {Camunda API Instance Package}
+NFJCG	%Number of Flows joining complex gateways {Camunda API Instance Package}
+NFJEBG	%Number of Flows joining event-based gateways {Camunda API Instance Package}
+NFJEXG	%Number of Flows joining exclusive gateways {Camunda API Instance Package}
+NFJIG	%Number of Flows joining inclusive gateways {Camunda API Instance Package}
+NFJPG	%Number of Flows joining parallel gateways {Camunda API Instance Package}
+NFJG	%Number of Flows joining gateways {Camunda API Instance Package}
+NFJT	%Number of flows joining tasks {Camunda API Instance Package}
+NFJDCG	%Number of Flows joining and dividing complex gateways {Camunda API Instance Package}
+NFJDEBG	%Number of Flows joining and dividing event-based gateways {Camunda API Instance Package}
+NFJDEXG	%Number of Flows joining and dividing exclusive gateways {Camunda API Instance Package}
+NFJDIG	%Number of Flows joining and dividing inclusive gateways {Camunda API Instance Package}
+NFJDPG	%Number of Flows joining and dividing parallel gateways {Camunda API Instance Package}
+NFJDG	%Number of Flows joining and dividing gateways {Camunda API Instance Package}
+NFJDT	%Number of flows joining and dividing tasks {Camunda API Instance Package}
+CLA	%Connectivity level between activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+CLP	%Connectivity level between participants {Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOPin %Proportion of data objects as incoming products and total data objects	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOPout	%Proportion of data objects as outgoing products and total data objects	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNT	%Total number of tasks	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOTout	%Proportion of data objects as outgoing product of activities of the model	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PLT	%Proportion of pools/lanes ad activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNCS	%Total number of collapsed sub-processes	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNA	%Total number of activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNDO	%Total number of data objects in the model	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNG	%Total number of gateways	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNEE	%Total number of end events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNIE	%Total number of intermediate events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNSE	%Total number of start events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNE	%Total number of events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+CFC	%Control-flow Complexity metric	{10.1007/978-3-642-01862-6\_6}
+NOA	%Number of activities in a process	{10.1007/11837862\_13}
+NOAC	%Number of activities and control-flow elements in a process	{10.1007/11837862\_13}
+NOAJS	%Number of activities, joins, and splits in a process	{10.1007/11837862\_13}
+HPC_D	%Hasted-based Process Complexity (process difficulty)	{10.1007/11837862\_13}
+HPC_N	%Hasted-based Process Complexity (process length)	{10.1007/11837862\_13}
+HPC_V	%Hasted-based Process Complexity (process volume)	{10.1007/11837862\_13}
+NoI	%Number of activity inputs	{10.1007/11837862\_13}
+NoO	%Number of activity outputs	{10.1007/11837862\_13}
+Length	%Activity length	{10.1007/11837862\_13}
+IC	%Interface complexity of an activity metric	{10.1007/11837862\_13}
+NOF	%Number of control flow connections (number of arcs).	{10.1007/11837862\_13}
+CNC %Coefficient of Network Complexity or Connectivity coefficient {J. Cardoso, J. Mendling, G. Neumann, H.A. Reijers (2006) A Discourse on Complexity of Process Models}
+TNSF	%Total number of sequence flows	{10.1109/CEC.2009.53}
+CC	%Cross-connectivity metric	{10.1007/978-3-540-69534-9\_36}
+ICP	%Imported Coupling of a Process metric	{Khlif W, Makni L, Zaaboub N, Ben-Abdallah H (2009) Quality metrics for business process modeling.}
+ECP	%Exported Coupling of a Process metric	{Khlif W, Makni L, Zaaboub N, Ben-Abdallah H (2009) Quality metrics for business process modeling.}
+W	%Cognitive Weight	{10.1109/COGINF.2006.365702}
+MaxND	%Maximum Nesting Depth	{Gruhn V, Laue R (2006) Complexity metrics for business process models}
+CP	%Coupling metric, it calculates the degree of coupling.	{10.1007/978-3-540-25970-1\_19}
+MeanND	%Mean Nesting Depth	{Gruhn V, Laue R (2006) Complexity metrics for business process models}
+Sn	%Number of nodes	{10.1007/978-3-540-89224-3}
+Sequentiality	%Sequentiality	{10.1007/978-3-540-89224-3}
+diam	%Diameter	{10.1007/978-3-540-89224-3}
+Depth	%Depth	{10.1007/978-3-540-89224-3}
+GM	%Gateway Mismatch or Connector Mismatch	{10.1007/978-3-540-89224-3}
+CH	%Gateway Heterogeneity	{10.1007/978-3-540-89224-3}
+F	%Structuredness	{10.1007/978-3-540-89224-3}
+CYC	%Cyclicity	{10.1007/978-3-540-89224-3}
+TS %Token Splits or Concurrency	{10.1007/978-3-540-89224-3}
+Density	%Density	{10.1007/978-3-540-89224-3}
+ACD	%Average Connector Degree or Average Gayeway Degree	{10.1007/978-3-540-75183-0\_4}
+MCD	%Maximum Degree of a Connector or Maximum Gateway Degree	{10.1007/978-3-540-75183-0\_4}
+ECaM	%Extended Cardoso Metric {10.1016/j.infsof.2008.08.005}
+ECyM	%Extended Cyclomatic Metric	{10.1016/j.infsof.2008.08.005}
+DSM	%Durfee Square Metric	{Kluza K, Nalepa GJ (2012) Proposal of square metrics for measuring business process model complexity.}
+PSM	%Perfect Square Metric	{Kluza K, Nalepa GJ (2012) Proposal of square metrics for measuring business process model complexity.}
+Layout_Complexity	%It evaluates the usability of different screen designs based on the Shannon formula	{Comber T, Maltby JR (1996) Investigating layout complexity.}
+Layout_Measure	%It is a group of measures that quantify layout of models	{10.1016/j.infsof.2009.04.008}

@@ -1,0 +1,53 @@
+CLA	%Connectivity level between activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+CLP	%Connectivity level between participants {Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOPin %Proportion of data objects as incoming products and total data objects	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOPout	%Proportion of data objects as outgoing products and total data objects	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNT	%Total number of tasks	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PDOTout	%Proportion of data objects as outgoing product of activities of the model	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+PLT	%Proportion of pools/lanes ad activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNCS	%Total number of collapsed sub-processes	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNA	%Total number of activities	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNDO	%Total number of data objects in the model	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNG	%Total number of gateways	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNEE	%Total number of end events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNIE	%Total number of intermediate events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNSE	%Total number of start events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+TNE	%Total number of events	{Rolón E, Ruiz F, García F, Piattini M (2006) Applying software metrics to evaluate business process models}
+CFC	%Control-flow Complexity metric	{10.1007/978-3-642-01862-6\_6}
+NOA	%Number of activities in a process	{10.1007/11837862\_13}
+NOAC	%Number of activities and control-flow elements in a process	{10.1007/11837862\_13}
+NOAJS	%Number of activities, joins, and splits in a process	{10.1007/11837862\_13}
+HPC_D	%Hasted-based Process Complexity (process difficulty)	{10.1007/11837862\_13}
+HPC_N	%Hasted-based Process Complexity (process length)	{10.1007/11837862\_13}
+HPC_V	%Hasted-based Process Complexity (process volume)	{10.1007/11837862\_13}
+Nol	%Number of activity inputs	{10.1007/11837862\_13}
+NoO	%Number of activity outputs	{10.1007/11837862\_13}
+Length	%Activity length	{10.1007/11837862\_13}
+IC	%Interface complexity of an activity metric	{10.1007/11837862\_13}
+NOF	%Number of control flow connections (number of arcs).	{10.1007/11837862\_13}
+TNSF	%Total number of sequence flows	{10.1109/CEC.2009.53}
+CC	%Cross-connectivity metric	{10.1007/978-3-540-69534-9\_36}
+ICP	%Imported Coupling of a Process metric	{Khlif W, Makni L, Zaaboub N, Ben-Abdallah H (2009) Quality metrics for business process modeling.}
+ECP	%Exported Coupling of a Process metric	{Khlif W, Makni L, Zaaboub N, Ben-Abdallah H (2009) Quality metrics for business process modeling.}
+W	%Cognitive Weight	{10.1109/COGINF.2006.365702}
+MaxND	%Maximum Nesting Depth	{Gruhn V, Laue R (2006) Complexity metrics for business process models}
+CP	%Coupling metric, it calculates the degree of coupling.	{10.1007/978-3-540-25970-1\_19}
+MeanND	%Mean Nesting Depth	{Gruhn V, Laue R (2006) Complexity metrics for business process models}
+SN	%Number of nodes	{10.1007/978-3-540-89224-3}
+Sequentiality	%Sequentiality	{10.1007/978-3-540-89224-3}
+diam	%Diameter	{10.1007/978-3-540-89224-3}
+Depth	%Depth	{10.1007/978-3-540-89224-3}
+GM	%Gateway Mismatch or Connector Mismatch	{10.1007/978-3-540-89224-3}
+CH	%Gateway Heterogeneity	{10.1007/978-3-540-89224-3}
+F	%Structuredness	{10.1007/978-3-540-89224-3}
+CYC	%Cyclicity	{10.1007/978-3-540-89224-3}
+TS %Token Splits or Concurrency	{10.1007/978-3-540-89224-3}
+Density	%Density	{10.1007/978-3-540-89224-3}
+ACD	%Average Connector Degree or Average Gayeway Degree	{10.1007/978-3-540-75183-0\_4}
+MCD	%Maximum Degree of a Connector or Maximum Gateway Degree	{10.1007/978-3-540-75183-0\_4}
+ECaM	%Extended Cardoso Metric {10.1016/j.infsof.2008.08.005}
+ECyM	%Extended Cyclomatic Metric	{10.1016/j.infsof.2008.08.005}
+DSM	%Durfee Square Metric	{Kluza K, Nalepa GJ (2012) Proposal of square metrics for measuring business process model complexity.}
+PSM	%Perfect Square Metric	{Kluza K, Nalepa GJ (2012) Proposal of square metrics for measuring business process model complexity.}
+Layout_complexity	%It evaluates the usability of different screen designs based on the Shannon formula	{Comber T, Maltby JR (1996) Investigating layout complexity.}
+Layout_measure	%It is a group of measures that quantify layout of models	{10.1016/j.infsof.2009.04.008}
