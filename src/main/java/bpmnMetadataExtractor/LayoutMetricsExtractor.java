@@ -3,6 +3,9 @@ package bpmnMetadataExtractor;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.camunda.bpm.model.bpmn.instance.Event;
+import org.camunda.bpm.model.bpmn.instance.Gateway;
+import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnEdge;
 import org.camunda.bpm.model.bpmn.instance.bpmndi.BpmnShape;
 import org.camunda.bpm.model.bpmn.instance.di.Edge;
@@ -13,6 +16,7 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
  * For this metric the following weights have been used:
  * Non-Rectilinear sequence flow = 1;
  * Intersecting sequence flows = 1;
+ * Overlapping Shapes = 1;
  * @author PROSLabTeam
  *
  */
@@ -27,11 +31,18 @@ public class LayoutMetricsExtractor {
 		this.edges = basicExtractor.getCollectionOfElementType(BpmnEdge.class);
 		this.shapes = basicExtractor.getCollectionOfElementType(BpmnShape.class);
 	}
-	
+	/**
+	 * Method that computes the Layout Measure Metric
+	 * @return Layour Measure Metric
+	 */
 	public int getLayoutMeasure(){
-		return this.getWaypointsMeasures(edges); // + this.getShapesMeasures(shapes) 
+		return this.getWaypointsMeasures(edges) + this.getShapesMeasures(shapes); 
 	}
-	
+	/**
+	 * Class used to build segments out of waypoints
+	 * @author PROSLabTeam
+	 *
+	 */
 	private class Segment{
 		private Waypoint w1;
 		private Waypoint w2;
@@ -56,7 +67,11 @@ public class LayoutMetricsExtractor {
 				return false;
 		}
 	}
-	
+	/**
+	 * Method that returns the number of intersected edges and non-rectilinear edges
+	 * @param edges
+	 * @return
+	 */
 	private int getWaypointsMeasures(Collection<ModelElementInstance> edges){
 		int toReturn = 0;
 		ArrayList<Segment> segments = new ArrayList();
@@ -97,8 +112,7 @@ public class LayoutMetricsExtractor {
 			}
 		}
 		return numberOfIntersections;
-	}
-	
+	}	
 	/**
 	 * Check where or not the point w3 lies on the [w1,w2] segment
 	 * @param w1
@@ -119,7 +133,6 @@ public class LayoutMetricsExtractor {
 				return true;
 		return false;
 	}
-	
 	/**
 	 * check if w3 shares the same segment [w1,w2]
 	 * @param w1
@@ -205,7 +218,11 @@ public class LayoutMetricsExtractor {
 		
 		return false;
 	}
-	
+	/**
+	 * Method that returns the number of Overlapping Objects in the model
+	 * @param shapes Collection of all the shapes
+	 * @return
+	 */
 	private int getShapesMeasures(Collection<ModelElementInstance> shapes){
 		int toReturn = 0;
 		for (ModelElementInstance s: shapes){
@@ -219,79 +236,543 @@ public class LayoutMetricsExtractor {
 			}
 			
 		}
-		return toReturn;
+		return toReturn/2;
 	}
-	
 	/**
 	 * Method which check wheter or not two different shapes are overlapped
 	 * The center of the shapes is the position of the object
-	 * TODO Generalizzare le coordinate degli elementi nel modello in modo che le coordinate riflettano il punto centrale delle figure
 	 * @param s1
 	 * @param s2
 	 * @return
 	 */
 	private boolean isOverlapped(BpmnShape s1, BpmnShape s2){
-		double firstX = s1.getBounds().getX();
-		double firstY = s1.getBounds().getY();
+		//Two tasks
+	if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Task)
+			return this.overlappingTasks(s1,s2);
+		
+		//Two Events
+		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Event)
+			return this.overlappingEvents(s1,s2);
+		
+		//Two Gateways
+		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Gateway)
+			return this.overlappingGateways(s1,s2);
+		
+		//One Task and one Event
+		if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Event)
+			return this.overlappingTaskAndEvent(s1,s2);
+		
+		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Task )
+			return this.overlappingTaskAndEvent(s2, s1);
+		
+		//One Task and one Gateway 
+		if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Gateway)
+			return this.overlappingTaskAndGateway(s1,s2);
+		
+		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Task )
+			return this.overlappingTaskAndGateway(s2, s1);		
+		
+		//One Event and one Gateway
+		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Gateway)
+			return this.overlappingEventAndGateway(s1,s2);
+		
+		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Event)
+			return this.overlappingEventAndGateway(s2, s1);
+				
+		return false;
+	}
+	/**
+	 * Method that checks if two Tasks overlap each other
+	 * @param s1 first Task
+	 * @param s2 second Task
+	 * @return true if they overlap
+	 */
+	private boolean overlappingTasks(BpmnShape s1, BpmnShape s2) {
+
 		double firstHeight = s1.getBounds().getHeight() / 2;
 		double firstWidth = s1.getBounds().getWidth() / 2;
+		//The coordinates refer to the upper-left corner of the task, adding Width and Height 
+		//cause the coordinates to reflect the position of the center of the shape
+		double firstX = s1.getBounds().getX() + firstWidth;
+		double firstY = s1.getBounds().getY() + firstHeight;
 		
-		double secondX = s2.getBounds().getX();
-		double secondY = s2.getBounds().getY();
 		double secondHeight = s2.getBounds().getHeight() / 2;
 		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondX = s2.getBounds().getX() + secondWidth;
+		double secondY = s2.getBounds().getY() + secondHeight;
 		
 		if (firstX > secondX && firstY > secondY){
-			//Seconda figura in alto a destra
-			if (firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight)
+			//Second shape is on the upper-left
+			if (firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight)
 				return true;
+			else
+				return false;
 		}
 		
 		if (firstX > secondX && firstY < secondY){
-			//seconda figura in basso a destra
-			if (firstX + firstWidth > secondX - secondWidth && firstY + firstHeight > secondY - secondHeight)
+			//Second shape is on the lower-left
+			if (firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight)
 				return true;
+			else
+				return false;
 		}
 		
 		if (firstX < secondX && firstY > secondY){
-			//seconda figura in alto a sinsitra
-			if (firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight)
+			//Second shape is on the upper-right
+			if (firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight)
 				return true;
+			else
+				return false;
 		}
 		
 		if (firstX < secondX && firstY < secondY){
-			//seconda figura in basso a sinistra
-			if (firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight)
+			//Second shape is on the lower-shape
+			if (firstX + firstWidth > secondX - secondWidth && firstY + firstHeight > secondY - secondHeight)
 				return true;
+			else
+				return false;
 		}
 		
-		if (firstX == secondX && firstY == secondY){
-			//seconda figura sovrapposta
+		if (firstX == secondX && firstY == secondY)
+			//completely overlapped shapes
 				return true;
-		}
 		
 		if (firstX == secondX && firstY > secondY){
-			//seconda figura sopra alla prima
+			//second shape is on top of the first one
 			if (firstY - firstHeight < secondY + secondHeight)
 				return true;
-		}
-		
-		if (firstX > secondX && firstY == secondY){
-			//seconda figura a destra della prima
-			if (firstX + firstWidth > secondX - secondWidth)
-				return true;
-		}
-		
-		if (firstX == secondX && firstY < secondY){
-			//seconda figura sotto la prima
-			if (firstY + firstHeight > secondY - secondHeight)
-				return true;
+			else
+				return false;
 		}
 		
 		if (firstX < secondX && firstY == secondY){
-			//seconda figura a sinistra della prima
+			//second shape is on the right
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			//second shape is on bottom of the first one
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			//second shape is on the left
 			if (firstX - firstWidth < secondX + secondWidth)
 				return true;
+			else
+				return false;
+		}
+		
+		return false;
+	}
+	/**
+	 * Method that checks if a Task and a Gateway overlap each other
+	 * @param s1 Task
+	 * @param s2 Gateway
+	 * @return true if they overlap
+	 */
+	private boolean overlappingTaskAndGateway(BpmnShape s1, BpmnShape s2) {
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		double firstX = s1.getBounds().getX() + firstWidth;
+		double firstY = s1.getBounds().getY() + firstHeight;
+		
+
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY() + secondHeight;
+		double apothem = (s2.getBounds().getHeight() * Math.sqrt(2)) / 2;
+		
+		if (firstX > secondX && firstY > secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY - firstHeight < secondY + apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY + firstHeight > secondY - apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			if ((firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX + firstWidth > secondX - apothem || firstY - firstHeight < secondY + apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY + firstHeight > secondY - apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY == secondY)
+				return true;
+		
+		if (firstX == secondX && firstY > secondY){
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
+	/**
+	 * Method that checks if the Task and the Event overlap each other
+	 * @param s1 Task
+	 * @param s2 Event
+	 * @return true if they overlap
+	 */
+	private boolean overlappingTaskAndEvent(BpmnShape s1, BpmnShape s2) {
+		
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		double firstX = s1.getBounds().getX() + firstWidth;
+		double firstY = s1.getBounds().getY() + firstHeight;
+
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY() + secondHeight;
+		
+		if (firstX > secondX && firstY > secondY){
+			if (firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			if (firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			if (firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			if (firstX + firstWidth > secondX - secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY == secondY)
+				return true;
+		
+		if (firstX == secondX && firstY > secondY){
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else 
+				return false;
+		}
+		return false;
+	}
+	/**
+	 * Method that checks if the two Events overlap each other
+	 * @param s1 first event
+	 * @param s2 second event
+	 * @return true if they overlap
+	 */
+	private boolean overlappingEvents(BpmnShape s1, BpmnShape s2) {
+		
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		double firstX = s1.getBounds().getX();
+		double firstY = s1.getBounds().getY() + firstHeight;
+		
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY() + secondHeight;
+		
+		if (firstX > secondX && firstY > secondY){
+			if (firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			if (firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			if (firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			if (firstX + firstWidth > secondX - secondWidth && firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY == secondY)
+				return true;
+		
+		if (firstX == secondX && firstY > secondY){
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
+	/**
+	 * Method that returns true if the Event and the Gateway overlap each other
+	 * @param s1 event
+	 * @param s2 gateway
+	 * @return true if they overlap
+	 */
+	private boolean overlappingEventAndGateway(BpmnShape s1, BpmnShape s2) {
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		double firstX = s1.getBounds().getX();
+		double firstY = s1.getBounds().getY() + firstHeight;
+		
+
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY() + secondHeight;
+		double apothem = (s2.getBounds().getHeight() * Math.sqrt(2)) / 2;
+		
+		if (firstX > secondX && firstY > secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY - firstHeight < secondY + apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY + firstHeight > secondY - apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			if ((firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX + firstWidth > secondX - apothem || firstY - firstHeight < secondY + apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstWidth < secondX + apothem || firstY + firstHeight > secondY - apothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY == secondY)
+				return true;
+		
+		if (firstX == secondX && firstY > secondY){
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
+	/**
+	 * Method that checks if the two given gateways overlap each other
+	 * @param s1 first gateway
+	 * @param s2 second gateway
+	 * @return true if they overlap
+	 */
+	private boolean overlappingGateways(BpmnShape s1, BpmnShape s2) {
+		double firstHeight = s1.getBounds().getHeight() / 2;
+		double firstWidth = s1.getBounds().getWidth() / 2;
+		double firstX = s1.getBounds().getX() + firstWidth;
+		double firstY = s1.getBounds().getY() + firstHeight;
+		double firstApothem = (s1.getBounds().getHeight() * Math.sqrt(2)) / 2;
+
+		double secondWidth = s2.getBounds().getWidth() / 2;
+		double secondHeight = s2.getBounds().getHeight() / 2;
+		double secondX = s2.getBounds().getX();
+		double secondY = s2.getBounds().getY() + secondHeight;
+		double secondApothem = (s2.getBounds().getHeight() * Math.sqrt(2)) / 2;
+		
+		if (firstX > secondX && firstY > secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX - firstApothem < secondX + secondApothem || firstY - firstApothem < secondY + secondApothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstApothem < secondX + secondApothem || firstY + firstApothem > secondY - secondApothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY > secondY){
+			if ((firstX + firstWidth > secondX - secondWidth && firstY - firstHeight < secondY + secondHeight) &&
+				(firstX + firstApothem > secondX - secondApothem || firstY - firstApothem < secondY + secondApothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY < secondY){
+			if ((firstX - firstWidth < secondX + secondWidth && firstY + firstHeight > secondY - secondHeight) &&
+				(firstX - firstApothem < secondX + secondApothem || firstY + firstApothem > secondY - secondApothem))
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY == secondY)
+				return true;
+		
+		if (firstX == secondX && firstY > secondY){
+			if (firstY - firstHeight < secondY + secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX > secondX && firstY == secondY){
+			if (firstX - firstWidth < secondX + secondWidth)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX == secondX && firstY < secondY){
+			if (firstY + firstHeight > secondY - secondHeight)
+				return true;
+			else
+				return false;
+		}
+		
+		if (firstX < secondX && firstY == secondY){
+			if (firstX + firstWidth > secondX - secondWidth)
+				return true;
+			else
+				return false;
 		}
 		return false;
 	}
