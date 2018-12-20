@@ -173,7 +173,7 @@ public class DurfeeSquareMetricExtractor {
 			double nodeAtIndex = flowNodes.get(i);
 			p = nodeAtIndex / size;
 			totalElements += flowNodes.get(i);
-			toReturn += this.logBase2(Math.pow(p, p));
+			toReturn += p * this.logBase2(p);
 		}
 	
 		toReturn *= -totalElements;
