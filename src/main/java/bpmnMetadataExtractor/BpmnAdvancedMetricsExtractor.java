@@ -540,8 +540,8 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getDensity() {
-		int nodes = basicMetricsExtractor.getFlowNodes();
-		return basicMetricsExtractor.getSequenceFlows() / nodes * (nodes - 1);
+		float nodes = basicMetricsExtractor.getFlowNodes();
+		return basicMetricsExtractor.getSequenceFlows() / (nodes * (nodes - 1));
 	}
 	
 	/**
