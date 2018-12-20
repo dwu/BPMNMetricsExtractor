@@ -13,13 +13,15 @@ h1 {
 	font-size: 40px;
 }
 
-h3 {
+h4 {
 	text-align: center;
 	color: white;
 	font-family: arial;
 	padding-top: 50px;
 }
-
+.separate {
+	height: 100px;
+}
 .wrapper {
   width: 100%;
   height: 50%;
