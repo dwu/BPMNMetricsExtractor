@@ -16,7 +16,7 @@ public class SizeMetricsExtractor {
 	public SizeMetricsExtractor(BpmnBasicMetricsExtractor basicExtractor) {
 		visitedNodes = new ArrayList<String>();
 		this.basicExtractor = basicExtractor;
-	} 
+	}
 
 	public double getDiam() {
 		Collection<ModelElementInstance> startNodes = basicExtractor.getCollectionOfElementType(StartEvent.class);
@@ -32,7 +32,7 @@ public class SizeMetricsExtractor {
 		}
 		return (double) toReturn;
 	}
-
+	
 	private int calculateMaxDiam(FlowNode sourceNode, int pathValue) {
 		if (!visitedNodes.contains(sourceNode.getId())) {
 			visitedNodes.add(sourceNode.getId());
@@ -44,10 +44,15 @@ public class SizeMetricsExtractor {
 		Collection<SequenceFlow> flows = sourceNode.getOutgoing();
 		for (SequenceFlow flow : flows) {
 			tempDiamValue = calculateMaxDiam(flow.getTarget(), pathValue + 1);
-			toReturn = tempDiamValue > toReturn ? tempDiamValue : toReturn;
+			if (tempDiamValue > toReturn) {
+				toReturn = tempDiamValue;
+			}
+		}
+		if (flows.size() == 0) {
+			toReturn = pathValue;
 		}
 		visitedNodes.remove(sourceNode.getId());
 		return toReturn;
 	}
-
+	
 }

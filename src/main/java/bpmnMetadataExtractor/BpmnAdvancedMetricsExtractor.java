@@ -6,14 +6,12 @@ import java.util.Collection;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.DataObject;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
-import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
-import org.camunda.bpm.model.bpmn.instance.SubProcess;
-import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class BpmnAdvancedMetricsExtractor {
@@ -253,7 +251,7 @@ public class BpmnAdvancedMetricsExtractor {
 		return basicMetricsExtractor.getEndEvents();
 	}
 	
-	/**TODO non sono presenti None, Rule e Multiple // non sono veramente intermediate events
+	/**
 	 * Metric: TNIE
 	 * Total number of Intermediate Events
 	 * Number of Intermediate None Events  + Number of Intermediate Timer Events + Number of Intermediate Message Events + Number of Intermediate Error Events + 
@@ -263,8 +261,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public int getTotalNumberOfIntermediateEvents() {
-		return basicMetricsExtractor.getTimerEventDefinitions() + basicMetricsExtractor.getMessageEvents() + basicMetricsExtractor.getErrorEvents() 
-		    + basicMetricsExtractor.getCancelEvents() + basicMetricsExtractor.getCompensateEvents() + basicMetricsExtractor.getLinkEvents();
+		return basicMetricsExtractor.getEvents() - basicMetricsExtractor.getStartEvents() - basicMetricsExtractor.getEndEvents();
 	}
 	
 	/**TODO i vari tipi di Start Events non sono presenti 
@@ -301,17 +298,32 @@ public class BpmnAdvancedMetricsExtractor {
 		Collection<ModelElementInstance> exclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(ExclusiveGateway.class);
 		Collection<ModelElementInstance> inclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(InclusiveGateway.class);
 		Collection<ModelElementInstance> parallelGateways = basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class);
-		//La CFC di uno xor-split presente in un processo è data dal numero di flussi uscenti dallo split in questione
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		//The CFC of a xor-split is given by the number of his outgoing flows
 		for (ModelElementInstance exGateway : exclusiveGateways) {
-			toReturn += ((FlowNode) exGateway).getOutgoing().size();
+			if (((FlowNode) exGateway).getOutgoing().size() > 1)
+				toReturn += ((FlowNode) exGateway).getOutgoing().size();
 		}
-		//La CFC di un or-split è data da 2^n - 1, dove n è pari al numero di flussi uscenti dallo split in questione
+		
+		//The CFC of an or-split is given by the formula 2^n - 1, where n is equals to the number of the gateway's outgoing flow
 		for (ModelElementInstance inGateway : inclusiveGateways) {
-			tempSize = ((FlowNode) inGateway).getOutgoing().size();
-			toReturn += Math.pow(2, tempSize) - 1;
+			if (((FlowNode) inGateway).getOutgoing().size() > 1) {
+				tempSize = ((FlowNode) inGateway).getOutgoing().size();
+				toReturn += Math.pow(2, tempSize) - 1;
+			}
 		}
-		//La CFC di and-split è semplicemente 1
-		toReturn += parallelGateways.size();
+		//The CFC of an and-split is just 1
+		for (ModelElementInstance parGateway : parallelGateways) {
+			if (((FlowNode) parGateway).getOutgoing().size() > 1) {
+				toReturn++;
+			}
+		}
+		//Uncontrolled splits are included in the calculation as and-splits
+		for (ModelElementInstance activity : activities) {
+			if (((FlowNode) activity).getOutgoing().size() > 1) {
+				toReturn ++;
+			}
+		}
 		return toReturn;
 	}
 	
@@ -459,18 +471,14 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getImportedCouplingOfProcess(){
 		int toReturn = 0;
-		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
-		for (ModelElementInstance modelSubProcess : subProcesses){
-			for (FlowElement subProcEl : ((SubProcess) modelSubProcess).getFlowElements()) {
-				if (subProcEl instanceof Activity) {
-					toReturn += ((Activity) subProcEl).getOutgoing().size();
-				}
-			}
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		Collection<ModelElementInstance> modelMessageFlows = basicMetricsExtractor.getCollectionOfElementType(MessageFlow.class);
+		for (ModelElementInstance a : activities){
+			toReturn += ((FlowNode) a).getOutgoing().size();
 		}
-		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
-		for (ModelElementInstance t : tasks){
-			if(((FlowNode) t).getParentElement() instanceof SubProcess){
-				toReturn += ((FlowNode) t).getOutgoing().size();
+		for (ModelElementInstance mMessageFlow : modelMessageFlows) {
+			if (((MessageFlow) mMessageFlow).getSource() instanceof Activity) {
+				toReturn++;
 			}
 		}
 		return toReturn;
@@ -484,18 +492,14 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getExportedCouplingOfProcess(){
 		int toReturn = 0;
-		Collection<ModelElementInstance> subProcesses = basicMetricsExtractor.getCollectionOfElementType(SubProcess.class);
-		for (ModelElementInstance modelSubProcess : subProcesses){
-			for (FlowElement subProcEl : ((SubProcess) modelSubProcess).getFlowElements()) {
-				if (subProcEl instanceof Activity) {
-					toReturn += ((Activity) subProcEl).getIncoming().size();
-				}
-			}
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		Collection<ModelElementInstance> modelMessageFlows = basicMetricsExtractor.getCollectionOfElementType(MessageFlow.class);
+		for (ModelElementInstance a : activities){
+			toReturn += ((FlowNode) a).getIncoming().size();
 		}
-		Collection<ModelElementInstance> tasks = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
-		for (ModelElementInstance t : tasks){
-			if(((FlowNode) t).getParentElement() instanceof SubProcess){
-				toReturn += ((FlowNode) t).getIncoming().size();
+		for (ModelElementInstance mMessageFlow : modelMessageFlows) {
+			if (((MessageFlow) mMessageFlow).getTarget() instanceof Activity) {
+				toReturn++;
 			}
 		}
 		return toReturn;
@@ -524,7 +528,7 @@ public class BpmnAdvancedMetricsExtractor {
 		return toReturn;
 	}
 	
-	/**TODO Metrica uguale a getFlowNodes()
+	/**
 	 * Metric: Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
@@ -540,8 +544,8 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public float getDensity() {
-		int nodes = basicMetricsExtractor.getFlowNodes();
-		return basicMetricsExtractor.getSequenceFlows() / nodes * (nodes - 1);
+		float nodes = basicMetricsExtractor.getFlowNodes();
+		return basicMetricsExtractor.getSequenceFlows() / (nodes * (nodes - 1));
 	}
 	
 	/**
@@ -566,7 +570,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getSequentiality() {
 		Collection<ModelElementInstance> sequenceFlowsModel = basicMetricsExtractor.getCollectionOfElementType(SequenceFlow.class);
-		int arcBetweenNonConnectorsNode = sequenceFlowsModel.size();
+		float arcBetweenNonConnectorsNode = sequenceFlowsModel.size();
 		for (ModelElementInstance sFModel : sequenceFlowsModel) {
 			SequenceFlow flow = (SequenceFlow) sFModel;
 			if (flow.getSource() instanceof Gateway || flow.getTarget() instanceof Gateway) {
@@ -746,7 +750,8 @@ public class BpmnAdvancedMetricsExtractor {
 		Collection<String> objectNames = new ArrayList<String>();
 		Collection<ModelElementInstance> dataObjects = basicMetricsExtractor.getCollectionOfElementType(DataObject.class);
 		for (ModelElementInstance obj : dataObjects) {
-			name = ((DataObject) obj).getName();
+			DataObject dataObj = (DataObject) obj;
+			name = dataObj.getName();
 			if (!objectNames.contains(name))
 				objectNames.add(name);
 		}
