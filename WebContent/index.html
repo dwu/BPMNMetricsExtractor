@@ -3,26 +3,22 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>BPMN Metadata Extractor</title>
+<script src="https://use.fontawesome.com/6ee62c23ff.js"></script>
+<link rel="stylesheet" href="index.css">
 </head>
 <body>
 	<h1> BPMN Metadata Extractor</h1>
-	<form action="extractorRest/api/fileUpload" method="post" enctype="multipart/form-data">
-		<table border="1">
-			<tr>
-				<td>
-				Select BPMN Model to upload:
-				</td>
-				<td>
-					<input type="file" name="model">
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<input type="submit" name="confirm" value="Compute Metrics">
-				</td>
-			</tr>
-		</table>
-	</form>
-	
+	<div class="wrapper">	
+		<form action="extractorRest/api/fileUpload" method="post" enctype="multipart/form-data">
+	  			<div class="file-upload">
+	    			<input type="file" name="model"/>
+	   				<i class="fa fa-arrow-up"></i>
+	 			</div>
+	 			<div class="inputbutton">
+	 				<input type="submit" name="confirm" value="Compute Metrics" class="blue">
+	 			</div>
+				<h3>  Made by <a href="https://github.com/PROSLab"> PROSLabTeam </a> </h3>
+		</form>
+	</div>
 </body>
 </html>
