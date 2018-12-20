@@ -94,7 +94,7 @@ public class NestingDepthMetricsExtractor {
 		}
 		visitedNodes.add(node.getId());
 		//Check if the node represents a decision node
-		if (node instanceof ComplexGateway || node instanceof ExclusiveGateway) {
+		if ((node instanceof ComplexGateway || node instanceof ExclusiveGateway) && node.getOutgoing().size() > 1) {
 			nestingDepthValue++;
 		}
 		//Recursive call on subsequent nodes
