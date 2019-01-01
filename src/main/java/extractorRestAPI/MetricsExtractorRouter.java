@@ -13,8 +13,6 @@ import bpmnMetadataExtractor.BpmnModelReader;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-
-
 @Path("/api")
 public class MetricsExtractorRouter {
 	@Path("/fileUpload")
@@ -25,7 +23,8 @@ public class MetricsExtractorRouter {
 			@FormDataParam("model") InputStream uploadedInputStream,
 			@FormDataParam("model") FormDataContentDisposition fileDetail) {
 		BpmnModelReader metricsExtractor = new BpmnModelReader();
-		String fileName = fileDetail.getFileName().substring(0, fileDetail.getFileName().lastIndexOf('.'));
+//		String fileName = fileDetail.getFileName().substring(0, fileDetail.getFileName().lastIndexOf('.'));
+		String fileName = "ExtractedMetadata";
 		String json = metricsExtractor.getJsonMetrics(uploadedInputStream, fileName);
 		return  Response.ok((Object)json).
 				header("Content-Disposition","attachment; filename = " + fileName + ".json").
