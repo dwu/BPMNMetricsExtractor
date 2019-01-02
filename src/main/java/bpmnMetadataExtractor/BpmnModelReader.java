@@ -79,10 +79,10 @@ public class BpmnModelReader {
 		basicExtractor.runMetrics();
 		advExtractor.runMetrics();
 		jsonEncoder.populateHeader(LocalDateTime.now());
-		MySqlInterface db = new MySqlInterface();
-		db.connect();
-		db.saveMetrics(jsonEncoder);
-		db.closeConnection();
+//		MySqlInterface db = new MySqlInterface();
+//		db.connect();
+//		db.saveMetrics(jsonEncoder);
+//		db.closeConnection();
 		return jsonEncoder.getJson().toString();
 	}
 

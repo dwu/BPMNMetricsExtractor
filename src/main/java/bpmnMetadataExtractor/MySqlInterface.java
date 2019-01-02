@@ -137,7 +137,7 @@ public class MySqlInterface {
 	 */
 	private String createBasicTableString(JsonEncoder json) {
 		ArrayList<String>  basicMetricsNames = json.getBasicMetricsNames();
-        String basicCreate = "CREATE TABLE BASIC_METRICS (id INTEGER NOT NULL, ";
+        String basicCreate = "CREATE TABLE BASIC_METRICS (id VARCHAR(50) NOT NULL, ";
         for (int i = 0; i < basicMetricsNames.size(); i++) {
         	basicCreate += basicMetricsNames.get(i) + " INTEGER, ";
         }
@@ -152,7 +152,7 @@ public class MySqlInterface {
 	 */
 	private String createAdvancedTableString(JsonEncoder json) {
 		ArrayList<String>  advancedMetricsNames = json.getAdvancedMetricsNames();
-        String advCreate = "CREATE TABLE ADVANCED_METRICS (id INTEGER NOT NULL, ";
+        String advCreate = "CREATE TABLE ADVANCED_METRICS (id VARCHAR(50) NOT NULL, ";
         for (int i = 0; i < advancedMetricsNames.size(); i++) {
         	advCreate += advancedMetricsNames.get(i) + " REAL, ";
         }
