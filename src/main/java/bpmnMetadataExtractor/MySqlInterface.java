@@ -55,12 +55,12 @@ public class MySqlInterface {
 	}
 	
 	public void saveMetrics(JsonEncoder json) {
-		String modelInfosInsert = insertModelInfosString(json);
+//		String modelInfosInsert = insertModelInfosString(json);
 		String basicMetricsInsert = insertBasicMetricsString(json);
 		String advMetricsInsert = insertAdvancedMetricsString(json);
 		try {
-			System.out.println("Saving model informations...");
-			statement.executeUpdate(modelInfosInsert);
+//			System.out.println("Saving model informations...");
+//			statement.executeUpdate(modelInfosInsert);
 			System.out.println("Model informations saved\nSaving basic metrics...");
 			statement.executeUpdate(basicMetricsInsert);
 			System.out.println("Basic metrics saved\nSaving advanced metrics...");
@@ -73,19 +73,19 @@ public class MySqlInterface {
 		}
 	}
 	
-	private String insertModelInfosString(JsonEncoder json) {
-		String insertInfos = "INSERT INTO MODELS_INFO VALUES (";
-		ArrayList<String> modelInfos = json.getHeaderValues();
-		//Id
-		insertInfos += "'" + modelInfos.get(3) + "', ";
-		//File Name
-		insertInfos += "'" + modelInfos.get(1) + "', ";
-		//Time
-		insertInfos += "'" + modelInfos.get(0) + "', ";
-		//Date
-		insertInfos += "'" + modelInfos.get(2) + "')";
-		return insertInfos;
-	}
+//	private String insertModelInfosString(JsonEncoder json) {
+//		String insertInfos = "INSERT INTO MODELS_INFO VALUES (";
+//		ArrayList<String> modelInfos = json.getHeaderValues();
+//		//Id
+//		insertInfos += "'" + modelInfos.get(3) + "', ";
+//		//File Name
+//		insertInfos += "'" + modelInfos.get(1) + "', ";
+//		//Time
+//		insertInfos += "'" + modelInfos.get(0) + "', ";
+//		//Date
+//		insertInfos += "'" + modelInfos.get(2) + "')";
+//		return insertInfos;
+//	}
 	
 	private String insertBasicMetricsString(JsonEncoder json) {
 		String insertInto = "INSERT INTO BASIC_METRICS VALUES (";
@@ -113,14 +113,14 @@ public class MySqlInterface {
 
 	public void createTables(JsonEncoder json) {
 		try {
-	        String infosCreate = createModelInfosTableString();
+	        //String infosCreate = createModelInfosTableString();
 	        String basicCreate = createBasicTableString(json);
 	        String advancedCreate = createAdvancedTableString(json);
-	        System.out.println("Creazione tabella MODELS_INFO...");
-	        statement.executeUpdate(infosCreate);
-	        System.out.println("Creazione tabella completata\nCreazione tabella BASIC_METRICS...");
+	        //System.out.println("Creazione tabella MODELS_INFO...");
+	        //statement.executeUpdate(infosCreate);
+	        System.out.println("Creazione tabella completata\nCreazione tabella basic_metrics...");
 	    	statement.executeUpdate(basicCreate);
-	        System.out.println("Creazione tabella completata\nCreazione tabella ADVANCED_METRICS...");
+	        System.out.println("Creazione tabella completata\nCreazione tabella advanced_metrics...");
 	        statement.executeUpdate(advancedCreate);
 	        System.out.println("Creazione tabella completata");
 		} catch (SQLException e) {
@@ -137,7 +137,7 @@ public class MySqlInterface {
 	 */
 	private String createBasicTableString(JsonEncoder json) {
 		ArrayList<String>  basicMetricsNames = json.getBasicMetricsNames();
-        String basicCreate = "CREATE TABLE BASIC_METRICS (id VARCHAR(50) NOT NULL, ";
+        String basicCreate = "CREATE TABLE basic_metrics (id VARCHAR(50) NOT NULL, ";
         for (int i = 0; i < basicMetricsNames.size(); i++) {
         	basicCreate += basicMetricsNames.get(i) + " INTEGER, ";
         }
@@ -152,7 +152,7 @@ public class MySqlInterface {
 	 */
 	private String createAdvancedTableString(JsonEncoder json) {
 		ArrayList<String>  advancedMetricsNames = json.getAdvancedMetricsNames();
-        String advCreate = "CREATE TABLE ADVANCED_METRICS (id VARCHAR(50) NOT NULL, ";
+        String advCreate = "CREATE TABLE advanced_metrics (id VARCHAR(50) NOT NULL, ";
         for (int i = 0; i < advancedMetricsNames.size(); i++) {
         	advCreate += advancedMetricsNames.get(i) + " REAL, ";
         }
@@ -160,18 +160,19 @@ public class MySqlInterface {
         return advCreate;
 	}
 	
-	private String createModelInfosTableString() {
-        String infosCreate = "CREATE TABLE MODELS_INFO (id INTEGER NOT NULL, ";
-        infosCreate += " FILE_NAME VARCHAR(50), ";
-        infosCreate += " CREATION_TIME TIME, ";
-        infosCreate += " CREATION_DATE DATE, ";
-        infosCreate += " PRIMARY KEY ( id ))";
-        return infosCreate;
-	}
+	// deprecated
+//	private String createModelInfosTableString() {
+//        String infosCreate = "CREATE TABLE MODELS_INFO (id INTEGER NOT NULL, ";
+//        infosCreate += " FILE_NAME VARCHAR(50), ";
+//        infosCreate += " CREATION_TIME TIME, ";
+//        infosCreate += " CREATION_DATE DATE, ";
+//        infosCreate += " PRIMARY KEY ( id ))";
+//        return infosCreate;
+//	}
 	
 	public void createAndInsertMetricsInfosTable() {
 		try {
-			System.out.println("Creating table METRICS_INFO...");
+			System.out.println("Creating table metrics_infos...");
 			statement.executeUpdate(createMetricsInfosTableString());
 			System.out.println("Table Created \nInserting metrics values...");;
 			statement.executeUpdate(generateMetricsInfosInsertString());
@@ -185,17 +186,17 @@ public class MySqlInterface {
 	}
 	
 	private String createMetricsInfosTableString() {
-		String metricInfosCreate = "CREATE TABLE METRICS_INFOS ( ";
-		metricInfosCreate += "NAME VARCHAR(30), ";
-		metricInfosCreate += "DESCRIPTION VARCHAR(150), ";
-		metricInfosCreate += "SOURCE VARCHAR(150), ";
-		metricInfosCreate += "PRIMARY KEY ( NAME ))";
+		String metricInfosCreate = "CREATE TABLE metrics_infos ( ";
+		metricInfosCreate += "name VARCHAR(30), ";
+		metricInfosCreate += "description VARCHAR(150), ";
+		metricInfosCreate += "source VARCHAR(150), ";
+		metricInfosCreate += "PRIMARY KEY ( name ))";
 		return metricInfosCreate;
 	}
 	
 	private String generateMetricsInfosInsertString() throws IOException {
 		List<String> advMetrics = Files.readAllLines(Paths.get("metriche_complete.txt"), StandardCharsets.ISO_8859_1);
-		String base = "INSERT INTO METRICS_INFOS VALUES ";
+		String base = "INSERT INTO metrics_infos VALUES ";
 		String inserts = "";
 		String name, desc, source;
 		for (String m : advMetrics) {
