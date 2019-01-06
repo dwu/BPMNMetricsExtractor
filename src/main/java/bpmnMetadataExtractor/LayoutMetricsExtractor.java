@@ -74,11 +74,11 @@ public class LayoutMetricsExtractor {
 	 */
 	private int getWaypointsMeasures(Collection<ModelElementInstance> edges){
 		int toReturn = 0;
-		ArrayList<Segment> segments = new ArrayList();
+		ArrayList<Segment> segments = new ArrayList<Segment>();
 		
 		for (ModelElementInstance e: edges){
 		
-			ArrayList<Waypoint> waypoints = new ArrayList();
+			ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 			waypoints.addAll(((Edge) e).getWaypoints());
 			for (int i = 0; i + 1 < waypoints.size(); i++){
 				segments.add(new Segment(waypoints.get(i), waypoints.get(i + 1)));

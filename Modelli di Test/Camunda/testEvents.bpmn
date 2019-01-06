@@ -3,7 +3,6 @@
   <bpmn:process id="Process_1" isExecutable="false">
     <bpmn:startEvent id="StartEvent_1" name="Start Event">
       <bpmn:outgoing>SequenceFlow_04u1ejw</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0xb77qt" name="Evento Intermedio 1">
       <bpmn:incoming>SequenceFlow_04u1ejw</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_10a7i1t</bpmn:outgoing>
