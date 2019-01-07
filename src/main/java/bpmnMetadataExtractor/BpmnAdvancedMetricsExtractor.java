@@ -108,9 +108,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getConnectivityLevelBetweenActivities() {
 		try {
-			return getTotalNumberOfActivities() /  basicMetricsExtractor.getSequenceFlowsBetweenActivities();
+			float toReturn = (float)getTotalNumberOfActivities() /  basicMetricsExtractor.getSequenceFlowsBetweenActivities();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			} 
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 	
@@ -122,9 +126,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getConnectivityLevelBetweenPartecipants() {
 		try {
-			return basicMetricsExtractor.getMessageFlows() / basicMetricsExtractor.getPools();
+			float toReturn = (float)basicMetricsExtractor.getMessageFlows() / basicMetricsExtractor.getPools();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			}
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 
@@ -136,9 +144,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getProportionOfIncomingDataObjectsAndTotalDataObjects() {
 		try {
-			return basicMetricsExtractor.getDataObjectsInput() / getTotalNumberOfDataObjects();
+			float toReturn = (float)basicMetricsExtractor.getDataObjectsInput() / getTotalNumberOfDataObjects();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			}
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 	
@@ -150,9 +162,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getProportionOfOutgoingDataObjectsAndTotalDataObjects() {
 		try {
-			return basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfDataObjects();
+			float toReturn = (float)basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfDataObjects();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			}
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 	
@@ -174,9 +190,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getProportionOfDataObjectsAsOutgoingProducts() {
 		try {
-			return basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfTasks();
+			float toReturn = (float)basicMetricsExtractor.getDataObjectsOutput() / getTotalNumberOfTasks();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			}
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 	
@@ -188,9 +208,13 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public float getProportionOfPoolsOrLanesAndActivities() {
 		try {
-			return basicMetricsExtractor.getLanes() / getTotalNumberOfTasks();
+			float toReturn = (float)basicMetricsExtractor.getLanes() / getTotalNumberOfTasks();
+			if (Float.isFinite(toReturn)) {
+				return toReturn;
+			}
+			return 0.0f;
 		} catch (ArithmeticException e) {
-			return 0;
+			return 0.0f;
 		}
 	}
 	
@@ -353,12 +377,16 @@ public class BpmnAdvancedMetricsExtractor {
 	 * @return
 	 */
 	public double getHalsteadBasedProcessComplexityDifficulty() {
-		float toReturn = 0;
+		double toReturn = 0;
 		try {
-			toReturn = (getNumberOfUniqueElements() / 2) * (basicMetricsExtractor.getDataObjects() / getNumberOfUniqueDataObjects());
+			toReturn = (getNumberOfUniqueElements() / 2) * ((double)basicMetricsExtractor.getDataObjects() / getNumberOfUniqueDataObjects());
 		} catch (ArithmeticException e) {
 		}
-		return toReturn;
+		if (Double.isFinite(toReturn)) {
+			return toReturn;
+		} else {
+			return 0.0;
+		}
 	}
 	
 	/**

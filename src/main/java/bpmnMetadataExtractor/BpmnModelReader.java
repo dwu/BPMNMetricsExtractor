@@ -64,7 +64,7 @@ public class BpmnModelReader {
 		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
 		jsonEncoder.exportJson();
 		MySqlInterface db = new MySqlInterface();
-//		db.connect();
+		db.connect();
 //		db.createTables(jsonEncoder);
 //		db.createAndInsertMetricsInfosTable();
 //		db.saveMetrics(jsonEncoder);
