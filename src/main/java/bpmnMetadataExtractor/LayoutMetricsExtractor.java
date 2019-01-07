@@ -84,7 +84,7 @@ public class LayoutMetricsExtractor {
 				segments.add(new Segment(waypoints.get(i), waypoints.get(i + 1)));
 			}
 			
-			if (((Edge)e).getWaypoints().size() > 2) //Check if there are non-rectilinear sequence flows
+			if (((Edge)e).getWaypoints().size() > 4) //Check if there are non-rectilinear sequence flows with more than 4 waypoints
 				toReturn ++;
 		}
 		
