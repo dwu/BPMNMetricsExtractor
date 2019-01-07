@@ -208,7 +208,6 @@ TNIE	%Total number of intermediate events	{10.19153/cleiej.9.1.5}
 TNSE	%Total number of start events	{10.19153/cleiej.9.1.5}
 TNE	%Total number of events	{10.19153/cleiej.9.1.5}
 CFC	%Control-flow Complexity metric	{10.1007/978-3-642-01862-6\_6}
-NOA	%Number of activities in a process	{10.1007/11837862\_13}
 NOAC	%Number of activities and control-flow elements in a process	{10.1007/11837862\_13}
 NOAJS	%Number of activities, joins, and splits in a process	{10.1007/11837862\_13}
 HPC_D	%Hasted-based Process Complexity (process difficulty)	{10.1007/11837862\_13}
