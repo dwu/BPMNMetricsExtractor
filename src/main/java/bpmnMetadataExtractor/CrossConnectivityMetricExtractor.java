@@ -40,7 +40,11 @@ public class CrossConnectivityMetricExtractor {
 		getNodesWeights();
 		getArchsWeights();
 		getConnections();
-		return getCrossConnectivity();
+		double result = getCrossConnectivity();
+		if (!Double.isFinite(result))
+			return 0;
+		else 
+			return result;
 	}
 	
 	/**

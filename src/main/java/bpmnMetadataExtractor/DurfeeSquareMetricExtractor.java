@@ -23,7 +23,12 @@ public class DurfeeSquareMetricExtractor {
 	}
 	
 	public double getPerfectSquareMetric(){
-		return this.getPerfectSquareMetric(this.flowNodes);
+		try {
+			return this.getPerfectSquareMetric(this.flowNodes);
+		} catch (ArithmeticException e) {
+			return 0.0;
+		}
+		
 	}
 	
 	public double getLayoutComplexityMetric(){

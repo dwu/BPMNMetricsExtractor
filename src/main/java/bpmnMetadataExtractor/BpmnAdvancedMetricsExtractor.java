@@ -583,7 +583,11 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public double getCoefficientOfNetworkComplexity() {
 		try {
-			return (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+			double result = (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
 		} 
 		catch (ArithmeticException e) {
 			return 0;	
