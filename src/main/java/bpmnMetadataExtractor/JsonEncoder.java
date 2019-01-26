@@ -111,6 +111,7 @@ public class JsonEncoder {
 		String metricInfos[] = metricsInfos.get(metricName);
 		if (!Double.isFinite(n))
 			n = 0;
+		n = Math.round(n * 1000.0) / 1000.0;
 		advMetric.put("value", n);
 		advMetric.put("description", metricInfos[0]);
 		advMetric.put("source", metricInfos[1]);
