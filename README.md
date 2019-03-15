@@ -1,6 +1,6 @@
-# BPMNMetricsExtractor
+# BPMN Metrics Extractor
 
-The BPMNMetricsExtractor is a Java-based web service used in order to extract analytical information about BPMN Process Models stored as _.bpmn files_.
+The BPMN Metrics Extractor is a Java-based web service used in order to extract analytical information about BPMN Process Models stored as _.bpmn files_.
 
 More details can be found in the associated Wiki.
 
