@@ -172,7 +172,7 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 	}
 	
-	/**TODO già presente in quelle base
+	/**TODO gia' presente in quelle base
 	 * Metric: TNT
 	 * Total number of task 
 	 * Number of Tasks + Number of Task Looping + Number of Task Multiple Instances + Number of Task Compensation (TNT = NT + NTL + NTMI + NTC)
@@ -452,7 +452,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
 	 *  the length can be calculated using traditional software engineering metrics
 	 *  that have been previously presented, namely the LOC (line of code) and
-	 *  MCC (McCabe’s cyclomatic complexity).
+	 *  MCC (McCabea's cyclomatic complexity).
 	 *  @return
 	 */
 	public int getActivityLength() {
@@ -709,7 +709,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	private int getNumberOfUniqueElements() {
 		int toReturn = 0;
-		//attività
+		//attivita'
 		if (basicMetricsExtractor.getReceiveTasks() > 0)
 			toReturn +=1;
 		if (basicMetricsExtractor.getScriptTasks() > 0)

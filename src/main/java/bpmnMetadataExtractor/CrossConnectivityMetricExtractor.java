@@ -49,7 +49,7 @@ public class CrossConnectivityMetricExtractor {
 	
 	/**
 	 * Metodo che calcola i pesi di tutti i nodi e li inserisce in nodeValues
-	 * "d" è pari alla somma degli archi entranti e uscenti da un nodo
+	 * "d" e' pari alla somma degli archi entranti e uscenti da un nodo
 	 * AND / TASK / EVENTI : 1
 	 * XOR : 1 / d 
 	 * OR : (1 / 2^d - 1) + ((2^d - 2) / (2^d - 1)) * 1 / d  
@@ -80,7 +80,7 @@ public class CrossConnectivityMetricExtractor {
 	
 	/**
 	 * Metodo che calcola il peso degli archi e li inserisce in archValues
-	 * Il peso di un arco è dato dalla prodotto del peso del nodo sorgente e del peso del nodo bersaglio
+	 * Il peso di un arco e' dato dalla prodotto del peso del nodo sorgente e del peso del nodo bersaglio
 	 */
 	private void getArchsWeights() {
 		Collection<ModelElementInstance> nodes = basicExtractor.getCollectionOfElementType(SequenceFlow.class);
@@ -98,7 +98,7 @@ public class CrossConnectivityMetricExtractor {
 	
 	/**
 	 * Metodo per ottenere tutti i pesi delle possibili connessioni tra i nodi.
-	 * Il valore di connessione tra due nodi n1 e n2 è data dal valore massimo di percorso tra n1 e n2.
+	 * Il valore di connessione tra due nodi n1 e n2 e' data dal valore massimo di percorso tra n1 e n2.
 	 */
 	private void getConnections() {
 		Collection<ModelElementInstance> nodes = basicExtractor.getCollectionOfElementType(FlowNode.class);
@@ -128,9 +128,9 @@ public class CrossConnectivityMetricExtractor {
 	
 	/**
 	 * Metodo che calcola la CC.
-	 * La metrica è data dalla seguente formula:
+	 * La metrica e' data dalla seguente formula:
 	 * Sommatoria Connessioni / N * (N - 1)
-	 * dove N è pari al numero di Nodi nel modello.
+	 * dove N e' pari al numero di Nodi nel modello.
 	 * @return CC
 	 */
 	private double getCrossConnectivity() {
@@ -146,7 +146,7 @@ public class CrossConnectivityMetricExtractor {
 	 * Se si arriva al nodo bersaglio, il metodo ritorna il valore del path.
 	 * Se si arriva ad aver analizzato tutti gli archi uscenti senza aver trovato il nodo bersaglio, il metodo ritorna 0.
 	 * Se si analizza un arco uscente senza trovare il nodo bersaglio, il metodo passa all'arco successivo.
-	 * Se si analizza un arco uscente e si trova il nodo bersaglio, il valore del percorso ottenuto è aggiunto al pathReturnValues.
+	 * Se si analizza un arco uscente e si trova il nodo bersaglio, il valore del percorso ottenuto e' aggiunto al pathReturnValues.
 	 * Una volta finito di analizzare i percorsi derivati dagli archi uscenti, si itera su pathReturnValues e si ritorna il valore maggiore della lista.
 	 * @param sourceNode nodo sorgente
 	 * @param targetNode nodo bersaglio
@@ -168,10 +168,10 @@ public class CrossConnectivityMetricExtractor {
 			archValue = archValues.get(archs.get(i).getId());
 			newPathValue = pathValue == 0.0 ? archValue : pathValue * archValue;
 			if (archs.get(i).getTarget().getId().equals(targetNode.getId()))
-				//il targetNode è stato trovato, quindi si returna il valore del path
+				//il targetNode e' stato trovato, quindi si returna il valore del path
 				return newPathValue;
 			else {
-				//il target node non è stato ancora trovato, quindi si continua ad esplorare il modello richiamando il metodo ricorsivamente
+				//il target node non e' stato ancora trovato, quindi si continua ad esplorare il modello richiamando il metodo ricorsivamente
 				tempPathValue = findPathValueBetween(archs.get(i).getTarget(), targetNode, newPathValue);
 				if (tempPathValue != 0.0) 
 					//la chiamata ricorsiva ha trovato un percorso possibile, che viene confrontato con il maggiore trovato ad ora
