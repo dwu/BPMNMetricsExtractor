@@ -239,21 +239,23 @@ public class PartitionabilityMetricsExtractor {
 			int incomingSize = incomingFlows.size();
 			// Iterates on each outgoing flow of the source node
 			for (SequenceFlow outFlow : outgoingFlows) {
-				succNode = outFlow.getTarget();
-				// Check if the successive node's depth-out has already been
-				// calculated
-				if (nodesOutdepth.containsKey(succNode.getId())) {
-					tempDepthOut = nodesOutdepth.get(succNode.getId());
-				} else {
-					// The successive node's depth out has not already been
-					// calculated, so the method is recursively called
-					tempDepthOut = calculateDepthOut(succNode);
-				}
-				// Save the greatest depth-out of the various successive nodes
-				if (tempDepthOut > succDepthOut || succDepthOut == 0) {
-					succDepthOut = tempDepthOut;
-					succOutgoing = succNode.getOutgoing().size();
-				}
+				try {
+					succNode = outFlow.getTarget();
+					// Check if the successive node's depth-out has already been
+					// calculated
+					if (nodesOutdepth.containsKey(succNode.getId())) {
+						tempDepthOut = nodesOutdepth.get(succNode.getId());
+					} else {
+						// The successive node's depth out has not already been
+						// calculated, so the method is recursively called
+						tempDepthOut = calculateDepthOut(succNode);
+					}
+					// Save the greatest depth-out of the various successive nodes
+					if (tempDepthOut > succDepthOut || succDepthOut == 0) {
+						succDepthOut = tempDepthOut;
+						succOutgoing = succNode.getOutgoing().size();
+					}
+				}catch(Exception e) {continue;}
 			}
 			// Calculate the depth-out checking if the successive node is either
 			// a split node or not and if the current node is a join node or not
@@ -334,7 +336,9 @@ public class PartitionabilityMetricsExtractor {
 			// Call the method recursively on the successive nodes
 			Collection<SequenceFlow> outgoingFlows = sourceNode.getOutgoing();
 			for (SequenceFlow outFlow : outgoingFlows) {
-				calculateDepthIn(outFlow.getTarget());
+				try {
+					calculateDepthIn(outFlow.getTarget());
+				}catch(Exception e) {continue;}
 			}
 			visitedNodes.remove(sourceNode.getId());
 			return;

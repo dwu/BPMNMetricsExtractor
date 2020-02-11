@@ -31,6 +31,7 @@ public class BpmnBasicMetricsExtractor {
 	 * Metodo principale per runnare tutti i metoof che ottengono le metriche
 	 */
 	public void runMetrics() {
+
 		this.json.addBasicMetric("NT", this.getTasks());
 		this.json.addBasicMetric("NCD", this.getComplexDecisions());
 		this.json.addBasicMetric("NDOin", this.getDataObjectsInput());
@@ -300,12 +301,18 @@ public class BpmnBasicMetricsExtractor {
 		Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
 		int numberOfLanes = 0;
 		for (Participant p : participants) {
-			Collection<LaneSet> laneSets = p.getProcess().getLaneSets();
-			for (LaneSet l : laneSets) {
-				Collection<Lane> lanes = l.getLanes();
-				if (lanes.size() > 1) {
-					numberOfLanes += lanes.size();
+
+			//Try to check whether it is a collapsed pool or not
+			try{
+				Collection<LaneSet> laneSets = p.getProcess().getLaneSets();
+				for (LaneSet l : laneSets) {
+					Collection<Lane> lanes = l.getLanes();
+					if (lanes.size() > 1) {
+						numberOfLanes += lanes.size();
+					}
 				}
+			}catch(Exception e){
+//				System.out.println("Collapsed Pool so no lane");
 			}
 		}
 		return numberOfLanes;
@@ -369,8 +376,12 @@ public class BpmnBasicMetricsExtractor {
 		for (Activity a : activities) {
 			outgoingFlows = a.getOutgoing();
 			for (SequenceFlow s : outgoingFlows) {
-				if (s.getTarget() instanceof Activity) {
-					numberOfSequenceFlows++;
+				try {
+					if (s.getTarget() instanceof Activity) {
+						numberOfSequenceFlows++;
+					}
+				}catch(Exception e) {
+					continue;
 				}
 			}
 		}

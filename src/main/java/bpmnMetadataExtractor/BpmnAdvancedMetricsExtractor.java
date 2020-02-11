@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.Lane;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
@@ -97,7 +98,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
 		json.addAdvancedMetric("Layout_Complexity", dsmExtractor.getLayoutComplexityMetric());
 		json.addAdvancedMetric("Layout_Measure", this.lmExtractor.getLayoutMeasure());
-		System.out.println("JSON adv: " + this.json.getString());
+		//System.out.println("JSON adv: " + this.json.getString());
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class BpmnAdvancedMetricsExtractor {
 		}
 	}
 	
-	/**TODO gia' presente in quelle base
+	/**TODO gi� presente in quelle base
 	 * Metric: TNT
 	 * Total number of task 
 	 * Number of Tasks + Number of Task Looping + Number of Task Multiple Instances + Number of Task Compensation (TNT = NT + NTL + NTMI + NTC)
@@ -452,7 +453,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
 	 *  the length can be calculated using traditional software engineering metrics
 	 *  that have been previously presented, namely the LOC (line of code) and
-	 *  MCC (McCabea's cyclomatic complexity).
+	 *  MCC (McCabe�s cyclomatic complexity).
 	 *  @return
 	 */
 	public int getActivityLength() {
@@ -505,9 +506,17 @@ public class BpmnAdvancedMetricsExtractor {
 			toReturn += ((FlowNode) a).getOutgoing().size();
 		}
 		for (ModelElementInstance mMessageFlow : modelMessageFlows) {
-			if (((MessageFlow) mMessageFlow).getSource() instanceof Activity) {
-				toReturn++;
-			}
+			try {
+				if (((MessageFlow) mMessageFlow).getSource() instanceof Activity) {
+					toReturn++;
+				}
+			}catch(Exception e) {continue;}
+			try {
+				if (((MessageFlow) mMessageFlow).getSource() instanceof Lane) {
+					toReturn++;
+				}
+			}catch(Exception e) {continue;}
+			
 		}
 		return toReturn;
 	}
@@ -526,9 +535,16 @@ public class BpmnAdvancedMetricsExtractor {
 			toReturn += ((FlowNode) a).getIncoming().size();
 		}
 		for (ModelElementInstance mMessageFlow : modelMessageFlows) {
-			if (((MessageFlow) mMessageFlow).getTarget() instanceof Activity) {
-				toReturn++;
-			}
+			try {
+				if (((MessageFlow) mMessageFlow).getTarget() instanceof Activity) {
+					toReturn++;
+				}
+			}catch(Exception e) {continue;}
+			try {
+				if (((MessageFlow) mMessageFlow).getTarget() instanceof Lane) {
+					toReturn++;
+				}
+			}catch(Exception e) {continue;}
 		}
 		return toReturn;
 	}
@@ -546,9 +562,11 @@ public class BpmnAdvancedMetricsExtractor {
 			for (ModelElementInstance t: activities){
 				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
 				for (SequenceFlow s: outgoing){
-					if (s.getTarget() instanceof Activity){
-						toReturn++;
-					}
+					try {
+						if (s.getTarget() instanceof Activity){
+							toReturn++;
+						}
+					}catch(Exception e) {continue;}
 				}
 			}
 			toReturn = toReturn/(activities.size() * activities.size() - 1);
@@ -605,9 +623,11 @@ public class BpmnAdvancedMetricsExtractor {
 		float arcBetweenNonConnectorsNode = sequenceFlowsModel.size();
 		for (ModelElementInstance sFModel : sequenceFlowsModel) {
 			SequenceFlow flow = (SequenceFlow) sFModel;
-			if (flow.getSource() instanceof Gateway || flow.getTarget() instanceof Gateway) {
-				arcBetweenNonConnectorsNode--;
-			}
+			try {
+				if (flow.getSource() instanceof Gateway || flow.getTarget() instanceof Gateway) {
+					arcBetweenNonConnectorsNode--;
+				}
+			}catch(Exception e) {continue;}
 		}
 		return arcBetweenNonConnectorsNode / sequenceFlowsModel.size();
 		
@@ -709,7 +729,7 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	private int getNumberOfUniqueElements() {
 		int toReturn = 0;
-		//attivita'
+		//attivit�
 		if (basicMetricsExtractor.getReceiveTasks() > 0)
 			toReturn +=1;
 		if (basicMetricsExtractor.getScriptTasks() > 0)

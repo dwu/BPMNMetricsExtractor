@@ -178,8 +178,12 @@ public class StronglyConnectedComponentsMetricExtractor {
 		public void setSuccessors(List<TarjanNode> nodes) {
 			for (SequenceFlow flow: this.node.getOutgoing()) {
 				for (TarjanNode node: nodes) {
-					if ((flow.getTarget()).equals(node.getNode())) {
-						this.successors.add(node);
+					try {
+						if ((flow.getTarget()).equals(node.getNode())) {
+							this.successors.add(node);
+						}
+					}catch(Exception E) {
+						continue;
 					}
 				}
 			}

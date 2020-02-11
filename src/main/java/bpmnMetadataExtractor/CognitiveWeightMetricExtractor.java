@@ -73,7 +73,9 @@ public class CognitiveWeightMetricExtractor {
 		startSequence = false;
 		//Call the method on every subsequent node, and sum all the weight
 		for (SequenceFlow outFlow : sourceNode.getOutgoing()) {
+			try {
 			weight += getSequenceNodesCognitiveWeight(outFlow.getTarget(), startSequence, middleSequence);
+			}catch(Exception e) {continue;}
 		}
 		return weight;
 	}

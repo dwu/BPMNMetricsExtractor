@@ -239,45 +239,51 @@ public class LayoutMetricsExtractor {
 		return toReturn/2;
 	}
 	/**
-	 * Method which check wheter or not two different shapes are overlapped
+	 * Method which check whether or not two different shapes are overlapped
 	 * The center of the shapes is the position of the object
 	 * @param s1
 	 * @param s2
 	 * @return
 	 */
 	private boolean isOverlapped(BpmnShape s1, BpmnShape s2){
-		//Two tasks
-	if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Task)
-			return this.overlappingTasks(s1,s2);
 		
-		//Two Events
-		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Event)
-			return this.overlappingEvents(s1,s2);
-		
-		//Two Gateways
-		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Gateway)
-			return this.overlappingGateways(s1,s2);
-		
-		//One Task and one Event
-		if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Event)
-			return this.overlappingTaskAndEvent(s1,s2);
-		
-		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Task )
-			return this.overlappingTaskAndEvent(s2, s1);
-		
-		//One Task and one Gateway 
-		if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Gateway)
-			return this.overlappingTaskAndGateway(s1,s2);
-		
-		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Task )
-			return this.overlappingTaskAndGateway(s2, s1);		
-		
-		//One Event and one Gateway
-		if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Gateway)
-			return this.overlappingEventAndGateway(s1,s2);
-		
-		if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Event)
-			return this.overlappingEventAndGateway(s2, s1);
+		try{
+			//Two tasks
+			if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Task)
+				return this.overlappingTasks(s1,s2);
+			
+			//Two Events
+			if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Event) {
+				return this.overlappingEvents(s1,s2);
+			}
+			
+			//Two Gateways
+			if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Gateway)
+				return this.overlappingGateways(s1,s2);
+			
+			//One Task and one Event
+			if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Event)
+				return this.overlappingTaskAndEvent(s1,s2);
+			
+			if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Task )
+				return this.overlappingTaskAndEvent(s2, s1);
+			
+			//One Task and one Gateway 
+			if (s1.getBpmnElement() instanceof Task && s2.getBpmnElement() instanceof Gateway)
+				return this.overlappingTaskAndGateway(s1,s2);
+			
+			if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Task )
+				return this.overlappingTaskAndGateway(s2, s1);		
+			
+			//One Event and one Gateway
+			if (s1.getBpmnElement() instanceof Event && s2.getBpmnElement() instanceof Gateway)
+				return this.overlappingEventAndGateway(s1,s2);
+			
+			if (s1.getBpmnElement() instanceof Gateway && s2.getBpmnElement() instanceof Event)
+				return this.overlappingEventAndGateway(s2, s1);
+		}catch(Exception e) {
+			return false;
+		}
 				
 		return false;
 	}

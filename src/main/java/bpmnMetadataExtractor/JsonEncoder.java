@@ -62,7 +62,7 @@ public class JsonEncoder {
 		} catch (URISyntaxException e1) {
 			e1.printStackTrace();
 		}
-		System.out.println(path);
+		//System.out.println(path);
 		metricsInfos = new HashMap<String, String[]>();
 		List<String> metrics = new ArrayList<String>();
 		try {

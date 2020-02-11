@@ -43,10 +43,12 @@ public class SizeMetricsExtractor {
 		int tempDiamValue = 0;
 		Collection<SequenceFlow> flows = sourceNode.getOutgoing();
 		for (SequenceFlow flow : flows) {
-			tempDiamValue = calculateMaxDiam(flow.getTarget(), pathValue + 1);
-			if (tempDiamValue > toReturn) {
-				toReturn = tempDiamValue;
-			}
+			try {
+				tempDiamValue = calculateMaxDiam(flow.getTarget(), pathValue + 1);
+				if (tempDiamValue > toReturn) {
+					toReturn = tempDiamValue;
+				}
+			}catch(Exception e) {continue;}
 		}
 		if (flows.size() == 0) {
 			toReturn = pathValue;

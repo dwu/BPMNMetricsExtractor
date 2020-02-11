@@ -16,7 +16,7 @@ public class MySqlInterface {
 	
 	private static final String CONN_STRING = "jdbc:mysql://localhost:3306/bpmn_repository?serverTimezone=Europe/Rome";
 	private static final String USERNAME = "root";
-	private static final String PASSWORD = "root";
+	private static final String PASSWORD = "MAcri";
 	private static final String DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
 	private Connection connection = null;
 	private Statement statement = null;

@@ -79,8 +79,9 @@ public class DurfeeSquareMetricExtractor {
 	 */
 	private int calculateDurfee(ArrayList<Integer> flowNodes){
 		int ds = 0;
-		int max = Collections.max(flowNodes);
+		int max = 0;
 		if (!flowNodes.isEmpty()){
+			max= Collections.max(flowNodes);	
 			if (flowNodes.size() == 1){
 				ds = 1;
 			} else {

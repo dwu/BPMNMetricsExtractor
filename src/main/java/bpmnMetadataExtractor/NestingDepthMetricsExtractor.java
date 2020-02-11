@@ -97,9 +97,14 @@ public class NestingDepthMetricsExtractor {
 		if ((node instanceof ComplexGateway || node instanceof ExclusiveGateway) && node.getOutgoing().size() > 1) {
 			nestingDepthValue++;
 		}
-		//Recursive call on subsequent nodes
-		for (SequenceFlow outFlow : node.getOutgoing()) {
-			getNodeNestingDepth(outFlow.getTarget(), nestingDepthValue);
+		
+		try {
+			//Recursive call on subsequent nodes
+			for (SequenceFlow outFlow : node.getOutgoing()) {
+				getNodeNestingDepth(outFlow.getTarget(), nestingDepthValue);
+			}
+		}catch(Exception e) {
+			return nestingDepthValue;
 		}
 		//Add the nesting depth's value in the map
 		if (nestingDepthValues.containsKey(node.getId())) {

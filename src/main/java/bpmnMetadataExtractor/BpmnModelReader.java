@@ -55,13 +55,13 @@ public class BpmnModelReader {
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
 		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
 		long loadTime = System.currentTimeMillis() - startTime;
-		System.out.println("Tempo load del file: " + loadTime + "ms");
+//		System.out.println("Tempo load del file: " + loadTime + "ms");
 		basicExtractor.runMetrics();
 		long basicTime = System.currentTimeMillis() - loadTime - startTime;
-		System.out.println("Tempo calcolo metriche di base: " + basicTime + "ms");
+//		System.out.println("Tempo calcolo metriche di base: " + basicTime + "ms");
 		advExtractor.runMetrics();
 		long advTime = System.currentTimeMillis() - basicTime - startTime - loadTime;
-		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
+//		System.out.println("Tempo calcolo metriche avanzate: " + advTime + "ms");
 		jsonEncoder.exportJson();
 		MySqlInterface db = new MySqlInterface();
 		db.connect();
@@ -76,8 +76,11 @@ public class BpmnModelReader {
 		JsonEncoder jsonEncoder = new JsonEncoder(fileName);
 		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
 		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
+//		System.out.println("Start extracting Metrics\n");
 		basicExtractor.runMetrics();
+//		System.out.println("Basic Metrics have been extracted\n");
 		advExtractor.runMetrics();
+//		System.out.println("Advanced Metrics have been extracted\n");
 		jsonEncoder.populateHeader(LocalDateTime.now());
 //		MySqlInterface db = new MySqlInterface();
 //		db.connect();
