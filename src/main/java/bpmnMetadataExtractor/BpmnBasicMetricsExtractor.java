@@ -28,7 +28,7 @@ public class BpmnBasicMetricsExtractor {
 	}
 
 	/**
-	 * Metodo principale per runnare tutti i metoof che ottengono le metriche
+	 * Metodo principale per runnare tutti i metodi che ottengono le metriche
 	 */
 	public void runMetrics() {
 
@@ -42,6 +42,7 @@ public class BpmnBasicMetricsExtractor {
 		this.json.addBasicMetric("NL", this.getLanes());
 		this.json.addBasicMetric("NMF", this.getMessageFlows());
 		this.json.addBasicMetric("NP", this.getPools());
+		this.json.addBasicMetric("NEP", this.getEmptyPools());
 		this.json.addBasicMetric("NSFE", this.getSequenceFlowsFromEvents());
 		this.json.addBasicMetric("NSFG", this.getSequenceFlowsFromGateways());
 		this.json.addBasicMetric("NSFA", this.getSequenceFlowsBetweenActivities());
@@ -2305,4 +2306,31 @@ public class BpmnBasicMetricsExtractor {
 		return modelInstance;
 	}
 
+	
+	/**
+	 * Proposed Metrics
+	 * @param 
+	 * @return number of empty pools
+	 */
+	private int getEmptyPools() {
+
+		int numberOfEmptyPools = 0;
+		try{
+			Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
+			
+			for (Participant p : participants) {
+
+				//Try to check whether it is a collapsed pool or not
+				
+					Collection<FlowElement> flowElementSet = p.getProcess().getFlowElements();
+					if(flowElementSet.size()==0)numberOfEmptyPools++;
+				
+			}
+		}catch(Exception e){
+			//System.out.println("NO ELEMENT");
+		}
+		//System.out.println("numberOfEmptyPools: "+numberOfEmptyPools);
+	return numberOfEmptyPools;
+
+	}
 }

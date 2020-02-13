@@ -8,6 +8,7 @@ NEDEB	%Number of event based decisions {Camunda API Instance Package}
 NL	%Number of lanes {Camunda API Instance Package}
 NMF	%Number of message flows {Camunda API Instance Package}
 NP	%Number of pools {Camunda API Instance Package}
+NEP	%Number of empty pools {Proposed Metrics}
 NSFE	%Number of outgoing sequence flows from events {Camunda API Instance Package}
 NSFG	%Number of outgoing sequence flows from gateways {Camunda API Instance Package}
 NSFA	%Number of sequence flows between activities {Camunda API Instance Package}
