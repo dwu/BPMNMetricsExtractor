@@ -1,7 +1,9 @@
 package bpmnMetadataExtractor;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.camunda.bpm.engine.impl.util.json.*;
 /**
  * 
  * @author PROSLabTeam
@@ -21,7 +22,7 @@ import org.camunda.bpm.engine.impl.util.json.*;
 public class JsonEncoder {
 	
 	
-	private JSONObject json;
+	private JsonObject json;
 	private String fileName;
 	private Map<String, String[]> metricsInfos;  
 	
@@ -29,13 +30,13 @@ public class JsonEncoder {
 	 * Costruttore per l'encoder Json
 	 */
 	public JsonEncoder(String fileName){
-		json = new JSONObject();
+		json = new JsonObject();
 		this.fileName = fileName;
 		this.initializeJSON();
 		this.initializeMetricsInfos();
 	}
 
-	public JSONObject getJson() {
+	public JsonObject getJson() {
 		return json;
 	}
 	
@@ -48,29 +49,32 @@ public class JsonEncoder {
 	 * }
 	 */
 	private void initializeJSON(){
-		JSONObject header = new JSONObject();
-		JSONObject basicMetrics = new JSONObject();
-		JSONObject advancedMetrics = new JSONObject();
-		this.json.put("header", header).put("basic_metrics", basicMetrics).put("advanced_metrics", advancedMetrics);
-		this.json.getJSONObject("basic_metrics").put("NT", 0);
+		JsonObject header = new JsonObject();
+		JsonObject basicMetrics = new JsonObject();
+		JsonObject advancedMetrics = new JsonObject();
+		this.json.add("header", header);
+		this.json.add("basic_metrics", basicMetrics);
+		this.json.add("advanced_metrics", advancedMetrics);
+		this.json.getAsJsonObject("basic_metrics").addProperty("NT", 0);
 	}
 	
 	private void initializeMetricsInfos() {
-		String path = "";
-		try {
-			path = Paths.get(this.getClass().getClassLoader().getResource("metriche_complete.txt").toURI()).toString();
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
-		}
-		//System.out.println(path);
 		metricsInfos = new HashMap<String, String[]>();
+
+		BufferedInputStream metricsInputStream = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("metriche_complete.txt"));
+		BufferedReader metricsReader  = new BufferedReader(new InputStreamReader(metricsInputStream, StandardCharsets.ISO_8859_1));
 		List<String> metrics = new ArrayList<String>();
+
 		try {
-			metrics = Files.readAllLines(Paths.get(path), StandardCharsets.ISO_8859_1);
+			String line;
+			while ((line = metricsReader.readLine()) != null) {
+				metrics.add(line);
+			}
 		} catch (IOException e) {
 			System.out.println(e);
 			System.out.println("Error reading metrics file");
 		}
+
 		String name, desc, source;
 		String infos[];
 		for (String m : metrics) {
@@ -93,12 +97,12 @@ public class JsonEncoder {
 	 * @param n numero delle metriche
 	 */
 	public void addBasicMetric(String metricName, int n){
-		JSONObject basicMetric = new JSONObject();
+		JsonObject basicMetric = new JsonObject();
 		String metricInfos[] = metricsInfos.get(metricName);
-		basicMetric.put("value", n);
-		basicMetric.put("description", metricInfos[0]);
-		basicMetric.put("source", metricInfos[1]);
-		this.json.getJSONObject("basic_metrics").put(metricName, basicMetric);
+		basicMetric.addProperty("value", n);
+		basicMetric.addProperty("description", metricInfos[0]);
+		basicMetric.addProperty("source", metricInfos[1]);
+		this.json.getAsJsonObject("basic_metrics").add(metricName, basicMetric);
 	}
 	
 	/**
@@ -107,68 +111,68 @@ public class JsonEncoder {
 	 * @param n numero delle metriche
 	 */
 	public void addAdvancedMetric(String metricName, double n){
-		JSONObject advMetric = new JSONObject();
+		JsonObject advMetric = new JsonObject();
 		String metricInfos[] = metricsInfos.get(metricName);
 		if (!Double.isFinite(n))
 			n = 0;
 		n = Math.round(n * 1000.0) / 1000.0;
-		advMetric.put("value", n);
-		advMetric.put("description", metricInfos[0]);
-		advMetric.put("source", metricInfos[1]);
-		this.json.getJSONObject("advanced_metrics").put(metricName, advMetric);
+		advMetric.addProperty("value", n);
+		advMetric.addProperty("description", metricInfos[0]);
+		advMetric.addProperty("source", metricInfos[1]);
+		this.json.getAsJsonObject("advanced_metrics").add(metricName, advMetric);
 	}
 	
 	public ArrayList<String> getBasicMetricsNames() {
-		JSONArray namesArray = this.json.getJSONObject("basic_metrics").names();
+		JsonArray namesArray = this.json.getAsJsonObject("basic_metrics").getAsJsonArray();
 		ArrayList<String> names = new ArrayList<String>();
-		for (int i = 0; i < namesArray.length(); ++i) {
-			names.add(namesArray.getString(i));
+		for (int i = 0; i < namesArray.size(); ++i) {
+			names.add(namesArray.get(i).getAsString());
         }
 		return names;
 	}
 	
 	public ArrayList<String>  getAdvancedMetricsNames() {
-		JSONArray namesArray = this.json.getJSONObject("advanced_metrics").names();
+		JsonArray namesArray = this.json.getAsJsonObject("advanced_metrics").getAsJsonArray();
 		ArrayList<String> names = new ArrayList<String>();
-		for (int i = 0; i < namesArray.length(); ++i) {
-			names.add(namesArray.getString(i));
+		for (int i = 0; i < namesArray.size(); ++i) {
+			names.add(namesArray.get(i).getAsString());
         }
 		return names;
 	}
 	
 	public ArrayList<Integer> getBasicMetricsValues() {
-		JSONObject basicMetrics = this.json.getJSONObject("basic_metrics");
-		JSONArray namesArray = basicMetrics.names();
+		JsonObject basicMetrics = this.json.getAsJsonObject("basic_metrics");
+		JsonArray namesArray = basicMetrics.getAsJsonArray();
 		ArrayList<Integer> values = new ArrayList<Integer>();
-		for (int i = 0; i < namesArray.length(); ++i) {
-			values.add(basicMetrics.getJSONObject(namesArray.getString(i)).getInt("value"));
+		for (int i = 0; i < namesArray.size(); ++i) {
+			values.add(basicMetrics.getAsJsonObject(namesArray.get(i).getAsString()).get("value").getAsInt());
         }
 		return values;
 	}
 	
 	public ArrayList<Double> getAdvancedMetricsValues() {
-		JSONObject advancedMetrics = this.json.getJSONObject("advanced_metrics");
-		JSONArray namesArray = advancedMetrics.names();
+		JsonObject advancedMetrics = this.json.getAsJsonObject("advanced_metrics");
+		JsonArray namesArray = advancedMetrics.getAsJsonArray();
 		ArrayList<Double> values = new ArrayList<Double>();
-		for (int i = 0; i < namesArray.length(); ++i) {
-			values.add(advancedMetrics.getJSONObject(namesArray.getString(i)).getDouble("value"));
+		for (int i = 0; i < namesArray.size(); ++i) {
+			values.add(advancedMetrics.getAsJsonObject(namesArray.get(i).getAsString()).get("value").getAsDouble());
         }
 		return values;
 	}
 	
 	public ArrayList<String> getHeaderValues() {
-		JSONObject header = this.json.getJSONObject("header");
-		JSONArray namesArray = header.names();
+		JsonObject header = this.json.getAsJsonObject("header");
+		JsonArray namesArray = header.getAsJsonArray();
 		ArrayList<String> values = new ArrayList<String>();
-		for (int i = 0; i < namesArray.length(); ++i) {
-			values.add(header.getString(namesArray.getString(i)));
+		for (int i = 0; i < namesArray.size(); ++i) {
+			values.add(header.getAsJsonObject(namesArray.get(i).getAsString()).getAsString());
         }
 		return values;
 	}
 	
 	public String getModelId() {
-		JSONObject header = this.json.getJSONObject("header");
-		return header.getString("id");
+		JsonObject header = this.json.getAsJsonObject("header");
+		return header.get("id").getAsString();
 	}
 
 	/**
@@ -196,18 +200,18 @@ public class JsonEncoder {
 	}
 
 	public void populateHeader(LocalDateTime now) {
-		this.json.getJSONObject("header").put("file_name", fileName);
+		this.json.getAsJsonObject("header").addProperty("file_name", fileName);
 		String hour = appendLeadingZero(now.getHour());
 		String minute = appendLeadingZero(now.getMinute());
 		String second = appendLeadingZero(now.getSecond());
 		String time = hour + ":" + minute + ":" + second;
-		this.json.getJSONObject("header").put("creation_time", time);
+		this.json.getAsJsonObject("header").addProperty("creation_time", time);
 		String month = appendLeadingZero(now.getMonthValue());
 		String day = appendLeadingZero(now.getDayOfMonth());
 		String date = now.getYear() + "-" + month + "-" + day;
-		this.json.getJSONObject("header").put("creation_date", date);
+		this.json.getAsJsonObject("header").addProperty("creation_date", date);
 		String id = createFileId(now);
-		this.json.getJSONObject("header").put("id", id);
+		this.json.getAsJsonObject("header").addProperty("id", id);
 	}
 
 	private String appendLeadingZero(int number) {
