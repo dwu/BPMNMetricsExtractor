@@ -123,53 +123,63 @@ public class JsonEncoder {
 	}
 	
 	public ArrayList<String> getBasicMetricsNames() {
-		JsonArray namesArray = this.json.getAsJsonObject("basic_metrics").getAsJsonArray();
-		ArrayList<String> names = new ArrayList<String>();
-		for (int i = 0; i < namesArray.size(); ++i) {
-			names.add(namesArray.get(i).getAsString());
-        }
-		return names;
+		return new ArrayList<>(this.json.getAsJsonObject("basic_metrics").keySet());
 	}
 	
 	public ArrayList<String>  getAdvancedMetricsNames() {
-		JsonArray namesArray = this.json.getAsJsonObject("advanced_metrics").getAsJsonArray();
-		ArrayList<String> names = new ArrayList<String>();
-		for (int i = 0; i < namesArray.size(); ++i) {
-			names.add(namesArray.get(i).getAsString());
-        }
-		return names;
+		return new ArrayList<>(this.json.getAsJsonObject("advanced_metrics").keySet());
 	}
 	
 	public ArrayList<Integer> getBasicMetricsValues() {
 		JsonObject basicMetrics = this.json.getAsJsonObject("basic_metrics");
-		JsonArray namesArray = basicMetrics.getAsJsonArray();
+		ArrayList<String> namesArray = new ArrayList<>(this.json.getAsJsonObject("basic_metrics").keySet());
 		ArrayList<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < namesArray.size(); ++i) {
-			values.add(basicMetrics.getAsJsonObject(namesArray.get(i).getAsString()).get("value").getAsInt());
+			values.add(basicMetrics.getAsJsonObject(namesArray.get(i)).get("value").getAsInt());
         }
 		return values;
 	}
 	
 	public ArrayList<Double> getAdvancedMetricsValues() {
 		JsonObject advancedMetrics = this.json.getAsJsonObject("advanced_metrics");
-		JsonArray namesArray = advancedMetrics.getAsJsonArray();
+		ArrayList<String> namesArray = new ArrayList<>(this.json.getAsJsonObject("advanced_metrics").keySet());
 		ArrayList<Double> values = new ArrayList<Double>();
 		for (int i = 0; i < namesArray.size(); ++i) {
-			values.add(advancedMetrics.getAsJsonObject(namesArray.get(i).getAsString()).get("value").getAsDouble());
+			values.add(advancedMetrics.getAsJsonObject(namesArray.get(i)).get("value").getAsDouble());
         }
 		return values;
 	}
 	
 	public ArrayList<String> getHeaderValues() {
 		JsonObject header = this.json.getAsJsonObject("header");
-		JsonArray namesArray = header.getAsJsonArray();
+		ArrayList<String> namesArray = new ArrayList<>(this.json.getAsJsonObject("header").keySet());
 		ArrayList<String> values = new ArrayList<String>();
 		for (int i = 0; i < namesArray.size(); ++i) {
-			values.add(header.getAsJsonObject(namesArray.get(i).getAsString()).getAsString());
+			values.add(header.getAsJsonObject(namesArray.get(i)).getAsString());
         }
 		return values;
 	}
-	
+
+	public Map<String, String> getMetrics() {
+		Map<String, String> metrics = new HashMap<String, String>();
+
+		JsonObject basicMetrics = this.json.getAsJsonObject("basic_metrics");
+		ArrayList<String> namesArrayBasic = new ArrayList<>(this.json.getAsJsonObject("basic_metrics").keySet());
+		ArrayList<String> valuesBasic = new ArrayList<String>();
+		for (int i = 0; i < namesArrayBasic.size(); ++i) {
+			metrics.put(namesArrayBasic.get(i), basicMetrics.getAsJsonObject(namesArrayBasic.get(i)).get("value").getAsString());
+		}
+
+		JsonObject advancedMetrics = this.json.getAsJsonObject("advanced_metrics");
+		ArrayList<String> namesArrayAdvanced = new ArrayList<>(this.json.getAsJsonObject("advanced_metrics").keySet());
+		ArrayList<String> valuesAdvanced = new ArrayList<String>();
+		for (int i = 0; i < namesArrayAdvanced.size(); ++i) {
+			metrics.put(namesArrayAdvanced.get(i), advancedMetrics.getAsJsonObject(namesArrayAdvanced.get(i)).get("value").getAsString());
+		}
+
+		return metrics;
+	}
+
 	public String getModelId() {
 		JsonObject header = this.json.getAsJsonObject("header");
 		return header.get("id").getAsString();
@@ -233,6 +243,13 @@ public class JsonEncoder {
 		} while (idStr.length() < baseIdLen);
 		return idStr;
 	}
-	
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public Map<String, String[]> getMetricsInfos() {
+		return metricsInfos;
+	}
 	
 }

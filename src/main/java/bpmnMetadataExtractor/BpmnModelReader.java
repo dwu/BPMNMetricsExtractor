@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.Bpmn;
 
@@ -16,7 +22,8 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 public class BpmnModelReader {
 	//file da cui vengono lette le metriche
 	private File loadedFile;
-	
+	private ArrayList<String> csvHeaderElements = getCsvHeaderElements();
+
 	/**
 	 * Costruttore in cui viene instanziato il loadedFile tramite il suo path
 	 * @param filePath
@@ -87,6 +94,44 @@ public class BpmnModelReader {
 //		db.saveMetrics(jsonEncoder);
 //		db.closeConnection();
 		return jsonEncoder.getJson().toString();
+	}
+
+	public static ArrayList<String> getCsvHeaderElements() {
+		ArrayList<String> header = new ArrayList<>();
+
+		JsonEncoder jsonEncoder = new JsonEncoder(null);
+		for (String key : jsonEncoder.getMetricsInfos().keySet()) {
+			header.add(key);
+		}
+
+		Collections.sort(header);
+		header.add(0, "file_name");
+
+		return header;
+	}
+
+	public void printCsvMetrics(CSVPrinter printer, InputStream fileStream, String fileName) throws IOException {
+		BpmnModelInstance modelInstance = Bpmn.readModelFromStream(fileStream);
+		JsonEncoder jsonEncoder = new JsonEncoder(fileName);
+		BpmnBasicMetricsExtractor basicExtractor = new BpmnBasicMetricsExtractor(modelInstance, jsonEncoder);
+		BpmnAdvancedMetricsExtractor advExtractor = new BpmnAdvancedMetricsExtractor(basicExtractor, jsonEncoder);
+
+		basicExtractor.runMetrics();
+		advExtractor.runMetrics();
+
+		jsonEncoder.populateHeader(LocalDateTime.now());
+
+		Map<String, String> metrics = jsonEncoder.getMetrics();
+		String[] row = new String[csvHeaderElements.size()];
+		row[0] = fileName;
+		for (int i = 1; i < row.length; ++i) {
+			if (metrics.get(csvHeaderElements.get(i)) !=  null) {
+				row[i] = metrics.get(csvHeaderElements.get(i)).toString();
+			} else {
+				row[i] = "";
+			}
+		}
+		printer.printRecord(row);
 	}
 
 	public static void main(String[] args) throws IOException{

@@ -1,9 +1,11 @@
 package bpmnMetadataExtractor;
 
-import org.camunda.bpm.model.xml.ModelParseException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 
 public class BPMNMetricsExtractor  {
 
@@ -15,15 +17,22 @@ public class BPMNMetricsExtractor  {
             System.exit(1);
         }
 
+        ArrayList<String> csvHeaderElements = BpmnModelReader.getCsvHeaderElements();
+        StringBuffer sb = new StringBuffer();
+        String[] sa = new String[csvHeaderElements.size()];
+        CSVPrinter printer = CSVFormat.DEFAULT.withHeader(csvHeaderElements.toArray(sa)).print(sb);
+
         for (String filename : args) {
             try {
                 BpmnModelReader metricsExtractor = new BpmnModelReader();
-                String json = metricsExtractor.getJsonMetrics(new FileInputStream(new File(filename)), filename);
-                System.out.println(json);
-            } catch (ModelParseException e) {
+
+                metricsExtractor.printCsvMetrics(printer, new FileInputStream(new File(filename)), filename);
+            } catch (Exception e) {
                 System.err.println("Error processing file " + filename + ": " + e.getMessage());
             }
         }
+
+        System.out.println(sb.toString());
     }
 
 }
