@@ -209,6 +209,9 @@ TNIE	%Total number of intermediate events	{10.19153/cleiej.9.1.5}
 TNSE	%Total number of start events	{10.19153/cleiej.9.1.5}
 TNE	%Total number of events	{10.19153/cleiej.9.1.5}
 CFC	%Control-flow Complexity metric	{10.1007/978-3-642-01862-6\_6}
+JC %JoinComplexity	{10.1007/11841760_38}
+JSR %JoinSplitRatio	{10.1007/11841760_38}
+PFC %Process Flow Complexity	{10.1007/978-3-540-79396-0_32}
 NOAC	%Number of activities and control-flow elements in a process	{10.1007/11837862\_13}
 NOAJS	%Number of activities, joins, and splits in a process	{10.1007/11837862\_13}
 HPC_D	%Hasted-based Process Complexity (process difficulty)	{10.1007/11837862\_13}
@@ -216,10 +219,20 @@ HPC_N	%Hasted-based Process Complexity (process length)	{10.1007/11837862\_13}
 HPC_V	%Hasted-based Process Complexity (process volume)	{10.1007/11837862\_13}
 NoI	%Number of activity inputs	{10.1007/11837862\_13}
 NoO	%Number of activity outputs	{10.1007/11837862\_13}
+CFC(rel)	%Relative Control Flow Complexity{10.4018/jwsr.2008040103}
+PCFC	%Parallel Control Flow Complexity{10.1109/tsc.2013.10}
+S(df) %Size of the Data-Flow	{10.1007/978-3-540-75183-0\_4}
+C(df) %Complexity of the Data-Flow	{10.1007/978-3-540-75183-0\_4}
 Length	%Activity length	{10.1007/11837862\_13}
+VOL %Structural Size {10.1016/0026-2714(92)90643-y}
+AAO %Average Activity Output {10.1016/0026-2714(92)90643-y}
+AAI %Average Activity Input {Proposed Metrics}
 IC	%Interface complexity of an activity metric	{10.1007/11837862\_13}
+FIO	%Structural Complexity	{10.1007/1-4020-5634-6_2}
 NOF	%Number of control flow connections (number of arcs).	{10.1007/11837862\_13}
-CNC %Coefficient of Network Complexity or Connectivity coefficient {10.1007/11837862\_13}
+CNC %Connectivity Coefficient {10.1007/11837862\_13}
+CNC^2 %Coefficient of Network Complexity{10.1007/11837862\_13}
+NCA %Activity Coupling {10.1007/978-3-540-45189-1_8}
 TNSF	%Total number of sequence flows	{10.1109/CEC.2009.53}
 CC	%Cross-connectivity metric	{10.1007/978-3-540-69534-9\_36}
 ICP	%Imported Coupling of a Process metric	{10.1016/j.procs.2016.09.274}
@@ -227,14 +240,20 @@ ECP	%Exported Coupling of a Process metric	{10.1016/j.procs.2016.09.274}
 W	%Cognitive Weight	{10.1109/COGINF.2006.365702}
 MaxND	%Maximum Nesting Depth	{10.1007/1-4020-5634-6_2}
 CP	%Coupling metric, it calculates the degree of coupling.	{10.1007/978-3-540-25970-1\_19}
+WCP	%	Weighted Coupling metric {absent}
 MeanND	%Mean Nesting Depth	{10.1007/1-4020-5634-6_2}
 Sn	%Number of nodes	{10.1007/978-3-540-89224-3}
 Sequentiality	%Sequentiality	{10.1007/978-3-540-89224-3}
 diam	%Diameter	{10.1007/978-3-540-89224-3}
 Depth	%Depth	{10.1007/978-3-540-89224-3}
+PC	%Process Complexity	{absent}
+CADAC %Cognitive Arc Weight Complexity {absent}
 GM	%Gateway Mismatch or Connector Mismatch	{10.1007/978-3-540-89224-3}
 CH	%Gateway Heterogeneity	{10.1007/978-3-540-89224-3}
 F	%Structuredness	{10.1007/978-3-540-89224-3}
+PF %Process Feedback	{10.2307/249553}
+Par %Parallelism	{10.2307/249553}
+RRPA	%Ratio of process roles and activities {10.1007/978-3-540-45189-1_8}
 CYC	%Cyclicity	{10.1007/978-3-540-89224-3}
 TS %Token Splits or Concurrency	{10.1007/978-3-540-89224-3}
 Density	%Density	{10.1007/978-3-540-89224-3}

@@ -19,6 +19,7 @@ public class StronglyConnectedComponentsMetricExtractor {
 	
 	//Variables for Tarjan's algorithm implementation
 	private int index = 0;
+	private int Ncycle = 0;
 	private Stack<TarjanNode> nodesStack;
 	
 	private ArrayList<TarjanNode> nodesInCycle = new ArrayList<TarjanNode>();
@@ -55,6 +56,24 @@ public class StronglyConnectedComponentsMetricExtractor {
 		}
 		
 	}
+	/**
+	 * METRIC: Process Feedback
+	 * @return 
+	 * @return number of cycle
+	 */
+	public int getCycle(){
+		for (ArrayList<TarjanNode> scc: this.stronglyConnectedComponents) {
+			this.setCycle(scc);
+		}
+		
+		try {
+			return Ncycle;
+		} catch (ArithmeticException e) {
+			return 0;
+		}
+		
+	}
+	
 	/**
 	 * METRIC: EcyM
 	 * @return the extended cyclomatic metric
@@ -102,6 +121,7 @@ public class StronglyConnectedComponentsMetricExtractor {
 			
 		}
 	}
+	
 	/**
 	 * Calculates whether the nodes in the given strongly connected component are in a cycle or not
 	 * @param scc
@@ -115,6 +135,21 @@ public class StronglyConnectedComponentsMetricExtractor {
 			}
 		}
 	}
+	
+	/**
+	 * Calculates whether the nodes in the given strongly connected component are in a cycle or not
+	 * @param scc
+	 */
+	private void setCycle(List<TarjanNode> scc) {
+		if (scc.size() > 1) {
+			Ncycle++;
+		} else if (scc.size() == 1) {
+			if (this.hasSelfLoop(scc.get(0))) {
+				Ncycle++;
+			}
+		}
+	}
+	
 	/**
 	 * Checks if the given node has a self-loop. (A backedge which target is the node itself)
 	 * @param node - the node to be checked

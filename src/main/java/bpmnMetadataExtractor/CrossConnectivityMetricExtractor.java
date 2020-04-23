@@ -142,6 +142,7 @@ public class CrossConnectivityMetricExtractor {
 		for (Double connection : totalConnections) {
 			connectionSum += connection;
 		}
+		//System.out.println(nodeValues.size());
 		return connectionSum / (nodeValues.size() * (nodeValues.size() -1));
 	}
 	

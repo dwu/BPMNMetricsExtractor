@@ -50,26 +50,40 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("PDOPin", getProportionOfIncomingDataObjectsAndTotalDataObjects());
 		json.addAdvancedMetric("PDOPout", getProportionOfOutgoingDataObjectsAndTotalDataObjects());
 		json.addAdvancedMetric("TNT", getTotalNumberOfTasks());
+		json.addAdvancedMetric("VOL", getVolume());
+		json.addAdvancedMetric("RRPA", getRatioRolesActivities());
 		json.addAdvancedMetric("PDOTout", getProportionOfDataObjectsAsOutgoingProducts());
 		json.addAdvancedMetric("PLT", getProportionOfPoolsOrLanesAndActivities());
 		json.addAdvancedMetric("TNCS", getNumberOfCollapsedSubProcesses());
 		json.addAdvancedMetric("TNA", getTotalNumberOfActivities());
 		json.addAdvancedMetric("TNDO", getTotalNumberOfDataObjects());
 		json.addAdvancedMetric("TNG", getTotalNumberOfGateways());
+		json.addAdvancedMetric("S(df)", getDataFlowSize());
+		json.addAdvancedMetric("C(df)", getDataFlowComplexity());
 		json.addAdvancedMetric("TNEE", getTotalNumberOfEndEvents());
 		json.addAdvancedMetric("TNIE", getTotalNumberOfIntermediateEvents());
 		json.addAdvancedMetric("TNSE", getTotalNumberOfStartEvents());
 		json.addAdvancedMetric("TNE", getTotalNumberOfEvents());
 		json.addAdvancedMetric("CFC", getControlFlowComplexity());
+		json.addAdvancedMetric("CFC(rel)", getRelativeControlFlowComplexity());
+		json.addAdvancedMetric("PCFC", getParallelControlFlowComplexity());
+		json.addAdvancedMetric("JC", getJoinComplexity());
+		json.addAdvancedMetric("JSR", getJoinSplitRatio());
+		json.addAdvancedMetric("PC", getProcessComplexity());
+		json.addAdvancedMetric("PFC", getProcessFlowComplexity());
+		json.addAdvancedMetric("CADAC", getArcCognitiveComplexity());
 		json.addAdvancedMetric("NOAC", getNumberOfActivitiesAndControlFlowElements());
 		json.addAdvancedMetric("NOAJS", this.getNumberOfActivitiesJoinsAndSplits());
 		json.addAdvancedMetric("HPC_D", getHalsteadBasedProcessComplexityDifficulty());
 		json.addAdvancedMetric("HPC_N", getHalsteadBasedProcessComplexityLength());
 		json.addAdvancedMetric("HPC_V", getHalsteadBasedProcessComplexityVolume());
 		json.addAdvancedMetric("NoI", getNumberOfActivityInputs());
+		json.addAdvancedMetric("AAI", getAverageActivityInput());
 		json.addAdvancedMetric("NoO", getNumberOfActivityOutputs());
+		json.addAdvancedMetric("AAO", getAverageActivityOutput());
 		json.addAdvancedMetric("Length", getActivityLength());
 		json.addAdvancedMetric("IC", getInterfaceComplexityOfActivityMetric());
+		json.addAdvancedMetric("FIO", getStructuralComplexity());
 		json.addAdvancedMetric("NOF", getNumberOfControlFlow());	
 		json.addAdvancedMetric("TNSF", getTotalNumberOfSequenceFlow());	
 		json.addAdvancedMetric("CC", ccExtractor.calculateCrossConnectivity());
@@ -78,7 +92,11 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("W", cwExtractor.getCognitiveWeight());
 		json.addAdvancedMetric("MaxND", ndExtractor.getMaxNestingDepth());
 		json.addAdvancedMetric("CP", getProcessCoupling());
-		json.addAdvancedMetric("CNC", this.getCoefficientOfNetworkComplexity());
+		json.addAdvancedMetric("WCP", getWeightedProcessCoupling());
+		json.addAdvancedMetric("Par", getParallelism());
+		json.addAdvancedMetric("CNC^2", this.getCoefficientOfNetworkComplexity());
+		json.addAdvancedMetric("CNC", this.getCoefficientComplexity());
+		json.addAdvancedMetric("NCA", this.getActivityCoupling());
 		json.addAdvancedMetric("MeanND", ndExtractor.getMeanNestingDepth());
 		json.addAdvancedMetric("Sn", getNumberOfNodes());
 		json.addAdvancedMetric("Sequentiality", getSequentiality());
@@ -94,6 +112,7 @@ public class BpmnAdvancedMetricsExtractor {
 		json.addAdvancedMetric("CH", this.connectorInterplayMetricsExtractor.getConnectorsHeterogeneityMetric());
 		json.addAdvancedMetric("ECaM", this.getExtendedCardosoMetric());
 		json.addAdvancedMetric("ECyM", this.sccExtractor.getEcym());
+		json.addAdvancedMetric("PF", this.sccExtractor.getCycle());
 		json.addAdvancedMetric("DSM", dsmExtractor.getDurfeeMetric());
 		json.addAdvancedMetric("PSM", dsmExtractor.getPerfectSquareMetric());
 		json.addAdvancedMetric("Layout_Complexity", dsmExtractor.getLayoutComplexityMetric());
@@ -241,6 +260,8 @@ public class BpmnAdvancedMetricsExtractor {
 		return getTotalNumberOfTasks() + getNumberOfCollapsedSubProcesses();
 	}
 	
+	
+	
 	/**
 	 * Metric: TNDO
 	 * Total number of Data Objects in the model
@@ -314,7 +335,7 @@ public class BpmnAdvancedMetricsExtractor {
 	
 	/**
 	 * Metric: CFC
-	 * Control-flow Complexity metric. It captures a weighted sum of all connectors that are used in a process model.
+	 * Control-flow Complexity metric. It captures a weighted sum of all split connectors that are used in a process model.
 	 * @return
 	 */
 	public double getControlFlowComplexity() {
@@ -344,14 +365,88 @@ public class BpmnAdvancedMetricsExtractor {
 			}
 		}
 		//Uncontrolled splits are included in the calculation as and-splits
-		for (ModelElementInstance activity : activities) {
+		/*for (ModelElementInstance activity : activities) {
 			if (((FlowNode) activity).getOutgoing().size() > 1) {
 				toReturn ++;
+				System.out.println("no:" + toReturn);
+			}
+		}*/
+		return toReturn;
+		
+	}
+	
+	/**
+	 * Metric: JC
+	 * Join Complexity metric. It captures a weighted sum of all join connectors that are used in a process model.
+	 * @return
+	 */
+	public double getJoinComplexity() {
+		double toReturn = 0;
+		int tempSize = 0;
+		Collection<ModelElementInstance> exclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(ExclusiveGateway.class);
+		Collection<ModelElementInstance> inclusiveGateways = basicMetricsExtractor.getCollectionOfElementType(InclusiveGateway.class);
+		Collection<ModelElementInstance> parallelGateways = basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class);
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		//The JC of a xor-split is given by the number of his incoming flows
+		for (ModelElementInstance exGateway : exclusiveGateways) {
+			if (((FlowNode) exGateway).getIncoming().size() > 1)
+				toReturn += ((FlowNode) exGateway).getIncoming().size();
+		}
+		
+		//The JC of an or-split is given by the formula 2^n - 1, where n is equals to the number of the gateway's incoming flow
+		for (ModelElementInstance inGateway : inclusiveGateways) {
+			if (((FlowNode) inGateway).getIncoming().size() > 1) {
+				tempSize = ((FlowNode) inGateway).getIncoming().size();
+				toReturn += Math.pow(2, tempSize) - 1;
 			}
 		}
+		//The JC of an and-split is just 1
+		for (ModelElementInstance parGateway : parallelGateways) {
+			if (((FlowNode) parGateway).getIncoming().size() > 1) {
+				toReturn++;
+			}
+		}
+		//Uncontrolled splits are included in the calculation as and-splits
+		/*for (ModelElementInstance activity : activities) {
+			if (((FlowNode) activity).getIncoming().size() > 1) {
+				toReturn ++;
+			}
+		}*/
 		return toReturn;
 	}
 	
+	/**
+	 * Metric: S(df)
+	 * The sum of input data received by an activity plus the number of output data produced by the same activity minus the outgoing arcs
+	 * towards the end event
+	 * @return
+	 */
+	public int getDataFlowSize() {
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		int toReturn = 0;
+		for (ModelElementInstance activity : activities) {
+			toReturn+=((FlowNode) activity).getIncoming().size()+((FlowNode) activity).getOutgoing().size();
+		}
+		toReturn = toReturn - basicMetricsExtractor.getEndEvents();
+		return toReturn;
+	}
+	
+	/**
+	 * Metric: C(df)
+	 * The sum of input data received by an activity plus the number of output data produced by the same activity minus the outgoing arcs
+	 * towards the end event plus the number of gateways
+	 * @return
+	 */
+	public int getDataFlowComplexity() {
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		int toReturn = 0;
+		for (ModelElementInstance activity : activities) {
+			toReturn+=((FlowNode) activity).getIncoming().size()+((FlowNode) activity).getOutgoing().size();
+		}
+		toReturn = toReturn - basicMetricsExtractor.getEndEvents() + this.getTotalNumberOfGateways();
+		return toReturn;
+	}
+
 	/**
 	 * Metric: NOAC
 	 * Number of activities and control-flow elements in a process. 
@@ -439,6 +534,24 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: AAI
+	 *  Average activity inputs, Total Number of Activity input / Total Number of Activity
+	 * @return 
+	 */
+	public double getAverageActivityInput() {
+		try {
+			double result = (double)this.getNumberOfActivityInputs()/this.getTotalNumberOfActivities();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getNumberOfActivityInputs()/this.getTotalNumberOfActivities();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
 	 * Metric: NoO or Fanout
      * Number of activity outputs. The fan-out of a procedure A is the number of local flows
      *  from procedure A plus the number of data structures which procedure A updates.
@@ -449,11 +562,76 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: AAO
+	 *  Average activity inputs, Total Number of Activity output / Total Number of Activity
+	 * @return 
+	 */
+	public double getAverageActivityOutput() {
+		try {
+			double result = (double)this.getNumberOfActivityOutputs()/this.getTotalNumberOfActivities();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getNumberOfActivityOutputs()/this.getTotalNumberOfActivities();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: PC
+	 *  Process Complexity is obtained by adding the CFC to the Nesting Depth
+	 * @return 
+	 */
+	public double getProcessComplexity() {
+		try {
+		
+			return (double)(this.getControlFlowComplexity() + this.partExtractor.getDepth());
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+
+	}
+	
+	/**
+	 * Metric: CADAC
+	 * Give the Cognitive Activity Depth Arc Control Flow
+	 * @return 
+	 */
+	public double getArcCognitiveComplexity() {
+		try {
+		
+			return (double)(this.getTotalNumberOfActivities() + (this.ndExtractor.getMaxNestingDepth()) * 14) + (basicMetricsExtractor.getCollectionOfElementType(InclusiveGateway.class).size()*7) + (basicMetricsExtractor.getCollectionOfElementType(ExclusiveGateway.class).size()*2) + (basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class).size()*4) + (this.getStructuralComplexity()*4) + (this.getTotalNumberOfSequenceFlow());
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+
+	}	
+	
+	/**
+	 * Metric: PFC
+	 *  Process Complexity is obtained by multiply the CFC to the another version of the FIO metrics (fan-in + fan-out)
+	 * @return 
+	 */
+	public double getProcessFlowComplexity() {
+		try {
+		
+			return (double) (this.getControlFlowComplexity()*(Math.pow(this.getNumberOfActivityInputs()+this.getNumberOfActivityOutputs(),2)));
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
 	 * Metric: Length
 	 * Activity length. The length is 1 if the activity is a black box; if it is a white box,
 	 *  the length can be calculated using traditional software engineering metrics
 	 *  that have been previously presented, namely the LOC (line of code) and
-	 *  MCC (McCabe�s cyclomatic complexity).
+	 *  MCC (McCabe's cyclomatic complexity).
 	 *  @return
 	 */
 	public int getActivityLength() {
@@ -470,6 +648,16 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public double getInterfaceComplexityOfActivityMetric() {
 		return getActivityLength() * Math.pow((getNumberOfActivityInputs() * getNumberOfActivityOutputs()), 2);
+	}
+	
+	/**
+	 * Metric: FIO
+	 * Structural Complexity FIO = (NoI * NoO)^2,  NoI and NoO are 
+	 *  the number of inputs and outputs.
+	 * @return
+	 */
+	public double getStructuralComplexity() {
+		return Math.pow((getNumberOfActivityInputs() * getNumberOfActivityOutputs()), 2);
 	}
 	
 	/**
@@ -490,6 +678,15 @@ public class BpmnAdvancedMetricsExtractor {
 	 */
 	public int getTotalNumberOfSequenceFlow(){
 		return basicMetricsExtractor.getSequenceFlows();
+	}
+	
+	/**
+	 * Metric: VOL
+	 * Volume is the structural size of the process (TNSF + Sn)
+	 * @return
+	 */
+	public int getVolume(){
+		return (basicMetricsExtractor.getSequenceFlows()+basicMetricsExtractor.getFlowNodes());
 	}
 
 	/**
@@ -575,6 +772,98 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
+	 * Metric: WCP
+	 * The metric calculates the degree of coupling with weight assigned to connectors. Coupling is related to the number of interconnections among the
+	 * tasks of a process model.
+	 * @return
+	 */
+	//Calculate the normal Coupling Value
+	public float getWeightedProcessCoupling(){
+		float toReturn = 0;
+		Collection<ModelElementInstance> activities = basicMetricsExtractor.getCollectionOfElementType(Activity.class);
+		if (activities.size() > 1){
+			for (ModelElementInstance t: activities){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					try {
+						if (s.getTarget() instanceof Activity){
+							toReturn++;
+						}
+					}catch(Exception e) {continue;}
+				}
+			}
+		}
+		// Calculate the value for Parallel Gateways
+		if (activities.size() > 1){
+			for (ModelElementInstance t: activities){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					try {
+						if (s.getTarget() instanceof ParallelGateway){
+							Collection<SequenceFlow> Paralleloutgoing = ((FlowNode) s.getTarget()).getOutgoing();
+							for (SequenceFlow g: Paralleloutgoing){
+								try {
+									if (g.getTarget() instanceof Activity){
+										toReturn++;
+									}
+								}catch(Exception e) {continue;}
+							}
+						}
+					}catch(Exception e) {continue;}
+				}
+			}
+		}
+		// Calculate the value for Exclusive Gateways
+		if (activities.size() > 1){
+			for (ModelElementInstance t: activities){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					try {
+						if (s.getTarget() instanceof ExclusiveGateway){
+							Collection<SequenceFlow> Exclusiveoutgoing = ((FlowNode) s.getTarget()).getOutgoing();
+							for (SequenceFlow g: Exclusiveoutgoing){
+								try {
+									if (g.getTarget() instanceof Activity){
+										
+										float Ris1=((FlowNode) s.getTarget()).getIncoming().size();
+										float Ris2=((FlowNode) s.getTarget()).getOutgoing().size();
+										toReturn=(float) (toReturn + 1/(Ris1*Ris2));
+									}
+								}catch(Exception e) {continue;}
+							}
+						}
+					}catch(Exception e) {continue;}
+				}
+			}
+		}
+		// Calculate the value for Inclusive Gateways
+		if (activities.size() > 1){
+			for (ModelElementInstance t: activities){
+				Collection<SequenceFlow> outgoing = ((FlowNode) t).getOutgoing();
+				for (SequenceFlow s: outgoing){
+					try {
+						if (s.getTarget() instanceof InclusiveGateway){
+							Collection<SequenceFlow> Inclusiveoutgoing = ((FlowNode) s.getTarget()).getOutgoing();
+							for (SequenceFlow g: Inclusiveoutgoing){
+								try {
+									if (g.getTarget() instanceof Activity){
+										float Ris1=((FlowNode) s.getTarget()).getIncoming().size();
+										float Ris2=((FlowNode) s.getTarget()).getOutgoing().size();
+										float RisBranch = (float)((Math.pow(2,Ris1)-1)*(Math.pow(2,Ris2)-1));
+										toReturn= toReturn + (((float)1/((float)Ris1*(float)Ris2)) * (((float)RisBranch-(float)1)/(float)RisBranch)) + ((float)1/(float)RisBranch);
+									}
+								}catch(Exception e) {continue;}
+							}
+						}
+					}catch(Exception e) {continue;}
+				}
+			}
+		}
+		toReturn = toReturn/(activities.size() * activities.size() - 1);
+		return toReturn;
+	}
+	
+	/**
 	 * Metric: Sn
 	 * Number of nodes (activities + routing elements)
 	 * @return
@@ -595,17 +884,150 @@ public class BpmnAdvancedMetricsExtractor {
 	}
 	
 	/**
-	 * Metric: CNC
-	 * Coefficient of Network Complexity (total number of sequence flows(NSEQF)/NOAJS)
+	 * Metric: CNC^2
+	 * Coefficient of Network Complexity (total number of sequence flows(NSEQF*NSEQF)/NOAJS)
 	 * @return NSEQF/NOAJS
 	 */
 	public double getCoefficientOfNetworkComplexity() {
+		try {
+			double result = (double)this.getNumberOfControlFlow()*this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getNumberOfControlFlow()*this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: CNC
+	 * Coefficient of Complexity (total number of sequence flows(NSEQF)/NOAJS)
+	 * @return NSEQF/NOAJS
+	 */
+	public double getCoefficientComplexity() {
 		try {
 			double result = (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
 			if (!Double.isFinite(result)) 
 				return 0;
 			else
 				return (double)this.getNumberOfControlFlow()/this.getNumberOfActivitiesJoinsAndSplits();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: CFC(rel)
+	 * the Relative CFC is obtanied by divide the original CFC by the number of split
+	 * @return CFC/FlowDividingTasks
+	 */
+	public double getRelativeControlFlowComplexity() {
+		try {
+			double result = (double)this.getControlFlowComplexity()/basicMetricsExtractor.getFlowDividingGateways();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getControlFlowComplexity()/basicMetricsExtractor.getFlowDividingGateways();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	
+	/**
+	 * Metric: PCFC
+	 * the Parallel CFC is obtanied by the sum of all outgoing arcs from splits
+	 * @return CFC/FlowDividingTasks
+	 */
+	public int getParallelControlFlowComplexity() {
+		Collection<ModelElementInstance> parallelGateways = basicMetricsExtractor.getCollectionOfElementType(ParallelGateway.class);
+		int toReturn=1;
+		try {
+			for (ModelElementInstance parGateway : parallelGateways) {
+				if (((FlowNode) parGateway).getOutgoing().size() > 1) {
+					toReturn = toReturn * ((FlowNode) parGateway).getOutgoing().size();
+				}
+			}
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+		if (toReturn == 1)
+			toReturn--;
+		return toReturn;
+	}
+	
+	
+	/**
+	 * Metric: Par
+	 * Calculate the degree of Parallelism
+	 * @return TNT/Diam
+	 */
+	public double getParallelism() {
+		try {
+			double result = (double)this.getTotalNumberOfTasks()/this.sizeExtractor.getDiam();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return  (double) this.getTotalNumberOfTasks()/this.sizeExtractor.getDiam();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: NCA
+	 * Activity Coupling (total number of sequence flows NOAJS/NSEQF)
+	 * @return NOAJS/NSEQF
+	 */
+	public double getActivityCoupling() {
+		try {
+			double result = (double)this.getNumberOfActivitiesJoinsAndSplits()/this.getNumberOfControlFlow();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getNumberOfActivitiesJoinsAndSplits()/this.getNumberOfControlFlow();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: NCA
+	 * Activity Coupling (total number of sequence flows NOAJS/NSEQF)
+	 * @return NOAJS/NSEQF
+	 */
+	public double getJoinSplitRatio() {
+		try {
+			double result = (double)this.getJoinComplexity()/this.getControlFlowComplexity();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)this.getJoinComplexity()/this.getControlFlowComplexity();
+		} 
+		catch (ArithmeticException e) {
+			return 0;	
+		}
+	}
+	
+	/**
+	 * Metric: RRPA
+	 * Ratio of Roles and Activities
+	 * @return NP/NACT
+	 */
+	public double getRatioRolesActivities() {
+		try {
+			double result = (double)basicMetricsExtractor.getPools()/basicMetricsExtractor.getActivities();
+			if (!Double.isFinite(result)) 
+				return 0;
+			else
+				return (double)basicMetricsExtractor.getPools()/basicMetricsExtractor.getActivities();
 		} 
 		catch (ArithmeticException e) {
 			return 0;	
